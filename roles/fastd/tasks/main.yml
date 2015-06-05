@@ -1,0 +1,18 @@
+---
+- name: Add apt repository
+  apt_repository: repo='deb http://repo.universe-factory.net/debian/ sid main' state=present
+
+- name: Install fastd
+  apt: name=fastd state=present
+
+- name: Copy static configuration part
+  copy: src=fastd-ffhb dest=/etc/fastd/
+
+- name: Generate fastd secrets
+  command: ( echo -n 'secret"'; fastd --machine-readable --generate-key; echo '";' ) > /etc/fastd/ffhb/secret.conf creates=/etc/fastd/ffhb/secret.conf
+
+- name: Generate dynamic configration part
+  template: src=fastd.conf dest=/etc/fastd/ffhb/fastd.conf mode=0640
+
+- name: Add network configuration
+  template: src=interfaces dest=/etc/network/interfaces.d/fastd

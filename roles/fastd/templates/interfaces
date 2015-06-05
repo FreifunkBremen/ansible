@@ -1,0 +1,13 @@
+allow-hotplug bat0
+iface bat0 inet manual
+    batadv-ports ffhb-mesh-vpn
+    batadv-hw 1a:73:8d:6e:b9:9e
+    batadv-hop-penalty 128
+    batadv-gw-mode server
+    batadv-gw-bandwidth 40Mbit/40Mbit
+    # set interface up
+    up ip link set $IFACE up
+    down ip link set $IFACE down
+    # add interface to bridge
+    post-up brctl addif br-ffhb $IFACE
+    pre-down brctl delif br-ffhb $IFACE || true
