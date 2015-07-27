@@ -1,6 +1,8 @@
+# {{ ansible_managed }}
+
 allow-hotplug bat0
 iface bat0 inet manual
-    batadv-ports ffhb-mesh-vpn
+    batadv-ports {{ site_code }}-mesh-vpn
     batadv-hw 1a:73:8d:6e:b9:9e
     batadv-hop-penalty 128
     batadv-gw-mode server
@@ -9,5 +11,5 @@ iface bat0 inet manual
     up ip link set $IFACE up
     down ip link set $IFACE down
     # add interface to bridge
-    post-up brctl addif br-ffhb $IFACE
-    pre-down brctl delif br-ffhb $IFACE || true
+    post-up brctl addif br-{{ site_code }} $IFACE
+    pre-down brctl delif br-{{ site_code }} $IFACE || true

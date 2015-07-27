@@ -1,18 +1,32 @@
 ---
+- name: Add repository-gpg-key for fastd
+  apt_key: "keyserver={{ pgp_keyserver }} id={{ fastd_repository_key }}"
+
 - name: Add apt repository
-  apt_repository: repo='deb http://repo.universe-factory.net/debian/ sid main' state=present
+  apt_repository: repo='deb {{ fastd_repository_url }}' state=present
 
 - name: Install fastd
   apt: name=fastd state=present
 
-- name: Copy static configuration part
-  copy: src=fastd-ffhb dest=/etc/fastd/
+- name: Copy static fastd configuration files
+  copy: src=fastd/ dest=/etc/fastd/{{ site_code }}/
+  notify:
+  - restart fastd
 
 - name: Generate fastd secrets
-  command: ( echo -n 'secret"'; fastd --machine-readable --generate-key; echo '";' ) > /etc/fastd/ffhb/secret.conf creates=/etc/fastd/ffhb/secret.conf
+  shell: ( echo -n 'secret "'; fastd --machine-readable --generate-key | tr -d '\n'; echo '";' ) > /etc/fastd/{{ site_code | quote }}/secret.conf
+  args:
+    creates: /etc/fastd/{{ site_code }}/secret.conf
+  notify:
+  - restart fastd
 
 - name: Generate dynamic configration part
-  template: src=fastd.conf dest=/etc/fastd/ffhb/fastd.conf mode=0640
+  template: src=fastd.conf dest=/etc/fastd/{{ site_code }}/fastd.conf mode=0640
+  notify:
+  - restart fastd
 
-- name: Add network configuration
-  template: src=interfaces dest=/etc/network/interfaces.d/fastd
+#- name: Add network configuration
+#  template: src=interfaces dest=/etc/network/interfaces.d/fastd
+
+- name: Install fastd blacklist
+  include: blacklist.yml

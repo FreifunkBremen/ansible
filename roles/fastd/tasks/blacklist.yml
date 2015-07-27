@@ -1,0 +1,7 @@
+---
+- name: Clone blacklist repository
+  git: repo={{ site_git_root }}/vpn-blacklist/
+       dest=/opt/{{ site_code }}/vpn-blacklist/
+
+- name: Install cronjob to automatically update blacklist repository
+  template: src=update-fastd-template dest=/etc/cron.hourly/update-fastd-template-{{ site_code }} mode=0755

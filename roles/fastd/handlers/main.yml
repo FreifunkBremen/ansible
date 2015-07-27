@@ -1,0 +1,4 @@
+---
+
+- name: restart fastd
+  service: name=fastd state=restarted
