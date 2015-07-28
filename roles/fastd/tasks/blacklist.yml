@@ -1,4 +1,7 @@
 ---
+- name: Install git
+  apt: name=git
+
 - name: Clone blacklist repository
   git: repo={{ site_git_root }}/vpn-blacklist/
        dest=/opt/{{ site_code }}/vpn-blacklist/
