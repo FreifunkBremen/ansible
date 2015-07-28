@@ -1,12 +1,12 @@
 ---
 - name: Add repository-gpg-key for fastd
-  apt_key: "keyserver={{ pgp_keyserver }} id={{ fastd_repository_key }}"
+  apt_key: keyserver={{ pgp_keyserver }} id={{ fastd_repository_key }}
 
 - name: Add apt repository
-  apt_repository: repo='deb {{ fastd_repository_url }}' state=present
+  apt_repository: repo='deb {{ fastd_repository_url }}'
 
 - name: Install fastd
-  apt: name=fastd state=present
+  apt: name=fastd
 
 - name: Copy static fastd configuration files
   copy: src=fastd/ dest=/etc/fastd/{{ site_code }}/
@@ -21,7 +21,10 @@
   - restart fastd
 
 - name: Generate dynamic configration part
-  template: src=fastd.conf dest=/etc/fastd/{{ site_code }}/fastd.conf mode=0640
+  template: >
+    src=fastd.conf
+    dest=/etc/fastd/{{ site_code }}/fastd.conf
+    mode=0640
   notify:
   - restart fastd
 
