@@ -1,0 +1,21 @@
+---
+- name: install bridge-utils
+  apt: name=bridge-utils
+
+- name: Install batman pre-up script
+  copy: >
+    src=if-pre-up
+    dest=/etc/network/if-pre-up.d/batadv
+    mode=0755
+
+- name: Install batman interfaces file
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/{{ batman_interface_name }}
+
+- name: Set interfaces up
+  command: ifup {{item}}
+  with_items:
+  - "{{ batman_interface_name }}_dummy"
+  - "{{ batman_interface_name }}"
+  - br-{{ site_code }}

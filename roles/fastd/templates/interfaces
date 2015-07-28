@@ -1,15 +1,6 @@
-# {{ ansible_managed }}
-
-allow-hotplug bat0
-iface bat0 inet manual
-    batadv-ports {{ site_code }}-mesh-vpn
-    batadv-hw 1a:73:8d:6e:b9:9e
-    batadv-hop-penalty 128
-    batadv-gw-mode server
-    batadv-gw-bandwidth 40Mbit/40Mbit
-    # set interface up
-    up ip link set $IFACE up
-    down ip link set $IFACE down
-    # add interface to bridge
-    post-up brctl addif br-{{ site_code }} $IFACE
-    pre-down brctl delif br-{{ site_code }} $IFACE || true
+allow-hotplug {{ fastd_interface_name }}
+iface {{ fastd_interface_name }} inet manual
+	up ip link set up $IFACE
+	up batctl -m {{ batman_interface_name }} if add $IFACE
+	down batctl -m {{ batman_interface_name }} if del $IFACE
+	down ip link set down $IFACE

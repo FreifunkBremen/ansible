@@ -1,0 +1,26 @@
+auto {{ batman_interface_name }}_dummy
+iface {{ batman_interface_name }}_dummy inet manual
+	pre-up ip link add name $IFACE type dummy
+	up ip link set $IFACE up
+	down ip link set $IFACE down
+	post-down ip link del $IFACE
+
+auto {{ batman_interface_name }}
+iface {{ batman_interface_name }} inet manual
+	batadv-ports {{ batman_interface_name }}_dummy
+	batadv-hw {{ ansible_default_ipv4.macaddress | derive_mac_addr(2) }}
+	batadv-hop-penalty {{ batman_hop_penalty }}
+{% if batman_gateway %}
+	batadv-gw-mode server
+	batadv-gw-bandwidth 100Mbit/100Mbit
+{% endif %}
+	# set interface up
+	up ip link set $IFACE up
+	down ip link set $IFACE down
+
+auto br-{{ site_code }}
+iface br-{{ site_code }} inet static
+	bridge-ports {{ batman_interface_name }}
+	bridge-maxwait 0
+	address {{ batman_ipv4_address }}
+	netmask {{ batman_ipv4_netmask }}
