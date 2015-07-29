@@ -1,0 +1,10 @@
+---
+- name: Install git
+  apt: name=git
+
+- name: Clone alfred announce repository
+  git: repo={{ alfred_announce_git_root }}
+       dest=/opt/{{ site_code }}/alfred-announce/
+
+- name: Install cronjob to automatically update alfred announce repository
+- cron: name="check dirs" minute="1" job="/opt/{{ site_code }}/alfred-announce/announce.sh > /dev/null"

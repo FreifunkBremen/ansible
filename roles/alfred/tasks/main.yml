@@ -1,0 +1,14 @@
+---
+#TODO alfred package nicht fertig + Cronjob mit Interfaces
+- name: Add repository key for alfred
+  apt_key: keyserver="{{ pgp_keyserver }}" id="{{ alfred_repository_key }}" state=present
+
+- name: Add repository for alfred
+  apt_repository: repo="{{item}}"
+  with_items:
+    - deb {{ alfred_repository }}
+    - deb-src {{ alfred_repository }}
+
+- name: Install alfred
+  apt: name="{{ alfred_pkg_name }}"
+
