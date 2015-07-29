@@ -1,0 +1,12 @@
+---
+- name: Install tcpdump
+  apt: name=tcpdump
+
+- name: Install vnstat
+  apt: name=vnstat
+
+- name: Start vnstat
+  service: name=vnstat state=started enabled=yes
+
+- name: Install bmon
+  apt: name=bmon

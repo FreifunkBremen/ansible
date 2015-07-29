@@ -1,0 +1,7 @@
+---
+- hosts: serviceservers
+  roles:
+  - batman-adv-14
+  - fastd
+  - tools-net
+  - tools-system-geno
