@@ -4,3 +4,10 @@ vpn[02:03].bremen.freifunk.net
 
 [vpnservers:vars]
 ansible_ssh_user=root
+
+
+[serviceservers]
+ffhb.fireorbit.de
+
+[serviceservers:vars]
+ansible_ssh_user=root
