@@ -1,0 +1,17 @@
+---
+site_city:'bremen'
+site_addr: 'vpn05.bremen.freifunk.net'
+icvpn_nr:'5'
+icvpn_as: 65196
+icvpn_addr_v4: 10.207.10.196
+icvpn_subnet_v4: 16
+icvpn_subnet_brdcast: '10.207.255.255'
+icvpn_addr_v6: 10.207.10.196
+icvpn_subnet_v6: 96
+icvpn_port: 656
+
+
+icvpn_interface: 'icvpn'
+icvpn_table: 'icvpn'
+icvpn_table_nr: '11'
+icvpn_git_root: 'https://github.com/freifunk/icvpn'

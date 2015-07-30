@@ -1,0 +1,2 @@
+Address = {{ site_addr }}
+Port = {{ icvpn_port }}

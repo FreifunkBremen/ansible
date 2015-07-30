@@ -1,0 +1,10 @@
+#!/bin/sh
+/sbin/ip addr del dev $INTERFACE {{ icvpn_addr_v4 }}/{{icvpn_subnet_v4}} broadcast {{ icvpn_subnet_brdcast }}
+/sbin/ip -6 addr del dev $INTERFACE {{ icvpn_addr_v6 }}/{{icvpn_subnet_v6}}
+
+# ip rules
+/sbin/ip rule del lookup {{ icvpn_table }} priority 10042
+/sbin/ip -6 rule del lookup {{ icvpn_table }} priority 10042
+
+# shutdown interface
+/sbin/ip link set dev $INTERFACE down
