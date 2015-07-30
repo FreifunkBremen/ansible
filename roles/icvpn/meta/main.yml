@@ -6,6 +6,5 @@ galaxy_info:
     - wheezy
     - jessie
 dependencies:
-- alfred
-# for python3,ethtools,git
+# for python3,git
 - tools-script

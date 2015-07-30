@@ -1,5 +1,21 @@
 - name: Install bird
   apt: name=bird
 
+#TODO Cronjob Daily pull
+- name: Clone ICVPN-Meta repository
+  git: repo={{ icvpn_git_meta }}
+       dest=/opt/{{ site_code }}/icvpn-meta/
+
+# TODO Maybe pull for update
+- name: Clone ICVPN-Meta repository
+  git: repo={{ icvpn_git_scripts }}
+       dest=/opt/{{ site_code }}/icvpn-scripts/
+
+- name: Install cronjob to automatically update bgp-bird configurations
+  copy: >
+    src=update-bgp-bird
+    dest=/etc/cron.hourly/update-bgp-bird
+    mode=0755
+
 - name: Start bird
   service: name=bird state=started enabled=yes
