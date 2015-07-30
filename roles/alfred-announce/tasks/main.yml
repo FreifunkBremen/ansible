@@ -1,10 +1,16 @@
 ---
+- name: Install python3
+  apt: name=python3
+  
 - name: Install git
   apt: name=git
+
+- name: Install ethtool
+  apt: name=ethtool
 
 - name: Clone alfred announce repository
   git: repo={{ alfred_announce_git_root }}
        dest=/opt/{{ site_code }}/alfred-announce/
 
 - name: Install cronjob to automatically update alfred announce repository
-- cron: name="check dirs" minute="1" job="/opt/{{ site_code }}/alfred-announce/announce.sh > /dev/null"
+  cron: name="alfred announce" minute="1" job="/opt/{{ site_code }}/alfred-announce/announce.sh -i {{ interface_name }} -b {{ batman_interface_name }}> /dev/null"

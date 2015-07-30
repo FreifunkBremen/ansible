@@ -1,2 +1,5 @@
 ---
-alfred_announce_git_root: 'https://github.com/ffnord/ffnord-alfred-announce/'
+alfred_announce_git_root: 'https://github.com/genofire/alfred-announce/'
+
+batman_interface_name: bat-{{ site_code }}
+interface_name: 'br-ffhb'

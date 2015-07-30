@@ -1,0 +1,16 @@
+#
+# /etc/default/alfred
+#
+
+# Additional command line options
+DAEMON_OPTS=""
+
+# Enable master mode (0/1)
+MASTER={{ alfred_master }}
+
+# Interface for A.L.F.R.E.D. to listen on. Has to be specified.
+INTERFACE={{ interface_name }}
+
+# Specify the batman-adv interface configured on the system (default: bat0).
+# Use 'none' to disable the batman-adv based best server selection.
+BATMANIF={{ batman_interface_name }}

@@ -3,5 +3,6 @@
   roles:
   - batman-adv-14
   - fastd
+  - alfred-announce
   - tools-net
   - tools-system-geno
