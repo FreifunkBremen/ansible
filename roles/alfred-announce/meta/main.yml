@@ -7,3 +7,4 @@ galaxy_info:
     - jessie
 dependencies:
 - alfred
+- tools-script

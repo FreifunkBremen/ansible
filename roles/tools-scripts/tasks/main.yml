@@ -1,0 +1,9 @@
+---
+- name: Install git
+  apt: name=git
+
+- name: Install ethtool
+  apt: name=ethtool
+
+- name: Install python3
+  apt: name=python3
