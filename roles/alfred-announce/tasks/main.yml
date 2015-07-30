@@ -1,8 +1,12 @@
 ---
 # TODO Maybe pull for update
 - name: Clone alfred announce repository
-  git: repo={{ alfred_announce_git_root }}
-       dest=/opt/{{ site_code }}/alfred-announce/
+  git: >
+    repo={{ alfred_announce_git_root }}
+    dest=/opt/{{ site_code }}/alfred-announce/
 
 - name: Install cronjob to automatically update alfred announce repository
-  cron: name="alfred announce" minute="1" job="/opt/{{ site_code }}/alfred-announce/announce.sh -i {{ interface_name }} -b {{ batman_interface_name }}> /dev/null"
+  cron: >
+    name="alfred announce"
+    job="/opt/{{ site_code }}/alfred-announce/announce.sh -i {{ interface_name }} -b {{ batman_interface_name }}> /dev/null"
+    minute="1"

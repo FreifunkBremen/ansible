@@ -1,7 +1,7 @@
 ---
 # tasks file for batman-adv-14
 - name: Add repository key for batman-adv compat 14
-  apt_key: keyserver="{{ pgp_keyserver }}" id="{{ batman_adv_14_repository_key }}" state=present
+  apt_key: keyserver="{{ pgp_keyserver }}" id="{{ batman_adv_14_repository_key }}"
 
 - name: Add repository for batman-adv compat 14
   apt_repository: repo="{{item}}"

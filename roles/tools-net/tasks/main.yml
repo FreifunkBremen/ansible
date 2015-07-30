@@ -1,12 +1,10 @@
 ---
-- name: Install tcpdump
-  apt: name=tcpdump
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+  - bmon
+  - tcpdump
+  - vnstat
 
-- name: Install vnstat
-  apt: name=vnstat
-
-- name: Start vnstat
+- name: Start and enable vnstat
   service: name=vnstat state=started enabled=yes
-
-- name: Install bmon
-  apt: name=bmon

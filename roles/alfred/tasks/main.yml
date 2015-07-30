@@ -1,34 +1,30 @@
 ---
 - name: Add repository-gpg-key for alfred+batadv-vis
   apt_key: keyserver={{ alfred_pgp_keyserver }} id={{ alfred_repository_key }}
-  
+
 - name: Add repository for alfred
-  apt_repository: repo="{{item}}"
+  apt_repository: repo={{item}}
   with_items:
-    - deb {{ alfred_repository }}
-    - deb-src {{ alfred_repository }}
+  - deb {{ alfred_repository }}
+  - deb-src {{ alfred_repository }}
 
-- name: Install alfred
-  apt: name="alfred"
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+  - alfred
+  - alfred-json
+  - badadv-vis
 
-- name: Configurate Interfaces alfred
+- name: Configurate alfred interfaces
   template: >
     src=alfred-default
     dest=/etc/default/alfred
     mode=0640
-  
+
 - name: Start alfred
   service: name=alfred state=started enabled=yes
 
-
-- name: Install alfred-json
-  apt: name="alfred-json"
-
-
-- name: Install batadv-vis
-  apt: name="batadv-vis"
-
-- name: Configurate Interfaces batadv-vis
+- name: Configurate batadv-vis interfaces
   template: >
     src=batadv-vis-default
     dest=/etc/default/batadv-vis

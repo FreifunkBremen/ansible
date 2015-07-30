@@ -1,9 +1,7 @@
 ---
-- name: Install git
-  apt: name=git
-
-- name: Install ethtool
-  apt: name=ethtool
-
-- name: Install python3
-  apt: name=python3
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+  - git
+  - ethtool
+  - python3

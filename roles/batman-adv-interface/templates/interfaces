@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 auto {{ batman_interface_name }}_dummy
 iface {{ batman_interface_name }}_dummy inet manual
 	pre-up ip link add name $IFACE type dummy

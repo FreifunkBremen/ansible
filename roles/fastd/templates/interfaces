@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 allow-hotplug {{ fastd_interface_name }}
 iface {{ fastd_interface_name }} inet manual
 	up ip link set up $IFACE
