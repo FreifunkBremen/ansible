@@ -4,15 +4,9 @@
 ##
 
 alfred_repository: 'http://debian.draic.info/ wheezy main'
-#alfred_repository: 'http://ppa.launchpad.net/freifunk-mwu/freifunk-ppa/ubuntu trusty main'
-
 alfred_repository_key: '16EF3F64CB201D9C'
-#alfred_repository_key: '286CC7A4'
-
 alfred_pgp_keyserver: 'pgpkeys.mit.edu'
-#alfred_pgp_keyserver: 'keyserver.ubuntu.com'
-
 
 alfred_master: 0
 batman_interface_name: bat-{{ site_code }}
-interface_name: 'br-ffhb'
+interface_name: 'br-{{ site_code }}'
