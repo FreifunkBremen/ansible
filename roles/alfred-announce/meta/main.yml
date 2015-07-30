@@ -8,4 +8,4 @@ galaxy_info:
 dependencies:
 - alfred
 # for python3,ethtools,git
-- tools-script
+- tools-scripts

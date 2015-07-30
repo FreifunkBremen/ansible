@@ -1,13 +1,4 @@
 ---
-- name: Install python3
-  apt: name=python3
-
-- name: Install git
-  apt: name=git
-
-- name: Install ethtool
-  apt: name=ethtool
-
 # TODO Maybe pull for update
 - name: Clone alfred announce repository
   git: repo={{ alfred_announce_git_root }}
