@@ -8,5 +8,5 @@
 - name: Install cronjob to automatically update alfred announce repository
   cron: >
     name="alfred announce"
-    job="/opt/{{ site_code }}/alfred-announce/announce.sh -i {{ interface_name }} -b {{ batman_interface_name }}> /dev/null"
+    job="/opt/{{ site_code }}/alfred-announce/announce.sh -i {{ interface_name }} -b {{ batman_interface_name }} > /dev/null"
     minute="1"
