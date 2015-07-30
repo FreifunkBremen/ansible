@@ -1,0 +1,5 @@
+- name: Install bird
+  apt: name=bird
+
+- name: Start bird
+  service: name=bird state=started enabled=yes

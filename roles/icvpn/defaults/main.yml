@@ -1,12 +1,12 @@
 ---
 site_city:'bremen'
-site_addr: 'vpn05.bremen.freifunk.net'
-icvpn_nr:'5'
+site_addr: 'vpn10.bremen.freifunk.net'
+icvpn_nr:'10'
 icvpn_as: 65196
-icvpn_addr_v4: 10.207.10.196
+icvpn_addr_v4: '10.207.10.196'
 icvpn_subnet_v4: 16
 icvpn_subnet_brdcast: '10.207.255.255'
-icvpn_addr_v6: 10.207.10.196
+icvpn_addr_v6: 'fd2f:5119:f2c::10'
 icvpn_subnet_v6: 96
 icvpn_port: 656
 
