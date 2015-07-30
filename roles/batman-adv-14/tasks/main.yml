@@ -12,6 +12,15 @@
 - name: Install batman-adv compat 14
   apt: name="{{ batman_adv_14_pkg_name }}"
 
+- name: Copy kernel postinst downgrade hook
+  copy: >
+    src=dkms-batman-adv-downgrade
+    dest=/etc/kernel/postinst.d/dkms-batman-adv-downgrade
+    mode=0755
+
+- name: Ensure correct version was installed
+  shell: /etc/kernel/postinst.d/dkms-batman-adv-downgrade $(uname -r)
+
 - name: Enable batman during boot
   lineinfile: dest=/etc/modules line=batman-adv
 
