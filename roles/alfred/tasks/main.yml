@@ -3,17 +3,17 @@
   apt_key: keyserver={{ alfred_pgp_keyserver }} id={{ alfred_repository_key }}
 
 - name: Add repository for alfred
-  apt_repository: repo={{item}}
+  apt_repository: repo='{{item}}'
   with_items:
-  - deb {{ alfred_repository }}
-  - deb-src {{ alfred_repository }}
+  - 'deb {{ alfred_repository }}'
+  - 'deb-src {{ alfred_repository }}'
 
 - name: Install packages
   apt: name={{item}}
   with_items:
   - alfred
   - alfred-json
-  - badadv-vis
+  - batadv-vis
 
 - name: Configurate alfred interfaces
   template: >
