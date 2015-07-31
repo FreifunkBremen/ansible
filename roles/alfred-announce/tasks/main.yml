@@ -5,8 +5,10 @@
     repo={{ alfred_announce_git_root }}
     dest=/opt/{{ site_code }}/alfred-announce/
 
-- name: Install cronjob to automatically update alfred announce repository
-  cron: >
-    name="alfred announce"
-    job="/opt/{{ site_code }}/alfred-announce/announce.sh -i {{ interface_name }} -b {{ batman_interface_name }} > /dev/null"
-    minute="*/1"
+- name: Install cronjob to automatically update alfred announce
+  template: >
+    src=cronjob
+    dest=/etc/cron.d/alfred-announce
+
+- name: Restart Cronjob
+  service: name=cron state=restarted enabled=yes
