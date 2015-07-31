@@ -1,0 +1,77 @@
+---
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+  - prosody
+  - lua-zlib
+  - mysql-server
+  - mysql-client
+  - python-mysqldb
+
+- name: Copy Run Scripts
+  template: >
+    src={{item}}
+    dest=/tmp/{{item}}
+    mode=0640
+  with_items:
+   - run-adduser
+   - run-mysql_secure_install
+
+- name: Start MySQL-Server
+  service: name=mysql state=started enabled=yes
+
+- name: Configurate MySQL-Server
+  shell: cat /tmp/run-mysql_secure_install | mysql_secure_installation
+
+- name: Create Database
+  mysql_db: login_user="root" login_password="{{mysql_root_password}}" name={{ jabber_mysql_db }} state=present
+
+- name: Create User for prosody
+  mysql_user: login_user="root" login_password="{{mysql_root_password}}" name={{ jabber_mysql_user }} password="{{ jabber_mysql_passwd }}" priv={{ jabber_mysql_db }}.*:ALL,GRANT state=present
+
+- name: Copy Database Schema
+  copy: src=prosody.sql dest=/tmp
+- name: Load Database
+  mysql_db: login_user={{ jabber_mysql_user }} login_password="{{ jabber_mysql_passwd }}" name={{ jabber_mysql_db }} state=import target=/tmp/prosody.sql
+
+
+- name: Configurate Prosody
+  template: >
+    src=prosody.cfg.lua
+    dest=/etc/prosody/prosody.cfg.lua
+    mode=0640
+
+
+- name: Template Certs
+  template: >
+    src=run-cert
+    dest=/tmp/run-cert-{{item}}
+    mode=0640
+  with_items:
+    - "{{jabber_domain}}"
+    - localhost
+
+- name: Create Certs
+  shell: cat /tmp/run-cert-{{item}} | prosodyctl cert generate {{item}}
+  with_items:
+    - "{{jabber_domain}}"
+    - localhost
+
+
+- name: Start prosody
+  service: name=prosody state=restarted enabled=yes
+
+
+- name: Create Jabber AdminUser
+  shell: "cat /tmp/run-adduser | prosodyctl passwd {{jabber_domain_admin}}@{{ jabber_domain }}"
+
+
+- name: Cleanup Files
+  file: path={{item}} state=absent
+  with_items:
+    - /tmp/prosody.sql
+    - /etc/prosody/conf.d/localhost.cfg.lua
+    - /tmp/run-adduser
+    - /tmp/run-mysql_secure_install
+    - /tmp/run-cert-localhost
+    - "/tmp/run-cert-{{jabber_domain}}"
