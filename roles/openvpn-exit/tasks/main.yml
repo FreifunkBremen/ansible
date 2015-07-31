@@ -1,0 +1,13 @@
+---
+- name: Set up group
+  group: name=openvpn system=yes
+
+- name: Set up User
+  user: name=openvpn system=yes group=openvpn createhome=no shell=/bin/false
+
+- name: Install openvpn
+  action: apt pkg=openvpn
+
+#- name: Upload config
+#  template: TODO
+#  notify: restart openvpn
