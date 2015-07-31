@@ -1,0 +1,8 @@
+---
+- name: Setting hostname
+  hostname: name={{ hostname }}
+  when: hostname != 'defaulthost'
+
+- name: Reboot host
+  shell: reboot
+  when: reboot-flag
