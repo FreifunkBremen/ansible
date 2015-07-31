@@ -1,0 +1,34 @@
+- name: Configurate Webserver
+  template: >
+    src=nginx.conf
+    dest=/etc/nginx/sites-enabled/10-{{jabber_domain}}_jabber.conf
+    mode=0640
+
+- name : Create Folder Struktur
+  file: path=/var/www/html/{{item}} state=directory
+  with_items:
+    - "{{ jabber_domain }}_jabber"
+    - "{{ jabber_domain }}_jabber/builds"
+    - "{{ jabber_domain }}_jabber/css"
+    - "{{ jabber_domain }}_jabber/fonticons"
+    - "{{ jabber_domain }}_jabber/fonticons/fonts"
+
+- name: Get Website
+  get_url: url='https://conversejs.org/{{ item }}' dest='/var/www/html/{{ jabber_domain }}_jabber/{{item}}'
+  with_items:
+    - "builds/converse.website.min.js"
+    - "css/converse.min.css"
+    - "css/theme.css"
+    - "fonticons/fonts/icomoon.eot"
+    - "fonticons/fonts/icomoon.svg"
+    - "fonticons/fonts/icomoon.ttf"
+    - "fonticons/fonts/icomoon.woff"
+
+- name: Generate index.html
+  template: >
+    src=index.html
+    dest=/var/www/html/{{ jabber_domain }}_jabber/index.html
+    mode=0644
+
+- name: Start nginx
+  service: name=nginx state=restarted enabled=yes

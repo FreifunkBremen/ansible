@@ -1,9 +1,8 @@
 ---
 - hosts: serviceservers
   roles:
-  #- batman-adv-14
-  #- fastd
-  #- alfred-announce
+  - batman-adv-14
+  - fastd
+  - alfred-announce
   - prosody
   - tools-net
-  - tools-system-geno

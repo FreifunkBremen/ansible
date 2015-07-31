@@ -63,8 +63,10 @@
 
 
 - name: Create Jabber AdminUser
-  shell: "cat /tmp/run-adduser | prosodyctl passwd {{jabber_domain_admin}}@{{ jabber_domain }}"
+  shell: "cat /tmp/run-adduser | prosodyctl adduser {{jabber_domain_admin}}@{{ jabber_domain }}"
 
+- name: Install Webclient
+  include: webclient.yml
 
 - name: Cleanup Files
   file: path={{item}} state=absent

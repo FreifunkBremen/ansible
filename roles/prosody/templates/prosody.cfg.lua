@@ -78,7 +78,24 @@ modules_disabled = {
 	-- "s2s"; -- Handle server-to-server connections
 };
 
-allow_registration = false;
+allow_registration = true;
+bosh_ports = {
+		{
+			port = 5280;
+			path = "http-bind";
+		},
+		{
+			port = 5281;
+			path = "http-bind";
+			ssl = {
+				key = "/var/lib/prosody/{{ jabber_domain }}.key";
+				certificate = "/var/lib/prosody/{{ jabber_domain }}.crt";
+			}
+		}
+	}
+consider_bosh_secure = true
+cross_domain_bosh = true
+
 
 daemonize = true;
 
