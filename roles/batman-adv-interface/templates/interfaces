@@ -15,6 +15,21 @@ iface {{ batman_interface_name }} inet manual
 {% if batman_gateway %}
 	batadv-gw-mode server
 	batadv-gw-bandwidth 100Mbit/100Mbit
+	# unreachable route in freifunk-default
+	# prevents leak of data
+	post-up ip route add unreachable default metric 2048 table default-freifunk
+	pre-down ip route del unreachable default metric 2048 table default-freifunk
+	post-up ip -6 route add unreachable default metric 2048 table default-freifunk
+	pre-down ip -6 route del unreachable default metric 2048 table default-freifunk
+	# rules to send stuff to VPN
+	post-up ip rule add iif $IFACE table default-freifunk priority 16385
+	pre-down ip rule del iif $IFACE table default-freifunk priority 16385
+	post-up ip -6 rule add iif $IFACE table default-freifunk priority 32767
+	pre-down ip -6 rule del iif $IFACE table default-freifunk priority 32767
+	post-up sysctl -w  net.ipv6.conf.all.forwarding=1
+	down-up sysctl -w  net.ipv6.conf.all.forwarding=0
+	post-up sysctl -w  net.ipv4.conf.all.forwarding=1
+	down-up sysctl -w  net.ipv4.conf.all.forwarding=0
 {% endif %}
 	# set interface up
 	up ip link set $IFACE up

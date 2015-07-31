@@ -1,5 +1,6 @@
 ---
 batman_interface_name: bat-{{ site_code }}
 batman_hop_penalty: 96
+batman_ipv4_address: 10.196.0.90
 batman_ipv4_netmask: 17
 batman_gateway: false
