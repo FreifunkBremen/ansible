@@ -1,7 +1,4 @@
 ---
-- name: Create ICVPN Rouing-Table
-  lineinfile: dest=/etc/iproute2/rt_tables line="{{ icvpn_table_nr }} {{ icvpn_table }}"
-
 - name: Install tinc
   apt: name=tinc
 
@@ -10,28 +7,22 @@
   git: repo={{ icvpn_git_root }}
        dest=/etc/tinc/icvpn/
 
-- name: Configurate IC-VPN Tinc
-  template: >
-    src=tinc.conf
-    dest=/etc/tinc/icvpn/tinc.conf
-    mode=0755
-- name: Install POST-MERGE vor Tinc-Connection
-  copy: >
-    src=/etc/tinc/icvpn/scripts/post-merge
-    dest=/etc/tinc/icvpn/.git/hooks/post-merge
-    mode=0755
+#TODO not on vpn01 - why?
+#- name: Install POST-MERGE vor Tinc-Connection
+#  copy: >
+#    src=/etc/tinc/icvpn/scripts/post-merge
+#    dest=/etc/tinc/icvpn/.git/hooks/post-merge
+#    mode=0755
 
-- name: Install IC-VPN Tinc up-Skript
+- name: Install IC-VPN Tinc up/down-Skript and Configuration
   template: >
-    src=tinc-up
-    dest=/etc/tinc/icvpn/tinc-up
+    src={{item}}
+    dest=/etc/tinc/icvpn/{{item}}
     mode=0755
-
-- name: Install IC-VPN Tinc down-Skript
-  template: >
-    src=tinc-down
-    dest=/etc/tinc/icvpn/tinc-down
-    mode=0755
+  with_items:
+    - tinc-down
+    - tinc-up
+    - tinc.conf
 
 - name: Generate Key
   shell: echo "" | tincd -n icvpn -K
@@ -45,7 +36,7 @@
   lineinfile: dest=/etc/tinc/nets.boot line="icvpn"
 
 - name: Start tinc
-  service: name=tinc state=started enabled=yes
+  service: name=tinc state=restarted enabled=yes
 
 - name: Generate Hostsfile for Github
   template: >

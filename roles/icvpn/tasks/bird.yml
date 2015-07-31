@@ -12,7 +12,7 @@
        dest=/opt/{{ site_code }}/icvpn-scripts/
 
 - name: Install cronjob to automatically update bgp-bird configurations
-  copy: >
+  template: >
     src=update-bgp-bird
     dest=/etc/cron.hourly/update-bgp-bird
     mode=0755
