@@ -8,6 +8,23 @@
 - name: Install openvpn
   action: apt pkg=openvpn
 
-#- name: Upload config
-#  template: TODO
-#  notify: restart openvpn
+- name: Install scripts and auth
+  template: >
+    src={{ item }}
+    dest=/etc/openvpn/{{ item }}
+    mode=0700
+  with_items:
+    - exit-up.sh
+    - exit-auth
+  when: openvpn_exit_hideme
+
+- name: Install HideMe Config
+  template: >
+    src=exit-hide.conf
+    dest=/etc/openvpn/exit.conf
+    mode=0700
+  when: openvpn_exit_hideme
+
+
+- name: Restart Openvpn
+  service: name=openvpn@exit state=restarted enabled=yes
