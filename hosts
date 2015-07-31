@@ -1,7 +1,6 @@
 [vpnservers]
-#vpn01.bremen.freifunk.net:60023
-#vpn[02:03].bremen.freifunk.net
-ffhb.jel.to
+vpn01.bremen.freifunk.net:60023
+vpn[02:03].bremen.freifunk.net
 
 [vpnservers:vars]
 ansible_ssh_user=root
@@ -12,6 +11,3 @@ ffhb.fireorbit.de
 
 [serviceservers:vars]
 ansible_ssh_user=root
-
-[meinserver]
-ffhb.jel.to
