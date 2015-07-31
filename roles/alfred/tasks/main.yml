@@ -31,4 +31,4 @@
     mode=0640
 
 - name: Start batadv-vis
-  service: name=batadv-vis state=started enabled=yes
+  service: name=batadv-vis state=restarted enabled=yes
