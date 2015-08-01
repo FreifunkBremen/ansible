@@ -1,0 +1,17 @@
+#!/bin/sh -e
+# {{ ansible_managed }}
+DATADIR=/opt/{{ site_code }}/icvpn-meta
+
+cd /etc/tinc/icvpn
+git pull -q
+
+cd "$DATADIR"
+git pull -q
+sudo -u nobody /opt/{{ site_code }}/icvpn-scripts/mkbgp -4 -s "$DATADIR" -x bremen -d icvpn -p icvpn_ > /etc/bird/bird_icvpn.conf
+sudo -u nobody /opt/{{ site_code }}/icvpn-scripts/mkbgp -6 -s "$DATADIR" -x bremen -d icvpn -p icvpn_ -t berlin:icvpn_default > /etc/bird/bird6_icvpn.conf
+
+birdc configure > /dev/null
+birdc6 configure > /dev/null
+
+sudo -u nobody /opt/{{ site_code }}/icvpn-scripts/mkdns -s "$DATADIR" -x bremen -f unbound > /etc/unbound/unbound.conf.d/icvpn.conf
+unbound-control reload > /dev/null

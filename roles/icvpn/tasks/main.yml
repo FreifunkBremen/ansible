@@ -1,6 +1,10 @@
 ---
-- name: Install tinc
-  apt: name=tinc
+- name: Install packages
+  apt: name={{ item }}
+  with_items:
+    - tinc
+    - sudo
+    - python-yaml
 
 #TODO Cronjob Daily pull
 - name: Clone ICVPN repository
