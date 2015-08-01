@@ -5,8 +5,11 @@
 - name: Set up User
   user: name=openvpn system=yes group=openvpn createhome=no shell=/bin/false
 
-- name: Install openvpn
-  action: apt pkg=openvpn
+- name: Install packages
+  action: apt pkg={{ item }}
+  with_items:
+    - openvpn
+    - iptables-persistent
 
 - name: Install scripts and auth
   template: >
@@ -25,6 +28,15 @@
     mode=0700
   when: openvpn_exit_hideme
 
+
+- name: Flush iptables nat
+  shell: iptables -t nat -F
+
+- name: Install iptables nat
+  shell: iptables -t nat -A POSTROUTING -s 10.196.0.0/16 -o vpn_uplink -j MASQUERADE
+
+- name: Save iptable IPv4
+  shell: iptables-save > /etc/iptables/rules.v4
 
 - name: Restart Openvpn
   service: name=openvpn@exit state=restarted enabled=yes
