@@ -14,7 +14,7 @@
   - restart fastd
 
 - name: Generate fastd secrets
-  shell: (fastd --generate-key | awk '{f=0}/^Secret/{f=1}f{$0 = "secret \""$2"\";"}!f{$0= "#" $0}{print $0}') > /etc/fastd/{{ site_code | quote }}/secret.conf
+  shell: ( echo -n 'secret "'; fastd --machine-readable --generate-key | tr -d '\n'; echo '";' ) > /etc/fastd/{{ site_code | quote }}/secret.conf
   args:
     creates: /etc/fastd/{{ site_code }}/secret.conf
   notify:
