@@ -1,2 +1,2 @@
-Address = {{ site_addr }}
+Address = {{ site_vpn_prefix }}{{ vpn_nr }}.{{ site_domain }}
 Port = {{ icvpn_port }}

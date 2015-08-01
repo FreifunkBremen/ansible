@@ -1,6 +1,3 @@
 ---
 # defaults file for roles/openvpn-exit
 openvpn_exit_hideme: true
-openvpn_exit_host: 'nl.hide.me'
-openvpn_exit_username: 'test'
-openvpn_exit_password: 'pass'
