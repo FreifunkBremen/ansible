@@ -10,7 +10,7 @@
        dest=/opt/{{ site_code }}/vpn-blacklist/
 
 - name: Set blacklist.sh runable
-  file: path=/opt/{{ site_code }}/vpn-blacklist/blacklist.sh mode=0755
+  file: path=/etc/fastd/{{ site_code }}/blacklist.sh mode=0755
 
 - name: Install cronjob to automatically update blacklist repository
   template: >
