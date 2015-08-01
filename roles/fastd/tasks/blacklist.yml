@@ -1,10 +1,16 @@
 ---
-- name: Install git
-  apt: name=git
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+   - git
+   - jq
 
 - name: Clone blacklist repository
   git: repo={{ site_git_root }}/vpn-blacklist/
        dest=/opt/{{ site_code }}/vpn-blacklist/
+
+- name: Set blacklist.sh runable
+  file: path=/opt/{{ site_code }}/vpn-blacklist/blacklist.sh mode=0755
 
 - name: Install cronjob to automatically update blacklist repository
   template: >
