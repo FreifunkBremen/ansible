@@ -3,4 +3,4 @@
 openvpn_exit_hideme: true
 openvpn_exit_host: 'nl.hide.me'
 openvpn_exit_username: 'test'
-openvpn_exit_password: 'HJKL_!42WER'
+openvpn_exit_password: 'pass'
