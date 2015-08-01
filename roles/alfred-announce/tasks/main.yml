@@ -9,6 +9,3 @@
   template: >
     src=cronjob
     dest=/etc/cron.d/alfred-announce
-
-- name: Restart Cronjob
-  service: name=cron state=restarted enabled=yes
