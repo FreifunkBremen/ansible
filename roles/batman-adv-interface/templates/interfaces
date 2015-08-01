@@ -43,3 +43,9 @@ iface br-{{ site_code }} inet static
 	post-up sysctl -w  net.ipv4.conf.all.forwarding=1
 	pre-down sysctl -w  net.ipv4.conf.all.forwarding=0
 {% endif %}
+
+iface br-{{ site_code }} inet6 static
+	address {{ batman_ipv6_address }}/64
+	netmask 64
+	up ip address add {{ batman_ipv6_address_alt }}/64 dev $IFACE
+	down ip address del {{ batman_ipv6_address_alt }}/64 dev $IFACE
