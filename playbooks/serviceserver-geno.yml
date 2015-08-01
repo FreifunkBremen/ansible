@@ -17,6 +17,7 @@
     vpn_nr: '10'
 #    hostname: '{{ site_vpn_prefix }}{{ vpn_nr }}'
   roles:
+  # Works already comment out to save time
   #- batman-adv-14
   #- fastd
   #- alfred-announce
@@ -25,6 +26,8 @@
   - dhcp-dnsmasq
   - dns-unbound
   - icvpn
+
+  # Works also comment out to save time
   #- tools-net
-  #- system
   #- tools-system-geno
+  #- system
