@@ -1,0 +1,34 @@
+---
+- name: Install unbound
+  apt: name=unbound
+
+- name: Copy Configuration
+  copy: >
+    src={{item}}
+    dest=/etc/unbound/unbound.conf.d/{{item}}
+    mode=0755
+  with_items:
+    - caching-timeouts.conf
+    - caching-tweaking.conf
+    - disable-dnssec.conf
+    - edns-buffer-size.conf
+    - forward-ffhb.conf
+    - harden-glue.conf
+    - hide-version.conf
+    - jostle-timeout.conf
+    - minimal-responses.conf
+    - no-logging.conf
+    - number-of-threads.conf
+    - root-hints.conf
+
+- name: Generate Configuration
+  template: >
+    src={{item}}
+    dest=/etc/unbound/unbound.conf.d/{{item}}
+    mode=0755
+  with_items:
+    - access-control.conf
+    - listen-on-all-interfaces.conf
+
+- name: Restart unbound
+  service: name=unbound state=restarted enabled=yes
