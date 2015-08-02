@@ -7,6 +7,6 @@ alfred_repository: 'http://debian.draic.info/ wheezy main'
 alfred_repository_key: '16EF3F64CB201D9C'
 alfred_pgp_keyserver: 'pgpkeys.mit.edu'
 
-alfred_master: 0
+alfred_master: {{ batman_gateway | ternary('1','0')}}
 batman_interface_name: bat-{{ site_code }}
 interface_name: 'br-{{ site_code }}'
