@@ -1,0 +1,2 @@
+---
+dhcp_dns: '{{batman_ipv4_address}}'
