@@ -1,0 +1,32 @@
+---
+- name : Get omd
+  get_url: url='{{ omd_package }}' dest='/tmp/omd.deb'
+
+- name: Install depences packages
+  apt: name={{item}}  force=yes
+  with_items:
+  - php5
+  - php5-sqlite
+  - php5-mcrypt
+  - php5-cgi
+  - php5-gd
+  - php-pear
+
+- name: Install omd
+  apt: deb=/tmp/omd.deb
+
+#already exists
+#- name: Create site monitoring
+#  shell: omd create monitoring
+
+#- name: Create omdadmin User
+#  shell: su - monitoring -c "htpasswd ~/etc/htpasswd omdadmin {{ omdadmin_pw }}"
+
+- name: Start site monitoring
+  shell: omd start monitoring
+
+- name: Cleanup Files
+  file: path={{item}} state=absent
+  with_items:
+    - /tmp/omd.deb
+    - /tmp/run-omdadmin-pw
