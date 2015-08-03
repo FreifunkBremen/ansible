@@ -3,6 +3,6 @@
   roles:
   - batman-adv-14
   - fastd
-  - alfred-annouce
+  - alfred-announce
   - omd
   - tools-net

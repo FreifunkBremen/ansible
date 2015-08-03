@@ -4,5 +4,5 @@
   - batman-adv-14
   - fastd
   - alfred-announce
-  - webserver-alfred
+  - webserver-apache
   - tools-net
