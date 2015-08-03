@@ -16,11 +16,19 @@
   apt: deb=/tmp/omd.deb
 
 #already exists
-#- name: Create site monitoring
-#  shell: omd create monitoring
+- name: Create site monitoring
+  shell: omd create monitoring
 
-#- name: Create omdadmin User
-#  shell: su - monitoring -c "htpasswd ~/etc/htpasswd omdadmin {{ omdadmin_pw }}"
+- name: Copy Run Scripts
+  template: >
+    src={{item}}
+    dest=/tmp/{{item}}
+    mode=0640
+  with_items:
+   - run-omdadmin-pw
+
+- name: Create omdadmin User
+  shell: cat /tmp/run-omdadmin-pw | su - monitoring -c "htpasswd ~/etc/htpasswd omdadmin"
 
 - name: Start site monitoring
   shell: omd start monitoring
