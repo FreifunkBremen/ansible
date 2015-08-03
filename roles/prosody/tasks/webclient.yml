@@ -1,8 +1,10 @@
 - name: Configurate Webserver
   template: >
-    src=nginx.conf
-    dest=/etc/nginx/sites-enabled/10-{{jabber_domain}}_jabber.conf
+    src=apache.conf
+    dest=/etc/apache2/sites-enabled/10-{{jabber_domain}}_jabber.conf
     mode=0640
+- name: Enable Apache Modules
+  shell: a2enmod  ssl rewrite proxy proxy_http
 
 - name : Create Folder Struktur
   file: path=/var/www/html/{{item}} state=directory
@@ -30,5 +32,5 @@
     dest=/var/www/html/{{ jabber_domain }}_jabber/index.html
     mode=0644
 
-- name: Start nginx
-  service: name=nginx state=restarted enabled=yes
+- name: Start apache
+  service: name=apache2 state=restarted enabled=yes
