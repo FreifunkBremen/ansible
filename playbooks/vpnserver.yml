@@ -3,6 +3,7 @@
   vars:
     batman_gateway: true
     dhcp_dns: 10.196.0.1
+    dhcp_ip_subnetmask: 255.255.128.0
   roles:
   - batman-adv-14
   - fastd
