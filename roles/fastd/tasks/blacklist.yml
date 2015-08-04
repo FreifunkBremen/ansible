@@ -14,6 +14,6 @@
 
 - name: Install cronjob to automatically update blacklist repository
   template: >
-    src=update-fastd-template
+    src=update-fastd-blacklist
     dest=/etc/cron.hourly/update-fastd-blacklist-{{ site_code }}
     mode=0755
