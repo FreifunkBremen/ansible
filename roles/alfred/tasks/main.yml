@@ -1,4 +1,5 @@
 ---
+# Repository is currently unsigned, thus no key needs to be added
 #- name: Add repository-gpg-key for alfred+batadv-vis
 #  apt_key: keyserver={{ pgp_keyserver }} id={{ alfred_repository_key }}
 
@@ -9,26 +10,22 @@
   - 'deb-src {{ alfred_repository }}'
 
 - name: Install packages
-  apt: name={{item}}  force=yes
+  apt: name={{item}} force=yes
   with_items:
   - alfred
   - alfred-json
   - batadv-vis
 
-- name: Configurate alfred interfaces
+- name: Configure alfred interfaces
   template: >
     src=alfred-default
     dest=/etc/default/alfred
-    mode=0640
-
-- name: Start alfred
-  service: name=alfred state=restarted enabled=yes
+    mode=0644
+  notify: restart alfred
 
 - name: Configurate batadv-vis interfaces
   template: >
     src=batadv-vis-default
     dest=/etc/default/batadv-vis
-    mode=0640
-
-- name: Start batadv-vis
-  service: name=batadv-vis state=restarted enabled=yes
+    mode=0644
+  notify: restart batadv-vis

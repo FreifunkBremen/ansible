@@ -8,7 +8,7 @@
     dest=/etc/network/if-pre-up.d/batadv
     mode=0755
 
-- name: Create Freifunk-Routing-Table
+- name: Create freifunk routing table
   lineinfile: dest=/etc/iproute2/rt_tables line="252 default-freifunk"
   when: batman_gateway
 

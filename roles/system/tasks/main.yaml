@@ -4,5 +4,5 @@
   when: hostname != 'defaulthost'
 
 - name: Reboot host
-  shell: reboot
+  command: reboot
   when: reboot-flag
