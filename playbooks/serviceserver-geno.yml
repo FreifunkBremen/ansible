@@ -11,8 +11,6 @@
     #for dhcp
     dhcp_ip_range: '10.196.{{vpn_nr}}0.0,10.196.{{vpn_nr}}9.255'
     dhcp_ip_subnetmask: 255.255.128.0
-    #option to run Gateway without DNS
-    dhcp_dns: 10.196.0.1
 
     # for ipv4 exit
     openvpn_exit_host: 'nl.hide.me'
@@ -35,14 +33,11 @@
   #- alfred-announce
   #- openvpn-exit
 
-
   #TODO Work on process
   - icvpn
-  # dns did not work, because it depence on icvpn
-  - dns-unbound
-
 
   # Works also comment out to save time
+  #- dns-unbound
   #- dhcp-dnsmasq
   #- tools-net
   #- tools-system-geno
