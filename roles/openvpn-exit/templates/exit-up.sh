@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+# {{ ansible_managed }}
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 

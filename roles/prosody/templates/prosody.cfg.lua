@@ -1,3 +1,4 @@
+-- {{ ansible_managed }}
 -- Prosody Example Configuration File
 --
 -- Information on configuring Prosody can be found on our
