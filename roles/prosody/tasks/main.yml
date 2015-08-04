@@ -20,27 +20,39 @@
 - name: Start MySQL-Server
   service: name=mysql state=started enabled=yes
 
-- name: Configurate MySQL-Server
-  shell: cat /tmp/run-mysql_secure_install | mysql_secure_installation
+- name: Configure MySQL-Server
+  shell: mysql_secure_installation < /tmp/run-mysql_secure_install
 
 - name: Create Database
-  mysql_db: login_user="root" login_password="{{mysql_root_password}}" name={{ jabber_mysql_db }} state=present
+  mysql_db: >
+    login_user=root
+    login_password="{{mysql_root_password}}"
+    name={{ jabber_mysql_db }}
 
 - name: Create User for prosody
-  mysql_user: login_user="root" login_password="{{mysql_root_password}}" name={{ jabber_mysql_user }} password="{{ jabber_mysql_passwd }}" priv={{ jabber_mysql_db }}.*:ALL,GRANT state=present
+  mysql_user: >
+    login_user=root
+    login_password="{{mysql_root_password}}"
+    name={{ jabber_mysql_user }}
+    password="{{ jabber_mysql_passwd }}"
+    priv={{ jabber_mysql_db }}.*:ALL,GRANT
 
 - name: Copy Database Schema
   copy: src=prosody.sql dest=/tmp
-- name: Load Database
-  mysql_db: login_user={{ jabber_mysql_user }} login_password="{{ jabber_mysql_passwd }}" name={{ jabber_mysql_db }} state=import target=/tmp/prosody.sql
 
+- name: Load Database
+  mysql_db: >
+    login_user={{ jabber_mysql_user }}
+    login_password="{{ jabber_mysql_passwd }}"
+    name={{ jabber_mysql_db }}
+    state=import
+    target=/tmp/prosody.sql
 
 - name: Configurate Prosody
   template: >
     src=prosody.cfg.lua
     dest=/etc/prosody/prosody.cfg.lua
     mode=0640
-
 
 - name: Template Certs
   template: >
@@ -57,10 +69,8 @@
     - "{{jabber_domain}}"
     - localhost
 
-
 - name: Start prosody
   service: name=prosody state=restarted enabled=yes
-
 
 - name: Create Jabber AdminUser
   shell: "cat /tmp/run-adduser | prosodyctl adduser {{jabber_domain_admin}}@{{ jabber_domain }}"
