@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+allow-hotplug {{ icvpn_interface }}
+iface {{ icvpn_interface }} inet static
+	address {{ icvpn_addr_v4 }}
+	netmask {{ icvpn_subnetmask_v4 }}
+
+iface {{ icvpn_interface }} inet6 static
+	address {{ icvpn_addr_v6 }}
+	netmask {{ icvpn_subnet_v6 }}

@@ -17,5 +17,8 @@
     dest=/etc/cron.hourly/icvpn-update
     mode=0755
 
-- name: Start bird
+- name: Start bird IPv4
   service: name=bird state=restarted enabled=yes
+
+- name: Start bird IPv6
+  service: name=bird6 state=restarted enabled=yes

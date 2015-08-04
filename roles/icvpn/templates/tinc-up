@@ -1,9 +1,0 @@
-#!/bin/sh
-ifup --allow hotplug $INTERFACE
-#/sbin/ip link set dev $INTERFACE up
-#/sbin/ip addr add dev $INTERFACE {{ icvpn_addr_v4 }}/{{icvpn_subnet_v4}} broadcast {{ icvpn_subnet_brdcast }} scope link
-#/sbin/ip -6 addr add dev $INTERFACE {{ icvpn_addr_v6 }}/{{icvpn_subnet_v6}} preferred_lft 0
-
-# ip rules
-#/sbin/ip rule add lookup default-freifunk priority 10042
-#/sbin/ip -6 rule add lookup default-freifunk priority 10042

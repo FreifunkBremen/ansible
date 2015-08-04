@@ -30,5 +30,8 @@
     - access-control.conf
     - listen-on-all-interfaces.conf
 
+- name: Get root.hints
+  get_url: url='{{ dns_root_hints }}' dest='/var/lib/unbound/root.hints'
+
 - name: Restart unbound
   service: name=unbound state=restarted enabled=yes

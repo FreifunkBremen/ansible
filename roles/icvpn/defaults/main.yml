@@ -1,6 +1,5 @@
 ---
-icvpn_subnet_v4: 16
-icvpn_subnet_brdcast: '10.207.255.255'
+icvpn_subnetmask_v4: '255.255.0.0'
 icvpn_subnet_v6: 96
 icvpn_port: 656
 

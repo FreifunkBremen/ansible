@@ -12,21 +12,37 @@
        dest=/etc/tinc/icvpn/
 
 #TODO not on vpn01 - why?
-#- name: Install POST-MERGE vor Tinc-Connection
-#  copy: >
-#    src=/etc/tinc/icvpn/scripts/post-merge
-#    dest=/etc/tinc/icvpn/.git/hooks/post-merge
-#    mode=0755
+- name: Install POST-MERGE vor Tinc-Connection
+  shell: cp /etc/tinc/icvpn/scripts/post-merge /etc/tinc/icvpn/.git/hooks/post-merge
 
-- name: Install IC-VPN Tinc up/down-Skript and Configuration
+- name: Install IC-VPN Tinc configuration
   template: >
+    src=tinc.conf
+    dest=/etc/tinc/icvpn/tinc.conf
+    mode=0755
+
+- name: Install IC-VPN Tinc up/down-Skript
+  copy: >
     src={{item}}
     dest=/etc/tinc/icvpn/{{item}}
     mode=0755
   with_items:
     - tinc-down
     - tinc-up
-    - tinc.conf
+
+- name: Add network configuration
+  template: src=interfaces dest=/etc/network/interfaces.d/{{ icvpn_interface }}
+
+- name: Check if a new private Key and hostfile is necessary
+  stat: path=/etc/tinc/icvpn/rsa_key.priv
+  register: hostsfile
+
+- name: Generate Hostsfile for Github
+  template: >
+    src=pub-icvpn-gate
+    dest=/etc/tinc/icvpn/hosts/{{ site_city }}{{ vpn_nr }}
+    mode=0755
+  when: hostsfile.stat.exists == False
 
 - name: Generate Key
   shell: echo "" | tincd -n icvpn -K
@@ -39,16 +55,8 @@
 - name: Add ICVPN to Tinc start
   lineinfile: dest=/etc/tinc/nets.boot line="icvpn"
 
+- name: Run first POST-MERGE to get Connections
+  shell: cd /etc/tinc/icvpn/; ./.git/hooks/post-merge;
+
 - name: Start tinc
   service: name=tinc state=restarted enabled=yes
-
-- name: Generate Hostsfile for Github
-  template: >
-    src=pub-icvpn-gate
-    dest=/tmp/pub-icvpn-gate
-    mode=0755
-
-- name: Please Publish under https://github.com/freifunk/icvpn/hosts/{{ site_city }}{{ icvpn_nr }}
-  shell: cat /etc/tinc/icvpn/rsa_key.pub >> /tmp/pub-icvpn-gate
-  args:
-    creates: /tmp/pub-icvpn-gate
