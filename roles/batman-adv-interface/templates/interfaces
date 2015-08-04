@@ -47,5 +47,5 @@ iface br-{{ site_code }} inet static
 iface br-{{ site_code }} inet6 static
 	address {{ batman_ipv6_address }}/64
 	netmask 64
-	up ip address add {{ batman_ipv6_address_alt }}/64 dev $IFACE
-	down ip address del {{ batman_ipv6_address_alt }}/64 dev $IFACE
+	up ip -6 addr add {{ batman_ipv6_address_alt }}/64 dev $IFACE
+	down ip -6 addr del {{ batman_ipv6_address_alt }}/64 dev $IFACE
