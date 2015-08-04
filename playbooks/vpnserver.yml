@@ -4,11 +4,11 @@
     batman_gateway: true
     dhcp_ip_subnetmask: 255.255.128.0
   roles:
-#  - batman-adv-14
-#  - fastd
-#  - alfred-announce
+  - batman-adv-14
+  - fastd
+  - alfred-announce
   - icvpn
-#  - openvpn-exit
-#  - dns-unbound
-#  - dhcp-dnsmasq
-#  - system
+  - openvpn-exit
+  - dns-unbound
+  - dhcp-dnsmasq
+  - system
