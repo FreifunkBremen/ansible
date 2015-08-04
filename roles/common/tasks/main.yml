@@ -1,0 +1,62 @@
+---
+- name: Enable tmpfs for /tmp
+  replace: dest=/etc/default/tmpfs regexp='(\#\s*)?RAMTMP\s*=\s*(.*)' replace='RAMTMP=yes' backup=yes
+
+- name: Configure APT not to install recommends packages
+  copy: src=apt-recommends.conf dest=/etc/apt/apt.conf.d/40recommends owner=root group=root mode=0644 force=yes
+
+- name: Install a bunch of helpful tools
+  apt: name={{item}} state=present
+  with_items:
+    - apt-transport-https
+    - binutils
+    - bsd-mailx
+    - bwm-ng
+    - ca-certificates
+    - chrony
+    - curl
+    - dstat
+    - debian-goodies
+    - deborphan
+    - etckeeper
+    - git
+    - htop
+    - inetutils-syslogd
+    - iotop
+    - iptables-persistent
+    - less
+    - libyaml-syck-perl
+    - lsb-release
+    - lsof
+    - mc
+    - molly-guard
+    - postfix
+    - python
+    - psmisc
+    - rkhunter
+    - screen
+    - ssh
+    - sudo
+    - unattended-upgrades
+    - vim
+    - vnstat
+    - wget
+    - zsh
+
+- name: Configure APT to run checkrestart after updates
+  copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart owner=root group=root mode=0644 force=yes
+
+- name: "SSH: disable password login for root user"
+  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?PermitRootLogin\s*(.*)' replace='PermitRootLogin without-password' backup=yes
+
+- name: "SSH: disable RSA authentication"
+  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?RSAAuthentication\s*(.*)' replace='RSAAuthentication no' backup=yes
+
+- name: "SSH: disable password login"
+  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?PasswordAuthentication\s*(.*)' replace='PasswordAuthentication no' backup=yes
+
+- name: "SSH: disable print of last login"
+  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?PrintLastLog\s*(.*)' replace='PrintLastLog no' backup=yes
+
+- name: Fetch and install grml zshrc
+  get_url: url='http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD' dest=/etc/zsh/zshrc mode=0644 force=yes
