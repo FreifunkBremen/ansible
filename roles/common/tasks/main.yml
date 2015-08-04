@@ -6,7 +6,7 @@
   copy: src=apt-recommends.conf dest=/etc/apt/apt.conf.d/40recommends owner=root group=root mode=0644 force=yes
 
 - name: Install a bunch of helpful tools
-  apt: name={{item}} state=present
+  apt: name={{item}}
   with_items:
     - apt-transport-https
     - binutils
@@ -46,17 +46,17 @@
 - name: Configure APT to run checkrestart after updates
   copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart owner=root group=root mode=0644 force=yes
 
-- name: "SSH: disable password login for root user"
-  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?PermitRootLogin\s*(.*)' replace='PermitRootLogin without-password' backup=yes
-
-- name: "SSH: disable RSA authentication"
-  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?RSAAuthentication\s*(.*)' replace='RSAAuthentication no' backup=yes
-
-- name: "SSH: disable password login"
-  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?PasswordAuthentication\s*(.*)' replace='PasswordAuthentication no' backup=yes
-
-- name: "SSH: disable print of last login"
-  replace: dest=/etc/ssh/sshd_config regexp='(\#\s*)?PrintLastLog\s*(.*)' replace='PrintLastLog no' backup=yes
+- name: Update SSH configuration
+  replace: dest=/etc/ssh/sshd_config regexp="(\#\s*)?{{key}}\s*(.*)" replace="{{key}} {{value}}" backup=yes
+  with_items:
+  - key:   PermitRootLogin
+    value: without-password
+  - key:   RSAAuthentication
+    value: no
+  - key:   PasswordAuthentication
+    value: no
+  - key:   PrintLastLog
+    value: no
 
 - name: Fetch and install grml zshrc
   get_url: url='http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD' dest=/etc/zsh/zshrc mode=0644 force=yes
