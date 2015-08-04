@@ -11,17 +11,18 @@
   git: repo={{ icvpn_git_root }}
        dest=/etc/tinc/icvpn/
 
-#TODO not on vpn01 - why?
-- name: Install POST-MERGE vor Tinc-Connection
-  shell: cp /etc/tinc/icvpn/scripts/post-merge /etc/tinc/icvpn/.git/hooks/post-merge
+- name: Install post-merge script
+  command: cp /etc/tinc/icvpn/scripts/post-merge /etc/tinc/icvpn/.git/hooks/post-merge
+  args:
+    creates: /etc/tinc/icvpn/.git/hooks/post-merge
 
-- name: Install IC-VPN Tinc configuration
+- name: Install ICVPN Tinc configuration
   template: >
     src=tinc.conf
     dest=/etc/tinc/icvpn/tinc.conf
     mode=0755
 
-- name: Install IC-VPN Tinc up/down-Skript
+- name: Install ICVPN Tinc up/down script
   copy: >
     src={{item}}
     dest=/etc/tinc/icvpn/{{item}}
@@ -48,15 +49,18 @@
   shell: echo "" | tincd -n icvpn -K
   args:
     creates: /etc/tinc/icvpn/rsa_key.priv
+  notify: restart tinc
 
-- name: Install bird for Routing
+- name: Setup routing with bird
   include: bird.yml
 
 - name: Add ICVPN to Tinc start
   lineinfile: dest=/etc/tinc/nets.boot line="icvpn"
+  notify: restart tinc
 
-- name: Run first POST-MERGE to get Connections
+- name: Run first post-merge to get Connections
   shell: cd /etc/tinc/icvpn/; ./.git/hooks/post-merge;
+  notify: restart tinc
 
-- name: Start tinc
-  service: name=tinc state=restarted enabled=yes
+- name: Autostart tinc
+  service: name=tinc enabled=yes
