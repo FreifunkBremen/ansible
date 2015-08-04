@@ -20,6 +20,8 @@
 
 - name: Ensure correct version was installed
   shell: /etc/kernel/postinst.d/dkms-batman-adv-downgrade $(uname -r)
+  register: batman_adv_version_result
+  changed_when: '"already installed" not in batman_adv_version_result.stderr'
 
 - name: Enable batman during boot
   lineinfile: dest=/etc/modules line=batman-adv
