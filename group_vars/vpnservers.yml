@@ -1,3 +1,7 @@
 ---
 site_code: ffhb
 site_git_root: https://github.com/FreifunkBremen
+site_city: 'bremen'
+site_domain: 'bremen.freifunk.net'
+site_vpn_prefix: 'vpn'
+icvpn_as: 65196
