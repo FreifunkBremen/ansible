@@ -1,6 +1,6 @@
 ---
 #- name: Add repository-gpg-key for alfred+batadv-vis
-#  apt_key: keyserver={{ alfred_pgp_keyserver }} id={{ alfred_repository_key }}
+#  apt_key: keyserver={{ pgp_keyserver }} id={{ alfred_repository_key }}
 
 - name: Add repository for alfred
   apt_repository: repo='{{item}}'
