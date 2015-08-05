@@ -20,6 +20,7 @@
     - no-logging.conf
     - number-of-threads.conf
     - root-hints.conf
+  notify: restart unbound
 
 - name: Generate Configuration
   template: >
@@ -29,9 +30,8 @@
   with_items:
     - access-control.conf
     - listen-on-all-interfaces.conf
+  notify: restart unbound
 
 - name: Get root.hints
   get_url: url='{{ dns_root_hints }}' dest='/var/lib/unbound/root.hints'
-
-- name: Restart unbound
-  service: name=unbound state=restarted enabled=yes
+  notify: restart unbound
