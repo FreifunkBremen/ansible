@@ -6,6 +6,6 @@ galaxy_info:
     - wheezy
     - jessie
 dependencies:
-# for python3,git
 - router-bird
+# for python3,git
 - tools-scripts
