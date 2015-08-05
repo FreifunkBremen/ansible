@@ -6,28 +6,29 @@
   user: name=openvpn system=yes group=openvpn createhome=no shell=/bin/false
 
 - name: Install packages
-  action: apt pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - openvpn
     - iptables-persistent
 
-- name: Install scripts and auth
+- name: Install configuration
   template: >
     src={{ item }}
     dest=/etc/openvpn/{{ item }}
-    mode=0700
+    mode=0600
   with_items:
-    - exit-up.sh
+    - exit.conf
     - exit-auth
   when: openvpn_exit_hideme
+  notify: restart openvpn
 
-- name: Install HideMe Config
+- name: Install script
   template: >
-    src=exit-hide.conf
-    dest=/etc/openvpn/exit.conf
+    src=exit-up.sh
+    dest=/etc/openvpn/
     mode=0700
   when: openvpn_exit_hideme
-
+  notify: restart openvpn
 
 - name: Flush iptables nat
   shell: iptables -t nat -F
@@ -37,6 +38,3 @@
 
 - name: Save iptable IPv4
   shell: iptables-save > /etc/iptables/rules.v4
-
-- name: Restart Openvpn
-  service: name=openvpn@exit state=restarted enabled=yes
