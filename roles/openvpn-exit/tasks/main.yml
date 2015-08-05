@@ -31,10 +31,10 @@
   notify: restart openvpn
 
 - name: Flush iptables nat
-  shell: iptables -t nat -F
+  command: iptables -t nat -F
 
 - name: Install iptables nat
-  shell: iptables -t nat -A POSTROUTING -s 10.196.0.0/16 -o vpn_uplink -j MASQUERADE
+  command: iptables -t nat -A POSTROUTING -s 10.196.0.0/16 -o vpn_uplink -j MASQUERADE
 
 - name: Save iptable IPv4
   shell: iptables-save > /etc/iptables/rules.v4

@@ -1,6 +1,4 @@
 ---
-# tasks file for ipv6-exit
-
 - name: Install radv protocol for bird
   template: src=bird-radv.conf dest=/etc/bird/bird6.conf.d/radv.conf
   notify: reload bird6
