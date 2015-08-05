@@ -15,8 +15,8 @@
   - bird.conf
   - bird6.conf
   notify:
-  - restart bird
-  - restart bird6
+  - reload bird
+  - reload bird6
 
 - name: Start bird
   service: name={{ item }} state=started enabled=yes
