@@ -3,8 +3,14 @@
     src=apache.conf
     dest=/etc/apache2/sites-enabled/10-{{jabber_domain}}_jabber.conf
     mode=0640
+
 - name: Enable Apache Modules
-  shell: a2enmod  ssl rewrite proxy proxy_http
+  apache2_module: name={{item}}
+  with_items:
+  - ssl
+  - rewrite
+  - proxy
+  - proxy_http
 
 - name : Create Folder Struktur
   file: path=/var/www/html/{{item}} state=directory

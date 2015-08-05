@@ -59,7 +59,9 @@
   notify: restart tinc
 
 - name: Run first post-merge to get Connections
-  shell: cd /etc/tinc/icvpn/; ./.git/hooks/post-merge;
+  command: .git/hooks/post-merge
+  args:
+    chdir: /etc/tinc/icvpn
   notify: restart tinc
 
 - name: Autostart tinc

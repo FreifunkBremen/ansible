@@ -1,5 +1,4 @@
 ---
-
 - name: Clone ICVPN meta repository
   git: repo={{ icvpn_git_meta }}
        dest=/opt/{{ site_code }}/icvpn-meta/

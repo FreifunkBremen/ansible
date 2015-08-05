@@ -17,7 +17,7 @@
 
 #already exists
 - name: Create site monitoring
-  shell: omd create monitoring
+  command: omd create monitoring
 
 - name: Copy Run Scripts
   template: >
@@ -31,7 +31,7 @@
   shell: cat /tmp/run-omdadmin-pw | su - monitoring -c "htpasswd ~/etc/htpasswd omdadmin"
 
 - name: Start site monitoring
-  shell: omd start monitoring
+  command: omd start monitoring
 
 - name: Cleanup Files
   file: path={{item}} state=absent
