@@ -1,0 +1,9 @@
+---
+icvpn_interface: 'icvpn'
+batman_interface_name: 'bat-{{ site_code }}'
+batman_mtu_interface_name: 'bat-{{ site_code }}_dummy'
+alfred_interface_name: 'br-{{ site_code }}'
+fastd_interface_name: vpn-{{ site_code }}
+uplink_interface_name: 'vpn_uplink'
+
+own_addr: '{{ ansible_eth0.ipv6.address }}/{{ ansible_eth0.ipv6.prefix }}'
