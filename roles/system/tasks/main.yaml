@@ -6,3 +6,8 @@
 - name: Reboot host
   command: reboot
   when: reboot-flag
+
+- name: Installing sysctl.d confs
+  copy: src=sysctl.d/ dest=/etc/sysctl.d/
+  notify:
+  - /sbin/sysctl --system
