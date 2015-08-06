@@ -2,7 +2,6 @@
 - hosts: vpnservers
   vars:
     batman_gateway: true
-    dhcp_ip_subnetmask: 255.255.128.0
   roles:
   - batman-adv-14
   - fastd

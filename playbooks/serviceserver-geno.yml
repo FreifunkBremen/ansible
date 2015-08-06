@@ -10,13 +10,6 @@
     openvpn_exit_username: 'test'
     openvpn_exit_password: 'pass'
 
-    #for icvpn
-
-    icvpn_addr_v4: '10.207.{{vpn_nr}}.196'
-    icvpn_addr_v6: ' fec0::a:cf:{{vpn_nr}}:c4'
-    #icvpn_addr_v6: 'fd2f:5119:f2c::10'
-
-
     #for system
     # hostname: '{{ site_vpn_prefix }}{{ vpn_nr }}'
   roles:

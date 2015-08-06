@@ -11,10 +11,12 @@ class Inventory:
 
   groups = {}
 
-  def __init__(self, ipv4_network=None, ipv6_network=None, ipv6_network_alt=None ):
-    self.ipv4_network     = ipcalc.Network(ipv4_network)
-    self.ipv6_network     = ipcalc.Network(ipv6_network)
-    self.ipv6_network_alt = ipcalc.Network(ipv6_network_alt)
+  def __init__(self, ipv4_network=None, ipv6_network=None, ipv6_network_alt=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
+    self.ipv4_network       = ipcalc.Network(ipv4_network)
+    self.ipv6_network       = ipcalc.Network(ipv6_network)
+    self.ipv6_network_alt   = ipcalc.Network(ipv6_network_alt)
+    self.icvpn_ipv4_network = ipcalc.Network(icvpn_ipv4_network)
+    self.icvpn_ipv6_network = ipcalc.Network(icvpn_ipv6_network)
 
   def group(self, group, *hosts):
     self.groups[group] = list(hosts)
@@ -25,12 +27,29 @@ class Inventory:
     if port != None:
       vars["ansible_ssh_port"] = port
 
-    vars["dhcp_subnetmask"]         = str(self.ipv4_network.netmask())
-    vars["dhcp_range_begin"]        = str(ipcalc.IP(self.ipv4_network.ip+id*256*10))
-    vars["dhcp_range_end"]          = str(ipcalc.IP(self.ipv4_network.ip+id*256*10+255))
-    vars["batman_ipv4_address"]     = str(ipcalc.IP(self.ipv4_network.ip+id))
-    vars["batman_ipv6_address"]     = str(ipcalc.IP(self.ipv6_network.ip+id).to_compressed())
-    vars["batman_ipv6_address_alt"] = str(ipcalc.IP(self.ipv6_network_alt.ip+id).to_compressed())
+    vars["dhcp"] = {
+      "netmask":     str(self.ipv4_network.netmask()),
+      "range_begin": str(ipcalc.IP(self.ipv4_network.ip+id*256*10)),
+      "range_end":   str(ipcalc.IP(self.ipv4_network.ip+id*256*10+255)),
+    }
+    vars["batman_ipv4"] = {
+      "address": str(ipcalc.IP(self.ipv4_network.ip+id)),
+      "netmask": str(self.ipv4_network.netmask()),
+    }
+    vars["batman_ipv6"] = {
+      "address": str(ipcalc.IP(self.ipv6_network.ip+id).to_compressed()),
+    }
+    vars["batman_ipv6_alt"] = {
+      "address": str(ipcalc.IP(self.ipv6_network_alt.ip+id).to_compressed()),
+    }
+    vars["icvpn_ipv4"] = {
+      "address": str(ipcalc.IP(self.icvpn_ipv4_network.ip + (id << 8))),
+      "netmask": str(self.icvpn_ipv4_network.netmask()),
+    }
+    vars["icvpn_ipv6"] = {
+      "address": str(ipcalc.IP(self.icvpn_ipv6_network.ip + (id << 16)).to_compressed()),
+      "size":    self.icvpn_ipv6_network.subnet(),
+    }
 
     return (hostname, vars)
 
