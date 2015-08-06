@@ -29,12 +29,3 @@
     mode=0700
   when: openvpn_exit_hideme
   notify: restart openvpn
-
-- name: Flush iptables nat
-  command: iptables -t nat -F
-
-- name: Install iptables nat
-  command: iptables -t nat -A POSTROUTING -s 10.196.0.0/16 -o vpn_uplink -j MASQUERADE
-
-- name: Save iptable IPv4
-  shell: iptables-save > /etc/iptables/rules.v4
