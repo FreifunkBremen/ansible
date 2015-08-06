@@ -9,16 +9,15 @@ import json
 
 class Inventory:
 
-  hostnames = []
-  hostvars  = {}
+  groups = {}
 
-  def __init__(self, group, ipv4_network=None, ipv6_network=None, ipv6_network_alt=None ):
-    self.data  = []
-    self.group = group
-
+  def __init__(self, ipv4_network=None, ipv6_network=None, ipv6_network_alt=None ):
     self.ipv4_network     = ipcalc.Network(ipv4_network)
     self.ipv6_network     = ipcalc.Network(ipv6_network)
     self.ipv6_network_alt = ipcalc.Network(ipv6_network_alt)
+
+  def group(self, group, *hosts):
+    self.groups[group] = list(hosts)
 
   def host(self, id, hostname, port=None):
     vars = {}
@@ -33,14 +32,16 @@ class Inventory:
     vars["batman_ipv6_address"]     = str(ipcalc.IP(self.ipv6_network.ip+id).to_compressed())
     vars["batman_ipv6_address_alt"] = str(ipcalc.IP(self.ipv6_network_alt.ip+id).to_compressed())
 
-    self.hostnames.append(hostname)
-    self.hostvars[hostname] = vars
+    return (hostname, vars)
 
   def json_dump(self):
-    return json.dumps(
-      {
-        self.group: self.hostnames,
-        "_meta": {"hostvars": self.hostvars}
-      },
-      indent=4,
-    )
+    hostvars = {}
+    data     = {}
+
+    for group, hosts in self.groups.items():
+      data[group] = [hostname for (hostname,_) in hosts]
+      for (hostname,vars) in hosts:
+        hostvars[hostname] = vars
+
+    data["_meta"] = {"hostvars": hostvars}
+    return json.dumps(data, indent=4)
