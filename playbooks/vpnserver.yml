@@ -11,4 +11,5 @@
   - openvpn-exit
   - dns-unbound
   - dhcp-dnsmasq
+  - ntp-chrony
   - system
