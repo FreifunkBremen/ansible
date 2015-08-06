@@ -9,5 +9,4 @@
 
 - name: Installing sysctl.d confs
   copy: src=sysctl.d/ dest=/etc/sysctl.d/
-  notify:
-  - /sbin/sysctl --system
+  notify: reload sysctl
