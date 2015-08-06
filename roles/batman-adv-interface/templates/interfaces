@@ -38,10 +38,6 @@ iface br-{{ site_code }} inet static
 	pre-down ip rule del iif $IFACE table default-freifunk priority 16385
 	post-up ip -6 rule add iif $IFACE table default-freifunk priority 32767
 	pre-down ip -6 rule del iif $IFACE table default-freifunk priority 32767
-	post-up sysctl -w  net.ipv6.conf.all.forwarding=1
-	pre-down sysctl -w  net.ipv6.conf.all.forwarding=0
-	post-up sysctl -w  net.ipv4.conf.all.forwarding=1
-	pre-down sysctl -w  net.ipv4.conf.all.forwarding=0
 {% endif %}
 
 iface br-{{ site_code }} inet6 static
