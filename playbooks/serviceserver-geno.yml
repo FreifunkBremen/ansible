@@ -1,8 +1,6 @@
 ---
 - hosts: serviceservers
   vars:
-    # vpn_nr only for icvpn and here
-    vpn_nr: '10'
     batman_gateway: true
 
     # for ipv4 exit
@@ -11,7 +9,7 @@
     openvpn_exit_password: 'pass'
 
     #for system
-    # hostname: '{{ site_vpn_prefix }}{{ vpn_nr }}'
+    # hostname: '{{ site_vpn_prefix }}{{ vpn_id }}'
   roles:
   # Works already comment out to save time
   #- batman-adv-14

@@ -22,7 +22,9 @@ class Inventory:
     self.groups[group] = list(hosts)
 
   def host(self, id, hostname, port=None):
-    vars = {}
+    vars = {
+      "vpn_id": id,
+    }
 
     if port != None:
       vars["ansible_ssh_port"] = port
