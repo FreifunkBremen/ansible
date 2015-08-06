@@ -6,7 +6,6 @@
     - sudo
     - python-yaml
 
-#TODO Cronjob Daily pull
 - name: Clone ICVPN repository
   git: repo={{ icvpn_git_root }}
        dest=/etc/tinc/icvpn/
