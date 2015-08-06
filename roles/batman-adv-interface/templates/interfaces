@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
-auto {{ batman_interface_name }}_dummy
-iface {{ batman_interface_name }}_dummy inet manual
+auto {{ batman_mtu_interface_name }}
+iface {{ batman_mtu_interface_name }} inet manual
 	pre-up ip link add name $IFACE type dummy
 	up ip link set $IFACE up
 	down ip link set $IFACE down
@@ -9,7 +9,7 @@ iface {{ batman_interface_name }}_dummy inet manual
 
 auto {{ batman_interface_name }}
 iface {{ batman_interface_name }} inet manual
-	batadv-ports {{ batman_interface_name }}_dummy
+	batadv-ports {{ batman_mtu_interface_name }}
 	batadv-hw {{ ansible_default_ipv4.macaddress | derive_mac_addr(2) }}
 	batadv-hop-penalty {{ batman_hop_penalty }}
 {% if batman_gateway %}

@@ -32,13 +32,15 @@
   #- fastd
   #- alfred-announce
   #- openvpn-exit
-
+  #- icvpn
+  #- ipv6-exit
+  #- ntp-chrony
   #TODO Work on process
-  - icvpn
-
+  - firewall
+  
   # Works also comment out to save time
   #- dns-unbound
   #- dhcp-dnsmasq
   #- tools-net
   #- tools-system-geno
-  #- system
+  -- system
