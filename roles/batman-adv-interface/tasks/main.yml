@@ -22,6 +22,6 @@
   register: ifup_result
   changed_when: '"already configured" not in ifup_result.stderr'
   with_items:
-  - "{{ batman_interface_name }}_dummy"
+  - "{{ batman_mtu_interface_name }}"
   - "{{ batman_interface_name }}"
   - br-{{ site_code }}
