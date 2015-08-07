@@ -1,6 +1,29 @@
-[vpnservers]
-vpn01.bremen.freifunk.net:60023
-vpn[02:03].bremen.freifunk.net
+#!/usr/bin/env python2
 
-[serviceservers]
-ffhb.fireorbit.de
+from sys import path
+path.append("lib")
+
+import hosts
+
+
+inv = hosts.Inventory(
+  ipv4_network       = "10.196.0.0/17",
+  ipv6_network       = "fd2f:5119:f2c::/64",
+  ipv6_network_alt   = "2001:bf7:540::/64",
+  icvpn_ipv4_network = "10.207.0.196",
+  icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
+)
+
+inv.group("vpnservers",
+  inv.host(1, "vpn01.bremen.freifunk.net", port=60023),
+  inv.host(2, "vpn02.bremen.freifunk.net"),
+  inv.host(3, "vpn03.bremen.freifunk.net"),
+  inv.host(6, "vpn06.bremen.freifunk.net"),
+)
+
+inv.group("services",
+  inv.host(10, "ffhb.fireorbit.de")
+)
+
+
+print inv.json_dump()
