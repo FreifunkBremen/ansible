@@ -12,14 +12,14 @@ fi
 
 case "$IF_BATADV_PORTS" in
     "")
-	exit 0
-	;;
+      exit 0
+    ;;
     none)
-	exit 0
-	;;
+      exit 0
+    ;;
     *)
-	INTERFACES="$IF_BATADV_PORTS"
-	;;
+      INTERFACES="$IF_BATADV_PORTS"
+    ;;
 esac
 
 all_interfaces= &&
