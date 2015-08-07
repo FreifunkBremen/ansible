@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /usr/bin/env sh
 
 # derived from /etc/network/if-pre-up.d/bridge
 # depends on /lib/bridge-utils/bridge-utils.sh from bridge-utils
