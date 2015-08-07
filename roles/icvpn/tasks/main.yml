@@ -40,7 +40,7 @@
 - name: Generate Hostsfile for Github
   template: >
     src=pub-icvpn-gate
-    dest=/etc/tinc/icvpn/hosts/{{ site_city }}{{ vpn_nr }}
+    dest=/etc/tinc/icvpn/hosts/{{ site_city }}{{ vpn_id }}
     mode=0755
   when: hostsfile.stat.exists == False
 
