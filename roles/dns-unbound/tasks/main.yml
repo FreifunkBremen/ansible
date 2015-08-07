@@ -12,7 +12,6 @@
     - caching-tweaking.conf
     - disable-dnssec.conf
     - edns-buffer-size.conf
-    - forward-ffhb.conf
     - harden-glue.conf
     - hide-version.conf
     - jostle-timeout.conf
@@ -29,6 +28,7 @@
     mode=0755
   with_items:
     - access-control.conf
+    - forward-ffhb.conf
     - listen-on-all-interfaces.conf
   notify: restart unbound
 
