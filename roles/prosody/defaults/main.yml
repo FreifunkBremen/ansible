@@ -1,7 +1,7 @@
 ---
 jabber_domain: 'chat.ffhb.de'
 jabber_domain_muc: 'conference.{{ jabber_domain }}'
-jabber_domain_admin: 'genofire'
+jabber_domain_admin: 'admin'
 jabber_domain_admin_passwd: 'MySekretPa$$word'
 
 jabber_mysql_db: 'prosody'
