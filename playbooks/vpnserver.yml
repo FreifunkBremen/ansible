@@ -8,8 +8,9 @@
   - fastd
   - alfred-announce
   - icvpn
+  - ipv6-exit
+  - ntp-chrony
   - openvpn-exit
   - dns-unbound
   - dhcp-dnsmasq
-  - ntp-chrony
   - system
