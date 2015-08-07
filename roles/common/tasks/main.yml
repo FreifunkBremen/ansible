@@ -49,13 +49,13 @@
 - name: Update SSH configuration
   replace: dest=/etc/ssh/sshd_config regexp="(\#\s*)?{{key}}\s*(.*)" replace="{{key}} {{value}}" backup=yes
   with_items:
-  - key:   PermitRootLogin
+  - key: PermitRootLogin
     value: without-password
-  - key:   RSAAuthentication
+  - key: RSAAuthentication
     value: no
-  - key:   PasswordAuthentication
+  - key: PasswordAuthentication
     value: no
-  - key:   PrintLastLog
+  - key: PrintLastLog
     value: no
 
 - name: Fetch and install grml zshrc
