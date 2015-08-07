@@ -1,10 +1,4 @@
 ---
-- name: Set up group
-  group: name=openvpn system=yes
-
-- name: Set up User
-  user: name=openvpn system=yes group=openvpn createhome=no shell=/bin/false
-
 - name: Install packages
   apt: name={{ item }}
   with_items:
