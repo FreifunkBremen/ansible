@@ -24,8 +24,8 @@ auto br-{{ site_code }}
 iface br-{{ site_code }} inet static
 	bridge-ports {{ batman_interface_name }}
 	bridge-maxwait 0
-	address {{ batman_ipv4_address }}
-	netmask {{ batman_ipv4_netmask }}
+	address {{ batman_ipv4.address }}
+	netmask {{ batman_ipv4.netmask }}
 {% if batman_gateway %}
 	# unreachable route in freifunk-default
 	# prevents leak of data
