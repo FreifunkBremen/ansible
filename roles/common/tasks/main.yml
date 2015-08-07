@@ -10,6 +10,7 @@
   with_items:
     - apt-transport-https
     - binutils
+    - bmon
     - bsd-mailx
     - bwm-ng
     - ca-certificates
@@ -19,11 +20,13 @@
     - debian-goodies
     - deborphan
     - etckeeper
+    - ethtool
     - git
     - htop
     - inetutils-syslogd
     - iotop
     - iptables-persistent
+    - jq
     - less
     - libyaml-syck-perl
     - lsb-release
@@ -32,11 +35,13 @@
     - molly-guard
     - postfix
     - python
+    - python3
     - psmisc
     - rkhunter
     - screen
     - ssh
     - sudo
+    - tcpdump
     - unattended-upgrades
     - vim
     - vnstat
@@ -60,3 +65,13 @@
 
 - name: Fetch and install grml zshrc
   get_url: url='http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD' dest=/etc/zsh/zshrc mode=0644 force=yes
+
+- name: Start and enable vnstat
+  service: name=vnstat state=started enabled=yes
+  
+- name: Deinstall unneeded packages
+  apt: name={{item}}
+  with_items:
+    - nfs-common
+    - rpcbind
+    - at
