@@ -6,5 +6,4 @@ galaxy_info:
     - wheezy
     - jessie
 dependencies:
-- alfred
 - common

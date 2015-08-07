@@ -7,5 +7,4 @@ galaxy_info:
     - jessie
 dependencies:
 - router-bird
-# for python3,git
-- tools-scripts
+- common

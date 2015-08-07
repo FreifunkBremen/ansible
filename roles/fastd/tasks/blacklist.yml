@@ -1,10 +1,4 @@
 ---
-- name: Install packages
-  apt: name={{item}}
-  with_items:
-   - git
-   - jq
-
 - name: Clone blacklist repository
   git: repo={{ site_git_root }}/vpn-blacklist/
        dest=/opt/{{ site_code }}/vpn-blacklist/
