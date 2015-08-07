@@ -18,6 +18,20 @@
   - reload bird
   - reload bird6
 
+- name: Install internal ipv4 config templates
+  template: >
+    src=internal_ipv4.conf
+    dest=/etc/bird/bird.conf.d/internal.conf
+  notify:
+  - reload bird
+
+- name: Install internal ipv6 config templates
+  template: >
+    src=internal_ipv6.conf
+    dest=/etc/bird/bird6.conf.d/internal.conf
+  notify:
+  - reload bird6
+
 - name: Start bird
   service: name={{ item }} state=started enabled=yes
   with_items:
