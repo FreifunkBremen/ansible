@@ -1,10 +1,10 @@
-- name: Configurate Webserver
+- name: Configurate webserver
   template: >
     src=apache.conf
     dest=/etc/apache2/sites-enabled/10-{{jabber_domain}}_jabber.conf
     mode=0640
 
-- name: Enable Apache Modules
+- name: Enable Apache modules
   apache2_module: name={{item}}
   with_items:
   - ssl
@@ -12,7 +12,7 @@
   - proxy
   - proxy_http
 
-- name : Create Folder Struktur
+- name : Create folder structure
   file: path=/var/www/html/{{item}} state=directory
   with_items:
     - "{{ jabber_domain }}_jabber"
@@ -21,7 +21,7 @@
     - "{{ jabber_domain }}_jabber/fonticons"
     - "{{ jabber_domain }}_jabber/fonticons/fonts"
 
-- name: Get Website
+- name: Get website
   get_url: url='https://conversejs.org/{{ item }}' dest='/var/www/html/{{ jabber_domain }}_jabber/{{item}}'
   with_items:
     - "builds/converse.website.min.js"
@@ -38,5 +38,5 @@
     dest=/var/www/html/{{ jabber_domain }}_jabber/index.html
     mode=0644
 
-- name: Start apache
+- name: Start Apache
   service: name=apache2 state=restarted enabled=yes

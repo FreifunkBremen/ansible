@@ -7,6 +7,6 @@
   command: reboot
   when: reboot-flag
 
-- name: Installing sysctl.d confs
+- name: Installing sysctl.d configs
   copy: src=sysctl.d/ dest=/etc/sysctl.d/
   notify: reload sysctl
