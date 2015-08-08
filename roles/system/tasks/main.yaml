@@ -1,4 +1,8 @@
 ---
+- name: Installing sysctl.d configs
+  copy: src=sysctl.d/ dest=/etc/sysctl.d/
+  notify: reload sysctl
+
 - name: Setting hostname
   hostname: name={{ hostname }}
   when: hostname != 'defaulthost'
@@ -6,7 +10,3 @@
 - name: Reboot host
   command: reboot
   when: reboot-flag
-
-- name: Installing sysctl.d configs
-  copy: src=sysctl.d/ dest=/etc/sysctl.d/
-  notify: reload sysctl
