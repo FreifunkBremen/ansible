@@ -46,6 +46,7 @@
     - vim
     - vnstat
     - wget
+    - xtables-addons-dkms
     - zsh
 
 - name: Configure APT to run checkrestart after updates
