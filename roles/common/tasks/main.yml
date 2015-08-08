@@ -52,23 +52,23 @@
   copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart owner=root group=root mode=0644 force=yes
 
 - name: Update SSH configuration
-  replace: dest=/etc/ssh/sshd_config regexp="(\#\s*)?{{item.key}}\s*(.*)" replace="{{item.key}} {{item.value}}" backup=yes
+  replace: dest=/etc/ssh/sshd_config regexp="^([\#\s]*)?{{item.key}}\s+(\w+)" replace="{{item.key}} {{item.value}}" backup=yes
   with_items:
   - key: PermitRootLogin
     value: without-password
   - key: RSAAuthentication
-    value: no
+    value: 'no'
   - key: PasswordAuthentication
-    value: no
+    value: 'no'
   - key: PrintLastLog
-    value: no
+    value: 'no'
 
 - name: Fetch and install grml zshrc
   get_url: url='http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD' dest=/etc/zsh/zshrc mode=0644 force=yes
 
 - name: Start and enable vnstat
   service: name=vnstat state=started enabled=yes
-  
+
 - name: Deinstall unneeded packages
   apt: name={{item}}
   with_items:
