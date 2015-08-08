@@ -4,3 +4,4 @@ fastd_repository_url: 'http://repo.universe-factory.net/debian/ sid main'
 fastd_interface_name: vpn-{{ site_code }}
 fastd_port: 10000
 fastd_mtu: 1426
+fastd_peers_limit: -1
