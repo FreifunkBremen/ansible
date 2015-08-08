@@ -10,7 +10,7 @@
   - icvpn
   - ipv6-exit
   - ntp-chrony
-  - openvpn-exit
+  - exit-openvpn
   - dns-unbound
   - dhcp-dnsmasq
   - system

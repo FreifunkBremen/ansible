@@ -13,7 +13,7 @@
   with_items:
     - exit.conf
     - exit-auth
-  when: openvpn_exit_hideme
+  when: exit_openvpn_hideme
   notify: restart openvpn
 
 - name: Install script
@@ -21,5 +21,5 @@
     src=exit-up.sh
     dest=/etc/openvpn/
     mode=0700
-  when: openvpn_exit_hideme
+  when: exit_openvpn_hideme
   notify: restart openvpn

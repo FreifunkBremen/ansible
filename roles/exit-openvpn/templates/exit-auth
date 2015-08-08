@@ -1,0 +1,2 @@
+{{ exit_openvpn_username }}
+{{ exit_openvpn_password }}
