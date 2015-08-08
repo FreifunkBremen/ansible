@@ -53,7 +53,7 @@
   copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart owner=root group=root mode=0644 force=yes
 
 - name: Update SSH configuration
-  replace: dest=/etc/ssh/sshd_config regexp="^([\#\s]*)?{{item.key}}\s+(\w+)" replace="{{item.key}} {{item.value}}" backup=yes
+  replace: dest=/etc/ssh/sshd_config regexp="^([\#\s]*)?{{item.key}}\s+([\w_-]+)" replace="{{item.key}} {{item.value}}" backup=yes
   with_items:
   - key: PermitRootLogin
     value: without-password
