@@ -1,0 +1,3 @@
+---
+# defaults file for roles/exit-gre
+exit_gre: false

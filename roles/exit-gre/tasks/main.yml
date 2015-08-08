@@ -1,0 +1,12 @@
+---
+- name: Install GRE interfaces file
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/{{ exit_gre_interface }}
+  when: exit_gre
+
+- name: Set interfaces up
+  command: ifup {{ exit_gre_interface }}
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'
+  when: exit_gre
