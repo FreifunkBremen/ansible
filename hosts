@@ -1,10 +1,9 @@
-#!/usr/bin/env python2
+#! /usr/bin/env python2
 
 from sys import path
 path.append("lib")
 
 import hosts
-
 
 inv = hosts.Inventory(
   ipv4_network       = "10.196.0.0/17",
@@ -25,6 +24,5 @@ inv.group("vpnservers",
 inv.group("services",
   inv.host(10, "ffhb.fireorbit.de")
 )
-
 
 print inv.json_dump()
