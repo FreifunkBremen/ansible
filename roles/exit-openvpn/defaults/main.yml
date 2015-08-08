@@ -1,0 +1,3 @@
+---
+# defaults file for roles/exit-openvpn
+exit_openvpn_hideme: true
