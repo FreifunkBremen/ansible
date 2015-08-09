@@ -1,0 +1,8 @@
+---
+- name: Include openvpn
+  include: openvpn.yml
+  when: exit == "openvpn"
+
+- name: Include gre
+  include: gre.yml
+  when: exit == "gre"

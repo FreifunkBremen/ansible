@@ -4,23 +4,20 @@
   with_items:
     - openvpn
     - iptables-persistent
-  when: exit_openvpn_hideme
 
 - name: Install configuration
   template: >
-    src={{ item }}
+    src=openvpn/{{ item }}
     dest=/etc/openvpn/{{ item }}
     mode=0600
   with_items:
     - exit.conf
     - exit-auth
-  when: exit_openvpn_hideme
   notify: restart openvpn
 
 - name: Install script
   template: >
-    src=exit-up.sh
+    src=openvpn/exit-up.sh
     dest=/etc/openvpn/
     mode=0700
-  when: exit_openvpn_hideme
   notify: restart openvpn
