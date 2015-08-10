@@ -24,4 +24,4 @@ grp.host(6, "vpn06.bremen.freifunk.net")
 grp = inv.group("services")
 grp.host(10, "ffhb.fireorbit.de")
 
-print inv.json_dump()
+print inv.json_dump(indent=4)
