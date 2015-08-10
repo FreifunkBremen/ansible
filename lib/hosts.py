@@ -24,7 +24,7 @@ class Inventory:
     self.groups[name] = group
     return group
 
-  def json_dump(self):
+  def json_dump(self, **kwargs):
     hostvars = {}
     data     = {}
 
@@ -34,7 +34,7 @@ class Inventory:
         hostvars[hostname] = vars
 
     data["_meta"] = {"hostvars": hostvars}
-    return json.dumps(data, indent=4)
+    return json.dumps(data, **kwargs)
 
   def calculate_address(self, key, incr):
     origin  = getattr(self, key, incr)
