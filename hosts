@@ -13,17 +13,15 @@ inv = hosts.Inventory(
   icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
 )
 
-inv.group("vpnservers",
-  inv.host(1, "vpn01.bremen.freifunk.net", port=60023),
-  inv.host(2, "vpn02.bremen.freifunk.net"),
-  inv.host(3, "vpn03.bremen.freifunk.net"),
-  inv.host(4, "vpn04.bremen.freifunk.net", port=60023),
-  inv.host(5, "vpn05.bremen.freifunk.net"),
-  inv.host(6, "vpn06.bremen.freifunk.net"),
-)
+grp = inv.group("vpnservers", dhcp=True, icvpn=True)
+grp.host(1, "vpn01.bremen.freifunk.net", port=60023)
+grp.host(2, "vpn02.bremen.freifunk.net")
+grp.host(3, "vpn03.bremen.freifunk.net")
+grp.host(4, "vpn04.bremen.freifunk.net", port=60023)
+grp.host(5, "vpn05.bremen.freifunk.net")
+grp.host(6, "vpn06.bremen.freifunk.net")
 
-inv.group("services",
-  inv.host(10, "ffhb.fireorbit.de")
-)
+grp = inv.group("services")
+grp.host(10, "ffhb.fireorbit.de")
 
 print inv.json_dump()

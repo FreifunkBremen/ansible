@@ -7,6 +7,7 @@
 import ipcalc
 import json
 
+
 class Inventory:
 
   groups = {}
@@ -18,51 +19,63 @@ class Inventory:
     self.icvpn_ipv4_network = ipcalc.Network(icvpn_ipv4_network)
     self.icvpn_ipv6_network = ipcalc.Network(icvpn_ipv6_network)
 
-  def group(self, group, *hosts):
-    self.groups[group] = list(hosts)
-
-  def host(self, id, hostname, port=None):
-    vars = {
-      "vpn_id": id,
-    }
-
-    if port != None:
-      vars["ansible_ssh_port"] = port
-
-    vars["dhcp"] = {
-      "netmask":     str(self.ipv4_network.netmask()),
-      "range_begin": str(ipcalc.IP(self.ipv4_network.ip+id*256*10)),
-      "range_end":   str(ipcalc.IP(self.ipv4_network.ip+id*256*10+255)),
-    }
-    vars["batman_ipv4"] = {
-      "address": str(ipcalc.IP(self.ipv4_network.ip+id)),
-      "netmask": str(self.ipv4_network.netmask()),
-    }
-    vars["batman_ipv6"] = {
-      "address": str(ipcalc.IP(self.ipv6_network.ip+id).to_compressed()),
-    }
-    vars["batman_ipv6_alt"] = {
-      "address": str(ipcalc.IP(self.ipv6_network_alt.ip+id).to_compressed()),
-    }
-    vars["icvpn_ipv4"] = {
-      "address": str(ipcalc.IP(self.icvpn_ipv4_network.ip + (id << 8))),
-      "netmask": str(self.icvpn_ipv4_network.netmask()),
-    }
-    vars["icvpn_ipv6"] = {
-      "address": str(ipcalc.IP(self.icvpn_ipv6_network.ip + (id << 16)).to_compressed()),
-      "size":    self.icvpn_ipv6_network.subnet(),
-    }
-
-    return (hostname, vars)
+  def group(self, name, **options):
+    group = Group(self, **options)
+    self.groups[name] = group
+    return group
 
   def json_dump(self):
     hostvars = {}
     data     = {}
 
-    for group, hosts in self.groups.items():
-      data[group] = [hostname for (hostname,_) in hosts]
-      for (hostname,vars) in hosts:
+    for name, group in self.groups.items():
+      data[name] = [hostname for (hostname,_) in group.hosts]
+      for (hostname,vars) in group.hosts:
         hostvars[hostname] = vars
 
     data["_meta"] = {"hostvars": hostvars}
     return json.dumps(data, indent=4)
+
+  def calculate_address(self, key, incr):
+    origin  = getattr(self, key, incr)
+    address = ipcalc.IP(origin.ip + incr)
+    return {
+      "address": str(address.to_compressed() if origin.v==6 else address),
+      "netmask": str(origin.netmask()),
+      "size":    origin.subnet(),
+    }
+
+class Group:
+  def __init__(self, inventory, dhcp=False, icvpn=False):
+    self.inventory = inventory
+    self.dhcp      = dhcp
+    self.icvpn     = icvpn
+    self.hosts     = []
+
+  def host(self, id, hostname, port=None):
+    vars = {
+      "vpn_id":          id,
+      "batman_ipv4":     self.calculate_address("ipv4_network", id),
+      "batman_ipv6":     self.calculate_address("ipv6_network", id),
+      "batman_ipv6_alt": self.calculate_address("ipv6_network_alt", id),
+    }
+
+    if port != None:
+      vars["ansible_ssh_port"] = port
+
+    if self.dhcp:
+      begin = self.inventory.ipv4_network.ip + (id << 8)*10
+      vars["dhcp"] = {
+        "netmask":     str(self.inventory.ipv4_network.netmask()),
+        "range_begin": str(ipcalc.IP(begin)),
+        "range_end":   str(ipcalc.IP(begin+255)),
+      }
+
+    if self.icvpn:
+      vars["icvpn_ipv4"] = self.calculate_address("icvpn_ipv4_network", (id << 8))
+      vars["icvpn_ipv6"] = self.calculate_address("icvpn_ipv6_network", (id << 16))
+
+    self.hosts.append((hostname, vars))
+
+  def calculate_address(self, *args):
+    return self.inventory.calculate_address(*args)
