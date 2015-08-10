@@ -52,16 +52,13 @@ class Group:
     self.icvpn     = icvpn
     self.hosts     = []
 
-  def host(self, id, hostname, port=None):
-    vars = {
+  def host(self, id, hostname, **vars):
+    vars.update({
       "vpn_id":          id,
       "batman_ipv4":     self.calculate_address("ipv4_network", id),
       "batman_ipv6":     self.calculate_address("ipv6_network", id),
       "batman_ipv6_alt": self.calculate_address("ipv6_network_alt", id),
-    }
-
-    if port != None:
-      vars["ansible_ssh_port"] = port
+    })
 
     if self.dhcp:
       begin = self.inventory.ipv4_network.ip + (id << 8)*10
