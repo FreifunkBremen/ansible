@@ -70,8 +70,8 @@
 - name: Start and enable vnstat
   service: name=vnstat state=started enabled=yes
 
-- name: Deinstall unneeded packages
-  apt: name={{item}}
+- name: Remove unneeded packages
+  apt: name={{item}} state=absent
   with_items:
     - nfs-common
     - rpcbind
