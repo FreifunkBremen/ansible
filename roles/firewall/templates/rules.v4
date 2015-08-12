@@ -52,5 +52,5 @@ COMMIT
 :INPUT ACCEPT [214187:14519411]
 :OUTPUT ACCEPT [787095:54554696]
 :POSTROUTING ACCEPT [1128117:91806189]
--A POSTROUTING -s {{ ipv4_network_max }} -o {{ uplink_interface_name }} -j MASQUERADE
+-A POSTROUTING -s {{ ipv4_network }} -o {{ uplink_interface_name }} -j MASQUERADE
 COMMIT
