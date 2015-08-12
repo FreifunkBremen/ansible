@@ -34,6 +34,12 @@ class Inventory:
         hostvars[hostname] = vars
 
     data["_meta"] = {"hostvars": hostvars}
+    data["all"]   = {"vars": {
+      "ipv4_network":     str(self.ipv4_network),
+      "ipv6_network":     str(self.ipv6_network),
+      "ipv6_network_alt": str(self.ipv6_network_alt),
+    }}
+
     return json.dumps(data, **kwargs)
 
   def calculate_address(self, key, incr):
