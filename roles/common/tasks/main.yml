@@ -25,7 +25,6 @@
     - htop
     - inetutils-syslogd
     - iotop
-    - iptables-persistent
     - jq
     - less
     - libyaml-syck-perl
@@ -45,7 +44,6 @@
     - vim
     - vnstat
     - wget
-    - xtables-addons-dkms
     - zsh
 
 - name: Configure APT to run checkrestart after updates

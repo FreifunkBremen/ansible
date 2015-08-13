@@ -3,7 +3,6 @@
   apt: name={{ item }}
   with_items:
     - openvpn
-    - iptables-persistent
 
 - name: Install configuration
   template: >
