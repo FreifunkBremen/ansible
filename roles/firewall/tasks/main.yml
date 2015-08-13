@@ -1,14 +1,19 @@
 ---
 - name: Install packages
-  apt: name=iptables-persistent
+  apt: name={{item}}
+  with_items:
+  - iptables-persistent
+  - xtables-addons-dkms
+  tags: iptables
 
 - name: Install firewall rules
   template: >
     src={{ item }}
-    dest=/etc/iptables/{{ item }}
+    dest=/etc/iptables/
   with_items:
     - rules.v4
     - rules.v6
   notify:
     - reload iptables-v4
     - reload iptables-v6
+  tags: iptables

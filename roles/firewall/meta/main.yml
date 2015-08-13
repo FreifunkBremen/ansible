@@ -5,5 +5,3 @@ galaxy_info:
     versions:
     - wheezy
     - jessie
-dependencies:
-- common
