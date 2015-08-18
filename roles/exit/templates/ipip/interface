@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+auto {{ exit_ipip_interface }}
+iface {{ exit_ipip_interface }} inet manual
+	pre-up ip tunnel add $IFACE mode ipip remote {{ exit_ipip_remote }} local {{ exit_ipip_local }} ttl 255
+	post-down ip tunnel del $IFACE mode ipip remote {{ exit_ipip_remote }} local {{ exit_ipip_local }} ttl 255
+	up ip link set up dev $IFACE
+	down ip link set down dev $IFACE
+	# Set address to interface with scope local
+	up ip address add {{ exit_ipip_address }}/32 peer {{ exit_ipip_address_peer }} scope link dev $IFACE
+	down ip address del {{ exit_ipip_address }}/32 peer {{ exit_ipip_address_peer }} scope link dev $IFACE
+	# Set address for NAT
+	post-up ip address add {{ exit_ipip_address_global }}/32 dev $IFACE
+	pre-down ip address del {{ exit_ipip_address_global }}/32 dev $IFACE
+	# Default route
+	post-up ip route add default via {{ exit_ipip_address_peer }} dev $IFACE table default-freifunk
+	pre-down ip route del default via {{ exit_ipip_address_peer }} dev $IFACE table default-freifunk

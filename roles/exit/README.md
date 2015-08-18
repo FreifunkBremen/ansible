@@ -1,7 +1,7 @@
 Exit
 ============
 
-A role to setup up a OpenVPN or GRE connection as exit.
+A role to setup up a OpenVPN, GRE or IPIP connection as exit.
 
 
 Role Variables
@@ -16,6 +16,16 @@ Role Variables
     exit_gre_address_peer
     exit_gre_local
     exit_gre_remote
+
+### IPIP Exit
+
+    exit: ipip
+    exit_ipip_interface: Interface name
+    exit_ipip_address
+    exit_ipip_address_global
+    exit_ipip_address_peer
+    exit_ipip_local
+    exit_ipip_remote
 
 ### OpenVPN Exit
 
