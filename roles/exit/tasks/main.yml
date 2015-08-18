@@ -6,3 +6,7 @@
 - name: Include gre
   include: gre.yml
   when: exit == "gre"
+
+- name: Include ipip
+  include: ipip.yml
+  when: exit == "ipip"
