@@ -21,10 +21,14 @@
 -A INPUT -j REJECT --reject-with icmp-admin-prohibited
 -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 -A FORWARD -o eth+ -j REJECT --reject-with icmp-admin-prohibited
+
+{% if ipp2p_drop %}
 {% for protocol in ipp2p_protocols %}
 -A FORWARD -i {{ alfred_interface_name }} -o {{ uplink_interface_name }} -m ipp2p --{{protocol}} -j DROP
 -A FORWARD -i {{ uplink_interface_name }} -o {{ alfred_interface_name }} -m ipp2p --{{protocol}} -j DROP
 {% endfor %}
+{% endif %}
+
 COMMIT
 # Written by genofire
 *nat
