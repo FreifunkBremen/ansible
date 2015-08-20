@@ -5,6 +5,7 @@ batman_mtu_interface_name: 'bat-{{ site_code }}_dummy'
 alfred_interface_name: 'br-{{ site_code }}'
 fastd_interface_name: vpn-{{ site_code }}
 uplink_interface_name: 'vpn_uplink'
+ipp2p_drop: false
 ipp2p_protocols:
 - apple
 - ares
