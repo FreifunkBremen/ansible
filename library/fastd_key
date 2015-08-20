@@ -1,0 +1,29 @@
+#!/usr/bin/python
+
+EXAMPLES = '''
+# Generates a fastd key
+- fastd_key: /etc/fastd/site/secret.conf
+'''
+
+import json
+import os
+import subprocess
+import sys
+
+# read the argument string from the arguments file
+args_file = sys.argv[1]
+path      = file(args_file).read()
+changed   = False
+
+# file does not exist or is empty?
+if not os.path.isfile(path) or os.stat(path).st_size == 0:
+    # create file with restrictive permissions
+    with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT, 0600), 'w') as handle:
+        # generate fastd secret
+        secret = subprocess.check_output(["/usr/bin/fastd", "--machine-readable", "--generate-key"]).strip()
+        handle.write('secret "%s";\n' % secret)
+    changed = True
+
+print json.dumps({
+    "changed" : changed
+})
