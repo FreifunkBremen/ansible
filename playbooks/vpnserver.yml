@@ -3,7 +3,7 @@
   vars:
     batman_gateway: true
   roles:
-  - common
+  - openssh
   - batman-adv-14
   - fastd
   - alfred-announce
