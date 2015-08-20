@@ -49,20 +49,6 @@
 - name: Configure APT to run checkrestart after updates
   copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart owner=root group=root mode=0644 force=yes
 
-- name: Update SSH configuration
-  replace: dest=/etc/ssh/sshd_config regexp="^([\#\s]*)?{{item.key}}\s+([\w_-]+)" replace="{{item.key}} {{item.value}}" backup=yes
-  with_items:
-  - key: PermitRootLogin
-    value: without-password
-  - key: PasswordAuthentication
-    value: 'no'
-  - key: ChallengeResponseAuthentication
-    value: 'no'
-  - key: PrintLastLog
-    value: 'no'
-  notify:
-  - reload ssh
-
 - name: Fetch and install grml zshrc
   get_url: url='http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD' dest=/etc/zsh/zshrc mode=0644 force=yes
 

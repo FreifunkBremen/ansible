@@ -1,0 +1,18 @@
+---
+- name: Update SSH configuration
+  replace: >
+    dest=/etc/ssh/sshd_config
+    regexp="^([\#\s]*)?{{item.key}}\s+([\w_-]+)"
+    replace="{{item.key}} {{item.value}}"
+    backup=yes
+  with_items:
+  - key: PermitRootLogin
+    value: without-password
+  - key: PasswordAuthentication
+    value: 'no'
+  - key: ChallengeResponseAuthentication
+    value: 'no'
+  - key: PrintLastLog
+    value: 'no'
+  notify:
+  - reload ssh
