@@ -6,4 +6,4 @@ galaxy_info:
     - wheezy
     - jessie
 dependencies:
-- common
+- git
