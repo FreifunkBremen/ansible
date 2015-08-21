@@ -4,10 +4,7 @@
   apt_key: keyserver="{{ pgp_keyserver }}" id="{{ batman_adv_14_repository_key }}"
 
 - name: Add repository for batman-adv compat 14
-  apt_repository: repo="{{item}}"
-  with_items:
-    - deb {{ batman_adv_14_repository }}
-    - deb-src {{ batman_adv_14_repository }}
+  apt_repository: repo="deb {{ batman_adv_14_repository }}"
 
 - name: Install batman-adv compat 14
   apt: name="{{ batman_adv_14_pkg_name }}"
