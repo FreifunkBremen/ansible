@@ -7,4 +7,3 @@ galaxy_info:
     - jessie
 dependencies:
 - alfred
-- common

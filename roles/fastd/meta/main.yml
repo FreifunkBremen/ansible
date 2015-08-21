@@ -7,4 +7,4 @@ galaxy_info:
     - jessie
 dependencies:
 - batman-adv-interface
-- common
+- git
