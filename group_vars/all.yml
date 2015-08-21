@@ -2,6 +2,7 @@
 pgp_keyserver:        'pool.sks-keyservers.net'
 site_code:            'ffhb'
 site_git_root:        'https://github.com/FreifunkBremen'
+site_conf_url:        'https://raw.githubusercontent.com/FreifunkBremen/gluon-site-ffhb/master/site.conf'
 site_city:            'bremen'
 site_domain:          'bremen.freifunk.net'
 site_vpn_prefix:      'vpn'
