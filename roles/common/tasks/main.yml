@@ -21,7 +21,6 @@
     - deborphan
     - etckeeper
     - ethtool
-    - git
     - htop
     - inetutils-syslogd
     - iotop
@@ -38,7 +37,6 @@
     - psmisc
     - rkhunter
     - screen
-    - sudo
     - tcpdump
     - unattended-upgrades
     - vim
