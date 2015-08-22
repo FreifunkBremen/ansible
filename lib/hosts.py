@@ -6,15 +6,22 @@
 
 import ipcalc
 import json
-
+from slpp import slpp as lua
 
 class Inventory:
 
   groups = {}
 
-  def __init__(self, ipv4_network=None, ipv6_network=None, ipv6_network_alt=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
-    self.ipv4_network       = ipcalc.Network(ipv4_network)
-    self.ipv6_network       = ipcalc.Network(ipv6_network)
+  def __init__(self, site_conf, ipv6_network_alt=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
+
+    # read and parse site.conf
+    with open(site_conf,'r') as f:
+      self.site = lua.decode(f.read())
+      if not isinstance(self.site, dict):
+        raise TypeError("Unable to parse site.conf")
+
+    self.ipv4_network       = ipcalc.Network(self.site["prefix4"])
+    self.ipv6_network       = ipcalc.Network(self.site["prefix6"])
     self.ipv6_network_alt   = ipcalc.Network(ipv6_network_alt)
     self.icvpn_ipv4_network = ipcalc.Network(icvpn_ipv4_network)
     self.icvpn_ipv6_network = ipcalc.Network(icvpn_ipv6_network)
@@ -35,6 +42,8 @@ class Inventory:
 
     data["_meta"] = {"hostvars": hostvars}
     data["all"]   = {"vars": {
+      "site":             self.site,
+      "site_code":        self.site["site_code"],
       "ipv4_network":     str(self.ipv4_network),
       "ipv6_network":     str(self.ipv6_network),
       "ipv6_network_alt": str(self.ipv6_network_alt),

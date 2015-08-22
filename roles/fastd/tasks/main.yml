@@ -8,12 +8,12 @@
 - name: Install fastd
   apt: name=fastd
 
-- name: Load site configuration
-  local_action: parse_lua url={{site_conf_url}} var=site_conf
+- name: Create peers directory
+  file: path=/etc/fastd/{{ site_code }}/peers state=directory
 
 - name: Copy static fastd configuration files
   template: src=peer.conf dest=/etc/fastd/{{ site_code }}/peers/{{item.key}}.conf
-  with_dict: "{{site_conf.fastd_mesh_vpn.groups.backbone.peers}}"
+  with_dict: "{{site.fastd_mesh_vpn.groups.backbone.peers}}"
   notify:
   - restart fastd
 
