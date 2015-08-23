@@ -6,7 +6,7 @@
   copy: >
     src={{item}}
     dest=/etc/unbound/unbound.conf.d/{{item}}
-    mode=0755
+    mode=0644
   with_items:
     - caching-timeouts.conf
     - caching-tweaking.conf
@@ -25,7 +25,7 @@
   template: >
     src={{item}}
     dest=/etc/unbound/unbound.conf.d/{{item}}
-    mode=0755
+    mode=0644
   with_items:
     - access-control.conf
     - forward-ffhb.conf
