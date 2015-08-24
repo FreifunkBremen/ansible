@@ -62,14 +62,14 @@ class Inventory:
   def calculate_address(self, key, incr):
     try:
       origin  = getattr(self, key)
+      address = ipcalc.IP(origin.ip + incr)
+      return {
+        "address": str(address.to_compressed() if origin.v==6 else address),
+        "netmask": str(origin.netmask()),
+        "size":    origin.subnet(),
+      }
     except AttributeError:
       return
-    address = ipcalc.IP(origin.ip + incr)
-    return {
-      "address": str(address.to_compressed() if origin.v==6 else address),
-      "netmask": str(origin.netmask()),
-      "size":    origin.subnet(),
-    }
 
 class Group:
   def __init__(self, inventory, dhcp=False, icvpn=False):
