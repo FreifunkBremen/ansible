@@ -1,6 +1,5 @@
 ---
 pgp_keyserver:        'pool.sks-keyservers.net'
-site_code:            'ffhb'
 site_git_root:        'https://github.com/FreifunkBremen'
 site_city:            'bremen'
 site_domain:          'bremen.freifunk.net'
