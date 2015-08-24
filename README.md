@@ -32,9 +32,9 @@ Other communities need to modify this variables.
 The hosts-file defines all machines where our services are deployed on as well as community related variables. For other communities the variables are to be changed.
 Variables:
 
-    ipv6_network_alt   = "2001:bf7:540::/64",
-    icvpn_ipv4_network = "10.207.0.196",
-    icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
+    ipv6_local_network  = "fd75:3707:b8c2::/64",
+    icvpn_ipv4_network  = "10.207.0.196",
+    icvpn_ipv6_network  = "fec0::a:cf:0:c4/96",
 
 Hosts:
 

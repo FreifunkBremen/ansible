@@ -12,7 +12,7 @@ class Inventory:
 
   groups = {}
 
-  def __init__(self, site_conf, ipv6_network_alt=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
+  def __init__(self, site_conf, ipv6_local_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
 
     # read and parse site.conf
     with open(site_conf,'r') as f:
@@ -20,11 +20,13 @@ class Inventory:
       if not isinstance(self.site, dict):
         raise TypeError("Unable to parse site.conf")
 
-    self.ipv4_network       = ipcalc.Network(self.site["prefix4"])
-    self.ipv6_network       = ipcalc.Network(self.site["prefix6"])
-    self.ipv6_network_alt   = ipcalc.Network(ipv6_network_alt)
-    self.icvpn_ipv4_network = ipcalc.Network(icvpn_ipv4_network)
-    self.icvpn_ipv6_network = ipcalc.Network(icvpn_ipv6_network)
+    self.ipv4_network        = ipcalc.Network(self.site["prefix4"])
+    self.icvpn_ipv4_network  = ipcalc.Network(icvpn_ipv4_network)
+    self.icvpn_ipv6_network  = ipcalc.Network(icvpn_ipv6_network)
+    self.ipv6_local_network  = ipcalc.Network(ipv6_local_network)
+
+    if "prefix6" in self.site:
+      self.ipv6_global_network = ipcalc.Network(self.site["prefix6"])
 
   def group(self, name, **options):
     group = Group(self, **options)
@@ -42,17 +44,26 @@ class Inventory:
 
     data["_meta"] = {"hostvars": hostvars}
     data["all"]   = {"vars": {
-      "site":             self.site,
-      "site_code":        self.site["site_code"],
-      "ipv4_network":     str(self.ipv4_network),
-      "ipv6_network":     str(self.ipv6_network),
-      "ipv6_network_alt": str(self.ipv6_network_alt),
+      "site":                self.site,
+      "site_code":           self.site["site_code"],
+      "ipv4_network":        self.attributeString("ipv4_network"),
+      "ipv6_local_network":  self.attributeString("ipv6_local_network"),
+      "ipv6_global_network": self.attributeString("ipv6_global_network"),
     }}
 
     return json.dumps(data, **kwargs)
 
+  def attributeString(self, key):
+    value = getattr(self, key, None)
+    if value != None:
+      value = str(value)
+    return value
+
   def calculate_address(self, key, incr):
-    origin  = getattr(self, key, incr)
+    try:
+      origin  = getattr(self, key)
+    except AttributeError:
+      return
     address = ipcalc.IP(origin.ip + incr)
     return {
       "address": str(address.to_compressed() if origin.v==6 else address),
@@ -69,10 +80,10 @@ class Group:
 
   def host(self, id, hostname, **vars):
     vars.update({
-      "vpn_id":          id,
-      "batman_ipv4":     self.calculate_address("ipv4_network", id),
-      "batman_ipv6":     self.calculate_address("ipv6_network", id),
-      "batman_ipv6_alt": self.calculate_address("ipv6_network_alt", id),
+      "vpn_id":             id,
+      "batman_ipv4":        self.calculate_address("ipv4_network", id),
+      "batman_ipv6_global": self.calculate_address("ipv6_global_network", id),
+      "batman_ipv6_local":  self.calculate_address("ipv6_local_network", id),
     })
 
     if self.dhcp:
