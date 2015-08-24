@@ -29,14 +29,14 @@ iface br-{{ site_code }} inet static
 {% if batman_gateway %}
 	# unreachable route in freifunk-default
 	# prevents leak of data
-	post-up ip route add unreachable default metric 2048 table default-freifunk
-	pre-down ip route del unreachable default metric 2048 table default-freifunk
-	post-up ip -6 route add unreachable default metric 2048 table default-freifunk
+	post-up  ip -4 route add unreachable default metric 2048 table default-freifunk
+	pre-down ip -4 route del unreachable default metric 2048 table default-freifunk
+	post-up  ip -6 route add unreachable default metric 2048 table default-freifunk
 	pre-down ip -6 route del unreachable default metric 2048 table default-freifunk
 	# rules to send stuff to VPN
-	post-up ip rule add iif $IFACE table default-freifunk priority 16385
-	pre-down ip rule del iif $IFACE table default-freifunk priority 16385
-	post-up ip -6 rule add iif $IFACE table default-freifunk priority 32767
+	post-up  ip -4 rule add iif $IFACE table default-freifunk priority 16385
+	pre-down ip -4 rule del iif $IFACE table default-freifunk priority 16385
+	post-up  ip -6 rule add iif $IFACE table default-freifunk priority 32767
 	pre-down ip -6 rule del iif $IFACE table default-freifunk priority 32767
 {% endif %}
 
@@ -44,6 +44,6 @@ iface br-{{ site_code }} inet6 static
 	address {{ batman_ipv6_local.address }}/64
 	netmask 64
 {% if batman_ipv6_global %}
-	up ip -6 addr add {{ batman_ipv6_global.address }}/64 dev $IFACE
+	up   ip -6 addr add {{ batman_ipv6_global.address }}/64 dev $IFACE
 	down ip -6 addr del {{ batman_ipv6_global.address }}/64 dev $IFACE
 {% endif %}
