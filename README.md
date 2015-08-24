@@ -14,10 +14,10 @@ Playbooks serviceserver* set up 3rd party services on machines defined in hosts.
 
 ### Site-Conf
 
-Community related variables are defined in group_vars/all.yml. This variables are used by the ansible-tasks.
+Community related variables are defined in `site/site.conf` and `group_vars/all.yml`.
+This variables are used by the ansible-tasks.
 
     pgp_keyserver:        'pool.sks-keyservers.net'
-    site_code:            'ffhb'
     site_git_root:        'https://github.com/FreifunkBremen'
     site_city:            'bremen'
     site_domain:          'bremen.freifunk.net'
@@ -32,15 +32,13 @@ Other communities need to modify this variables.
 The hosts-file defines all machines where our services are deployed on as well as community related variables. For other communities the variables are to be changed.
 Variables:
 
-    ipv4_network       = "10.196.0.0/17",
-    ipv6_network       = "fd2f:5119:f2c::/64",
     ipv6_network_alt   = "2001:bf7:540::/64",
     icvpn_ipv4_network = "10.207.0.196",
     icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
 
 Hosts:
 
-    vpn0*.bremen.freifunk.net 
+    vpn0*.bremen.freifunk.net
 
 with exit=openvpn/gre and ansible_ssh_port=* (both optional).
 
