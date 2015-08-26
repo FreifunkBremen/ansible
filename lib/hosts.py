@@ -33,7 +33,7 @@ class Inventory:
     self.groups[name] = group
     return group
 
-  def json_dump(self, **kwargs):
+  def data(self):
     hostvars = {}
     data     = {}
 
@@ -51,7 +51,10 @@ class Inventory:
       "ipv6_global_network": self.attributeString("ipv6_global_network"),
     }}
 
-    return json.dumps(data, **kwargs)
+    return data
+
+  def json_dump(self, **kwargs):
+    return json.dumps(self.data(), **kwargs)
 
   def attributeString(self, key):
     value = getattr(self, key, None)
