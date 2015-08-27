@@ -18,7 +18,8 @@
   - restart fastd
 
 - name: List peers
-  shell: ls -1 {{ fastd_peers_directory }}
+  command: ls -1 {{ fastd_peers_directory }}
+  changed_when: False
   register: contents
 
 - name: Delete unused peers
