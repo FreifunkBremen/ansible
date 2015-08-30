@@ -9,14 +9,29 @@ import json
 import os
 import subprocess
 import sys
+import threading
+import urllib2
 
 # read the argument string from the arguments file
 args_file = sys.argv[1]
 path      = file(args_file).read()
 changed   = False
+entropy   = [
+  "http://cachefly.cachefly.net/100mb.test",
+  "http://speedtest.frankfurt.linode.com/100MB-frankfurt.bin",
+  "http://speedtest.london.linode.com/100MB-london.bin",
+]
+
+def createEntropy():
+    for url in entropy:
+        urllib2.urlopen(url).read()
 
 # file does not exist or is empty?
 if not os.path.isfile(path) or os.stat(path).st_size == 0:
+    t = threading.Thread(target=createEntropy)
+    t.daemon = True
+    t.start()
+
     # create file with restrictive permissions
     with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT, 0600), 'w') as handle:
         # generate fastd secret
