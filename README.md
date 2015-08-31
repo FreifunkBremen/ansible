@@ -33,7 +33,7 @@ The hosts-file defines all machines where our services are deployed on as well a
 Variables:
 
     ipv6_local_network  = "fd75:3707:b8c2::/64",
-    icvpn_ipv4_network  = "10.207.0.196",
+    icvpn_ipv4_network  = "10.207.0.196/16",
     icvpn_ipv6_network  = "fec0::a:cf:0:c4/96",
 
 Hosts:
