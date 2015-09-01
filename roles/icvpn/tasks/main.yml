@@ -19,7 +19,7 @@
   template: >
     src=tinc.conf
     dest=/etc/tinc/icvpn/tinc.conf
-    mode=0755
+    mode=0644
 
 - name: Install ICVPN Tinc up/down script
   copy: >
