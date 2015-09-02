@@ -8,6 +8,9 @@
 - name: Install fastd
   apt: name=fastd
 
+- name: Install haveged to create entropy
+  apt: name=haveged
+
 - name: Create peers directory
   file: path={{ fastd_peers_directory }} state=directory
 
