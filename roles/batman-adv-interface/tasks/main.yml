@@ -8,9 +8,12 @@
     dest=/etc/network/if-pre-up.d/batadv
     mode=0755
 
-- name: Create freifunk routing table
-  lineinfile: dest=/etc/iproute2/rt_tables line="252 default-freifunk"
-  when: batman_gateway
+- name: Create batman routing table
+  lineinfile: >
+    dest=/etc/iproute2/rt_tables
+    line="252 {{batman_table}}"
+    regexp="^252 "
+    state="{{ "absent" if batman_table == "default" else "present" }}"
 
 - name: Install batman interfaces file
   template: >
