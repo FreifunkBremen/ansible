@@ -65,3 +65,33 @@ The following roles are excecuted in the playbook vpnserver:
     system
 
 For detailed information about the roles see README.md inside of the role.
+
+
+## Afterwork
+After setting up a vpnserver you have to do something by hand.
+
+### Create DNS-Entries
+In Bremen you need a VPN-Entry and NTP-Entry.
+
+### Add fastd-public-key to site.confg
+You got your key from running
+```
+fastd --show-key -c /etc/fastd/{{site_code}}/fastd.conf
+```
+Then add it to your site.conf - From Bremen you found it [here](https://github.com/FreifunkBremen/gluon-site-ffhb/blob/master/site.conf)
+
+**Do not forget to add NTP-Server either.**
+
+### Add vpn to icvpn
+Publish your tinc Public-key to [IC-VPN](https://github.com/freifunk/icvpn).
+Your found your one /etc/tinc/icvpn/hosts/{{site_city}}{{id}}.
+So other IC-VPN-Servers could create a vpn-Connection to your VPN.
+
+
+### Add vpn to icvpn-meta
+Add your new VPN to the [IC-VPN-Meta](https://github.com/freifunk/icvpn-meta) to get the bgp routing active on other Host from other communitys.
+
+### Add bgp internal routing
+Ask to other VPN-Owner to run ansible again.
+On this way the other vpns got the new internal routing in ```bird``` and ```bird6```.
+[See here](https://github.com/FreifunkBremen/ansible/tree/master/roles/router-bird/templates)
