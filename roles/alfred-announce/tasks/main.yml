@@ -1,5 +1,7 @@
 ---
-# TODO Maybe pull for update
+- name: Install ethtool
+  apt: name=ethtool
+
 - name: Clone alfred announce repository
   git: >
     repo={{ alfred_announce_git_root }}
