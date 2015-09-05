@@ -1,4 +1,7 @@
 ---
+- name: Install JSON processor
+  apt: name=jq
+
 - name: Clone blacklist repository
   git: repo={{ site_git_root }}/vpn-blacklist/
        dest=/opt/{{ site_code }}/vpn-blacklist/
