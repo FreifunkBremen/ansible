@@ -8,8 +8,8 @@ Role Variables
 --------------
 
     alfred_announce_git_root: (default: 'https://github.com/genofire/alfred-announce/')
-    batman_interface_name: Interface on which works Batman (default: 'bat-{{ site_code }}' )
-    alfred_interface_name: Interface on which Listen Batman Nodes(default:'br-{{ site_code }}' )
+    batman_interface: Interface on which works Batman (default: 'bat-{{ site_code }}' )
+    alfred_interface: Interface on which Listen Batman Nodes(default:'br-{{ site_code }}' )
 
 
 Example Playbook
