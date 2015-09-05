@@ -4,6 +4,7 @@
 # sudo pip install ipcalc
 #
 
+import copy
 import ipcalc
 import json
 from slpp import slpp as lua
@@ -88,6 +89,16 @@ class Group:
       "batman_ipv6_global": self.calculate_address("ipv6_global_network", id),
       "batman_ipv6_local":  self.calculate_address("ipv6_local_network", id),
     })
+
+    # Create a copy of the fastd peers and remove the own host
+    try:
+      peers = copy.deepcopy(self.inventory.site["fastd_mesh_vpn"]["groups"]["backbone"]["peers"])
+      key   = hostname.split(".")[0]
+      if key in peers:
+        del peers[key]
+      vars["fastd"] = {"peers": peers}
+    except KeyError:
+      pass
 
     if self.dhcp:
       begin = self.inventory.ipv4_network.ip + (id << 8)*10
