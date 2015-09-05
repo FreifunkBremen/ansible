@@ -1,2 +1,2 @@
 ---
-alfred_interface_name: 'br-{{ site_code }}'
+alfred_interface: 'br-{{ site_code }}'

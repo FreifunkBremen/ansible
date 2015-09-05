@@ -2,5 +2,5 @@
 alfred_repository: '[arch=amd64] http://debian.draic.info/ wheezy main'
 
 alfred_master: "{{ batman_gateway | ternary('1','0')}}"
-batman_interface_name: 'bat-{{ site_code }}'
-alfred_interface_name: 'br-{{ site_code }}'
+batman_interface: 'bat-{{ site_code }}'
+alfred_interface: 'br-{{ site_code }}'

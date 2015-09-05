@@ -10,8 +10,8 @@ DAEMON_OPTS=""
 MASTER={{ alfred_master }}
 
 # Interface for A.L.F.R.E.D. to listen on. Has to be specified.
-INTERFACE={{ alfred_interface_name }}
+INTERFACE={{ alfred_interface }}
 
 # Specify the batman-adv interface configured on the system (default: bat0).
 # Use 'none' to disable the batman-adv based best server selection.
-BATMANIF={{ batman_interface_name }}
+BATMANIF={{ batman_interface }}

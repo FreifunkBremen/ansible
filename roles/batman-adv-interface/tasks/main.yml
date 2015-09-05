@@ -18,13 +18,13 @@
 - name: Install batman interfaces file
   template: >
     src=interfaces
-    dest=/etc/network/interfaces.d/{{ batman_interface_name }}
+    dest=/etc/network/interfaces.d/{{ batman_interface }}
 
 - name: Set interfaces up
   command: ifup {{item}}
   register: ifup_result
   changed_when: '"already configured" not in ifup_result.stderr'
   with_items:
-  - "{{ batman_mtu_interface_name }}"
-  - "{{ batman_interface_name }}"
+  - "{{ batman_mtu_interface }}"
+  - "{{ batman_interface }}"
   - br-{{ site_code }}

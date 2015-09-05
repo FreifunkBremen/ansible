@@ -2,7 +2,7 @@
 fastd_repository_key: '6664E7BDA6B669881EC52E7516EF3F64CB201D9C'
 fastd_repository_url: 'http://repo.universe-factory.net/debian/ sid main'
 fastd_peers_directory: /etc/fastd/{{ site_code }}/peers
-fastd_interface_name: vpn-{{ site_code }}
+fastd_interface: vpn-{{ site_code }}
 fastd_port: 10000
 fastd_mtu: 1426
 fastd_peers_limit: -1
