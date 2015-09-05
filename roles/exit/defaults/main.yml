@@ -1,2 +1,3 @@
 ---
 exit: ""
+exit_interface: vpn-uplink

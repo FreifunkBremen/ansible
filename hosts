@@ -17,7 +17,7 @@ grp.host(2, "vpn02.bremen.freifunk.net", exit="openvpn")
 grp.host(3, "vpn03.bremen.freifunk.net", exit="gre")
 grp.host(4, "vpn04.bremen.freifunk.net", ansible_ssh_port=60023)
 grp.host(5, "vpn05.bremen.freifunk.net")
-grp.host(6, "vpn06.bremen.freifunk.net", batman_table="default")
+grp.host(6, "vpn06.bremen.freifunk.net", batman_table="default", exit_interface="eth0")
 
 grp = inv.group("services")
 grp.host(10, "ffhb.fireorbit.de")

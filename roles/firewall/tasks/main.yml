@@ -10,7 +10,6 @@
   template: >
     src={{ item }}
     dest=/etc/iptables/
-    force=no
   with_items:
     - rules.v4
     - rules.v6

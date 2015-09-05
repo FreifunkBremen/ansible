@@ -3,10 +3,6 @@
   include: openvpn.yml
   when: exit == "openvpn"
 
-- name: Include gre
-  include: gre.yml
-  when: exit == "gre"
-
-- name: Include ipip
-  include: ipip.yml
-  when: exit == "ipip"
+- name: Include generic
+  include: generic.yml
+  when: exit.lower() in ["gre","ipip"]

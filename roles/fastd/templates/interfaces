@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 
-allow-hotplug {{ fastd_interface_name }}
-iface {{ fastd_interface_name }} inet manual
+allow-hotplug {{ fastd_interface }}
+iface {{ fastd_interface }} inet manual
 	up ip link set up $IFACE
-	up batctl -m {{ batman_interface_name }} if add $IFACE
-	down batctl -m {{ batman_interface_name }} if del $IFACE
+	up batctl -m {{ batman_interface }} if add $IFACE
+	down batctl -m {{ batman_interface }} if del $IFACE
 	down ip link set down $IFACE

@@ -10,31 +10,40 @@
 -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 -A INPUT -p udp -m udp --dport 53 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
--A INPUT -i {{ alfred_interface_name }} -p udp -m udp --dport 67:68 -j ACCEPT
--A INPUT -i {{ alfred_interface_name }} -p udp -m udp --dport 123 -j ACCEPT
+-A INPUT -i {{ alfred_interface }} -p udp -m udp --dport 67:68 -j ACCEPT
+-A INPUT -i {{ alfred_interface }} -p udp -m udp --dport 123 -j ACCEPT
 -A INPUT -i {{ icvpn_interface }} -p tcp -m tcp --dport 179 -j ACCEPT
--A INPUT -i {{ alfred_interface_name }} -p tcp -m tcp --dport 179 -j ACCEPT
+-A INPUT -i {{ alfred_interface }} -p tcp -m tcp --dport 179 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 656 -j ACCEPT
 -A INPUT -p udp -m udp --dport 656 -j ACCEPT
 -A INPUT -p udp -m udp --dport 10000 -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp-admin-prohibited
 -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
--A FORWARD -o eth+ -j REJECT --reject-with icmp-admin-prohibited
+
+# Traffic between our network and ICVPN
+-A FORWARD -i {{ icvpn_interface }} -o {{ alfred_interface }} -j ACCEPT
+-A FORWARD -o {{ icvpn_interface }} -i {{ alfred_interface }} -j ACCEPT
 
 {% if ipp2p_drop %}
 {% for protocol in ipp2p_protocols %}
--A FORWARD -i {{ alfred_interface_name }} -o {{ uplink_interface_name }} -m ipp2p --{{protocol}} -j DROP
--A FORWARD -i {{ uplink_interface_name }} -o {{ alfred_interface_name }} -m ipp2p --{{protocol}} -j DROP
+-A FORWARD -i {{ alfred_interface }} -o {{ exit_interface }} -m ipp2p --{{protocol}} -j DROP
+-A FORWARD -i {{ exit_interface }} -o {{ alfred_interface }} -m ipp2p --{{protocol}} -j DROP
 {% endfor %}
 {% endif %}
 
+# Traffic from out network to the Internet
+-A FORWARD -i {{ alfred_interface }} -o {{ exit_interface }} -j ACCEPT
+-A FORWARD -o {{ alfred_interface }} -i {{ exit_interface }} -j ACCEPT
+
+# Reject all other forwarding traffic
+-A FORWARD -j REJECT --reject-with icmp-admin-prohibited
+
 COMMIT
-# Written by genofire
 *nat
 :PREROUTING ACCEPT [0:0]
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s {{ ipv4_network }} -o {{ uplink_interface_name }} -j MASQUERADE
+-A POSTROUTING -s {{ ipv4_network }} -o {{ exit_interface }} -j MASQUERADE
 COMMIT
