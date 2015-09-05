@@ -30,42 +30,31 @@
 - name: Stop and disable fastd via System V init script
   service: name=fastd enabled=no
 
-- name: Create peers directory
-  file: path={{ fastd_peers_directory }} state=directory
+- name: Include fastd instance
+  include: instance.yml
+  vars:
+    fastd_name: "{{site_code}}"
+    fastd_bind: any
 
-- name: Create peer configurations
-  template: src=peer.conf dest={{ fastd_peers_directory }}/{{item.key}}.conf
-  with_dict: "{{fastd.peers}}"
-  notify:
-  - restart fastd
-
-- name: List peers
-  command: ls -1 {{ fastd_peers_directory }}
-  changed_when: False
-  register: contents
-
-- name: Delete unused peers
-  file: path={{ fastd_peers_directory }}/{{ item }} state=absent
-  with_items: contents.stdout_lines
-  when: item.replace(".conf","") not in fastd.peers
-  notify:
-  - restart fastd
+- name: Include legacy fastd instance
+  include: instance.yml
+  vars:
+    fastd_name:      "{{site_code}}-legacy"
+    fastd_bind:      "0.0.0.0"
+    fastd_interface: "{{fastd_legacy_interface}}"
+    fastd_port:      "{{fastd_legacy_port}}"
+    fastd_mtu:       "{{fastd_legacy_mtu}}"
 
 - name: Generate fastd secret
   fastd_key: /etc/fastd/{{ site_code }}/secret.conf
   notify:
   - restart fastd
 
-- name: Generate dynamic configration part
-  template: >
-    src=fastd.conf
-    dest=/etc/fastd/{{ site_code }}/fastd.conf
-    mode=0644
-  notify:
-  - restart fastd
-
-- name: Add network configuration
-  template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface }}
+- name: Symlink fastd secret for legacy instance
+  file:
+    src: /etc/fastd/{{ site_code }}/secret.conf
+    dest: /etc/fastd/{{ site_code }}-legacy/secret.conf
+    state: link
 
 - name: Install fastd blacklist
   include: blacklist.yml
