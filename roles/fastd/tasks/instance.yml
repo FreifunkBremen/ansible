@@ -1,11 +1,17 @@
 ---
-- name: Create peers directory
-  file: path=/etc/fastd/{{ fastd_name }}/peers state=directory
+- name: Create fastd directory
+  file: path=/etc/fastd/{{ fastd_name }} state=directory
 
 - name: Upload fastd.conf
   template: src=fastd.conf dest=/etc/fastd/{{ fastd_name }}/
   notify:
   - restart fastd
+
+- name: Add network configuration
+  template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface }}
+
+- name: Create peers directory
+  file: path=/etc/fastd/{{ fastd_name }}/peers state=directory
 
 - name: Create peer configurations
   template: src=peer.conf dest=/etc/fastd/{{ fastd_name }}/peers/{{item.key}}.conf
@@ -24,6 +30,3 @@
   when: item.replace(".conf","") not in fastd.peers
   notify:
   - restart fastd
-
-- name: Add network configuration
-  template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface }}
