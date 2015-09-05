@@ -17,10 +17,7 @@
     dest=/opt/{{ site_code }}/dns/
 
 - name: Install cronjob for internal dns
-  file: src=/opt/{{ site_code }}/dns/{{item}}.sh dest=/etc/cron.hourly/{{item}} state=link
-  with_items:
-  - update-dns-nodes
-  - update-dns
+  file: src=/opt/{{ site_code }}/dns/update-dns-nodes.sh dest=/etc/cron.hourly/update-dns-nodes state=link
 
 - name: Autostart nsd
   service: name=nsd enabled=yes
