@@ -46,7 +46,7 @@
   - restart fastd
 
 - name: Add network configuration
-  template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface_name }}
+  template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface }}
 
 - name: Install fastd blacklist
   include: blacklist.yml
