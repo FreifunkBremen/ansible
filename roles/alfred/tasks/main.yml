@@ -13,6 +13,18 @@
   - alfred-json
   - batadv-vis
 
+- name: Install special network interface
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/{{ alfred_interface }}-mtu
+  when: alfred_master == 1
+
+- name: Set interfaces up
+  command: ifup {{ alfred_interface }}-mtu
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'
+  when: alfred_master == 1
+
 - name: Configure alfred interfaces
   template: >
     src=alfred-default
