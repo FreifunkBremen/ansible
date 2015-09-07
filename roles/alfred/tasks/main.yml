@@ -20,8 +20,7 @@
   when: alfred_master == 1
 
 - name: Remove special network interface
-  file: path=/etc/network/interfaces.d/{{ alfred_mtu_interface }}
-  state: absent
+  file: path=/etc/network/interfaces.d/{{ alfred_mtu_interface }} state=absent
   when: alfred_master != 1
 
 - name: Set interfaces up
