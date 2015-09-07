@@ -1,6 +1,6 @@
 ---
 - name: Configure APT not to install recommends packages
-  copy: src=apt-recommends.conf dest=/etc/apt/apt.conf.d/40recommends owner=root group=root mode=0644 force=yes
+  copy: src=apt-recommends.conf dest=/etc/apt/apt.conf.d/40recommends
 
 - name: Install APT https transport plugin
   apt: name=apt-transport-https
@@ -9,10 +9,10 @@
   apt: name=unattended-upgrades
 
 - name: Configure unattended-upgrades
-  copy: src=unattended-upgrades.conf dest=/etc/apt/apt.conf.d/50unattended-upgrades owner=root group=root mode=0644 force=yes
+  copy: src=unattended-upgrades.conf dest=/etc/apt/apt.conf.d/50unattended-upgrades
 
 - name: Install debian-goodies for checkrestart
   apt: name=checkrestart
 
 - name: Configure APT to run checkrestart after updates
-  copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart owner=root group=root mode=0644 force=yes
+  copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart
