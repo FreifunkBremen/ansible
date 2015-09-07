@@ -76,13 +76,16 @@ class Inventory:
       return
 
 class Group:
-  def __init__(self, inventory, dhcp=False, icvpn=False):
+  def __init__(self, inventory, dhcp=False, icvpn=False, **vars):
     self.inventory = inventory
     self.dhcp      = dhcp
     self.icvpn     = icvpn
+    self.vars      = vars
     self.hosts     = []
 
-  def host(self, id, hostname, **vars):
+  def host(self, id, hostname, **host_vars):
+    vars = self.vars.copy()
+    vars.update(host_vars)
     vars.update({
       "vpn_id":             id,
       "batman_ipv4":        self.calculate_address("ipv4_network", id),
