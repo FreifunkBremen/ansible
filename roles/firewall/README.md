@@ -10,7 +10,7 @@ Role Variables
 
     icvpn_interface: 'icvpn'
     batman_interface: 'bat-{{ site_code }}'
-    batman_mtu_interface: 'bat-{{ site_code }}_dummy'
+    batman_dummy_interface: 'bat-{{ site_code }}_dummy'
     alfred_interface: 'br-{{ site_code }}'
     fastd_interface: vpn-{{ site_code }}
 
