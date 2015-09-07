@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+auto br-{{ site_code }}-mtu
+iface br-{{ site_code }}-mtu inet manual
+	pre-up ip link add link br-{{ site_code }} name $IFACE address {{ ansible_default_ipv4.macaddress | derive_mac_addr(3) }} type macvtap
+	up ip link set up mtu 1280 dev $IFACE
+	down ip link set down dev $IFACE
+	post-down ip link del $IFACE
