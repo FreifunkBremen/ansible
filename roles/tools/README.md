@@ -9,7 +9,7 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - common
+         - tools
 
 License
 -------
