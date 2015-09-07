@@ -5,14 +5,14 @@
 - name: Install APT https transport plugin
   apt: name=apt-transport-https
 
+- name: Install debian-goodies for checkrestart
+  apt: name=debian-goodies
+
 - name: Install unattended-upgrades
   apt: name=unattended-upgrades
 
 - name: Configure unattended-upgrades
   copy: src=unattended-upgrades.conf dest=/etc/apt/apt.conf.d/50unattended-upgrades
-
-- name: Install debian-goodies for checkrestart
-  apt: name=checkrestart
 
 - name: Configure APT to run checkrestart after updates
   copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart
