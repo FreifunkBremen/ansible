@@ -1,0 +1,14 @@
+---
+- name: Install a bunch of helpful tools
+  apt: name={{item}}
+  with_items:
+    - ca-certificates
+    - curl
+    - less
+    - lsb-release
+    - lsof
+    - molly-guard
+    - rkhunter
+    - screen
+    - tcpdump
+    - tmux

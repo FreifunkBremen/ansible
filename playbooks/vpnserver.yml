@@ -3,6 +3,7 @@
   vars:
     batman_gateway: true
   roles:
+  - apt
   - openssh
   - batman-adv-14
   - fastd
@@ -14,3 +15,5 @@
   - dns-unbound
   - dhcp-dnsmasq
   - system
+  - tmpfs
+  - tools

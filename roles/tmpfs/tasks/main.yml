@@ -1,0 +1,3 @@
+---
+- name: Enable tmpfs for /tmp
+  replace: dest=/etc/default/tmpfs regexp='(\#\s*)?RAMTMP\s*=\s*(.*)' replace='RAMTMP=yes' backup=yes
