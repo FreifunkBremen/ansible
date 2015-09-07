@@ -17,17 +17,17 @@
   template: >
     src=interfaces
     dest=/etc/network/interfaces.d/{{ alfred_mtu_interface }}
-  when: alfred_master == "1"
+  when: alfred_master
 
 - name: Remove special network interface
   file: path=/etc/network/interfaces.d/{{ alfred_mtu_interface }} state=absent
-  when: alfred_master != "1"
+  when: not alfred_master
 
 - name: Set interfaces up
   command: ifup {{ alfred_mtu_interface }}
   register: ifup_result
   changed_when: '"already configured" not in ifup_result.stderr'
-  when: alfred_master == "1"
+  when: alfred_master
 
 - name: Configure alfred interfaces
   template: >
