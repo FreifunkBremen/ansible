@@ -19,6 +19,11 @@
     dest=/etc/network/interfaces.d/{{ alfred_interface }}-mtu
   when: alfred_master == 1
 
+- name: Remove special network interface
+  file: path=/etc/network/interfaces.d/{{ alfred_interface }}-mtu
+  state: absent
+  when: alfred_master != 1
+
 - name: Set interfaces up
   command: ifup {{ alfred_interface }}-mtu
   register: ifup_result
