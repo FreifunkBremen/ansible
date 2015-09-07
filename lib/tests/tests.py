@@ -24,7 +24,11 @@ class TestHosts(unittest2.TestCase):
           icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
         )
 
-        grp = inv.group("vpnservers", dhcp=True, icvpn=True)
+        grp = inv.group("vpnservers",
+          dhcp=True,
+          icvpn=True,
+          batman_gateway=True,
+        )
         grp.host(1, "vpn01.bremen.freifunk.net", exit="gre", ansible_ssh_port=60023)
 
         grp = inv.group("services")

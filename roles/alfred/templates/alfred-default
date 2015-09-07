@@ -7,7 +7,7 @@
 DAEMON_OPTS=""
 
 # Enable master mode (0/1)
-MASTER={{ alfred_master }}
+MASTER={{ alfred_master | ternary('1','0') }}
 
 # Interface for A.L.F.R.E.D. to listen on. Has to be specified.
 {% if alfred_master == "1" %}
