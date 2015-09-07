@@ -11,7 +11,7 @@ MASTER={{ alfred_master }}
 
 # Interface for A.L.F.R.E.D. to listen on. Has to be specified.
 {% if alfred_master == 1 %}
-INTERFACE={{ alfred_interface }}-mtu
+INTERFACE={{ alfred_mtu_interface }}
 {% else %}
 INTERFACE={{ alfred_interface }}
 {% endif %}
