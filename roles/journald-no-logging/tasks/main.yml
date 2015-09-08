@@ -17,7 +17,7 @@
 - name: Disable persistent storage
   replace: >
     dest=/etc/systemd/journald.conf
-    regexp="^(\#)?Storage=.+$)"
+    regexp="^\#?Storage=.*$"
     replace="Storage=volatile"
     backup=yes
   notify:
