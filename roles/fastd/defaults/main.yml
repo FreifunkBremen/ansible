@@ -6,7 +6,7 @@ fastd_anonymous: true
 
 fastd_interface: vpn-{{ site_code }}
 fastd_port: 50000
-fastd_mtu: 1400
+fastd_mtu: 1406
 
 fastd_backbone_interface: vpn-{{ site_code }}-backbone
 fastd_backbone_port: 50001
