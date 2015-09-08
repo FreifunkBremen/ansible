@@ -36,6 +36,8 @@
     fastd_name:      "{{site_code}}"
     fastd_bind:      any
     fastd_anonymous: true
+    fastd:
+      peers: {}
 
 - name: Include legacy fastd instance
   include: instance.yml
