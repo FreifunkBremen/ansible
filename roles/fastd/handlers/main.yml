@@ -1,3 +1,5 @@
 ---
 - name: restart fastd
-  service: name=fastd state=restarted
+  # simply restarting fails, because fastd does not remove *.sock-files
+  # service: name=fastd state=restarted
+  shell: systemctl stop fastd; sleep 1; rm /run/fastd-*.sock; systemctl start fastd
