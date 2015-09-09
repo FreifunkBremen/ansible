@@ -33,7 +33,8 @@
 - name: Include fastd instance
   include: instance.yml
   vars:
-    fastd_name:      "{{site_code}}"
+    fastd_instance:  "{{site_code}}"
+    fastd_interface: "{{site_code}}"
     fastd_bind:      any
     fastd_anonymous: true
     fastd:
@@ -42,7 +43,7 @@
 - name: Include legacy fastd instance
   include: instance.yml
   vars:
-    fastd_name:      "{{site_code}}-legacy"
+    fastd_instance:  "{{site_code}}_legacy"
     fastd_bind:      "0.0.0.0"
     fastd_interface: "{{fastd_legacy_interface}}"
     fastd_port:      "{{fastd_legacy_port}}"
@@ -52,7 +53,7 @@
 - name: Include backbone fastd instance
   include: instance.yml
   vars:
-    fastd_name:      "{{site_code}}-backbone"
+    fastd_instance:  "{{site_code}}_backbone"
     fastd_bind:      any
     fastd_interface: "{{fastd_backbone_interface}}"
     fastd_port:      "{{fastd_backbone_port}}"
@@ -69,8 +70,8 @@
     dest: /etc/fastd/{{ item }}/secret.conf
     state: link
   with_items:
-    - "{{ site_code }}-legacy"
-    - "{{ site_code }}-backbone"
+    - "{{ site_code }}_legacy"
+    - "{{ site_code }}_backbone"
 
 - name: Install fastd blacklist
   include: blacklist.yml
