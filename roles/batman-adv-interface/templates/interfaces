@@ -38,12 +38,6 @@ iface br-{{ site_code }} inet static
 	pre-down ip -4 rule del iif $IFACE table {{ batman_table }} priority 16385
 	post-up  ip -6 rule add iif $IFACE table {{ batman_table }} priority 32767
 	pre-down ip -6 rule del iif $IFACE table {{ batman_table }} priority 32767
-	# duplicate main table (IPv4 only)
-	post-up  ip -4 rule add priority 16384 lookup main
-	pre-down ip -4 rule del priority 16384 lookup main
-	# rules to lookup default route (IPv6 only)
-	post-up  ip -6 rule add table default priority 32769
-	pre-down ip -6 rule del table default priority 32769
 {% endif %}
 
 iface br-{{ site_code }} inet6 static
