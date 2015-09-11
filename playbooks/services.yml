@@ -1,0 +1,14 @@
+---
+- hosts: services
+  vars:
+    batman_gateway: false
+    batman_table: default
+  roles:
+  - apt
+  - openssh
+  - batman-adv-14
+  - fastd
+  - alfred-announce
+  - system
+  - tmpfs
+  - tools

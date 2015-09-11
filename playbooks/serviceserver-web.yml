@@ -1,7 +1,0 @@
----
-- hosts: serviceservers
-  roles:
-  - batman-adv-14
-  - fastd
-  - alfred-announce
-  - webserver-apache
