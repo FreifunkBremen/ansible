@@ -25,6 +25,6 @@ grp.host(5, "vpn05.bremen.freifunk.net", exit="openvpn")
 grp.host(6, "vpn06.bremen.freifunk.net", batman_table="default", exit_interface="eth0")
 
 grp = inv.group("services")
-grp.host(10, "ffhb.fireorbit.de")
+grp.host(10, "monitoring.ffhb.ml")
 
 print inv.json_dump(indent=4)
