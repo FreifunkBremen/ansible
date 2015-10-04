@@ -21,6 +21,9 @@
     - root-hints.conf
   notify: restart unbound
 
+- name: Copy network hook
+  copy: src=unbound-ip-up.d dest=/etc/network/if-up.d/unbound mode=0755
+
 - name: Generate Configuration
   template: >
     src={{item}}
