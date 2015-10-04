@@ -1,3 +1,4 @@
 ---
 exit: ""
+exit_mtu: 1400
 exit_interface: vpn-uplink

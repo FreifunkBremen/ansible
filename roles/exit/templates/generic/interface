@@ -10,6 +10,9 @@ iface {{ exit_interface }} inet manual
 	up   ip link set up   dev $IFACE
 	down ip link set down dev $IFACE
 
+	up   ip link set mtu {{ exit_mtu }} dev $IFACE
+	down ip link set mtu {{ exit_mtu }} dev $IFACE
+
 	# Set address to interface with scope local
 	up   ip address add {{ exit_address }}/32 peer {{ exit_address_peer }} scope link dev $IFACE
 	down ip address del {{ exit_address }}/32 peer {{ exit_address_peer }} scope link dev $IFACE
