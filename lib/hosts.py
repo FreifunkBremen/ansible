@@ -9,6 +9,9 @@ import ipcalc
 import json
 from slpp import slpp as lua
 
+if ipcalc.__version__.startswith("0.5."):
+  raise Exception("ipcalc 0.5 ist zu alt")
+
 class Inventory:
 
   groups = {}
@@ -65,15 +68,16 @@ class Inventory:
 
   def calculate_address(self, key, incr):
     try:
-      origin  = getattr(self, key)
-      address = ipcalc.IP(origin.ip + incr)
-      return {
-        "address": str(address.to_compressed() if origin.v==6 else address),
-        "netmask": str(origin.netmask()),
-        "size":    origin.subnet(),
-      }
+      origin = getattr(self, key)
     except AttributeError:
       return
+
+    address = ipcalc.IP(origin.ip + incr)
+    return {
+      "address": str(address.to_compressed() if origin.v==6 else address),
+      "netmask": str(origin.netmask()),
+      "size":    origin.subnet(),
+    }
 
 class Group:
   def __init__(self, inventory, dhcp=False, icvpn=False, **vars):
