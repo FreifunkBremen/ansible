@@ -6,6 +6,9 @@
 - name: Add repository for batman-adv compat 14
   apt_repository: repo="deb {{ batman_adv_14_repository }}"
 
+- name: Install kernel header
+  apt: name=linux-headers-amd64
+
 - name: Install batman-adv compat 14
   apt: name="{{ batman_adv_14_pkg_name }}"
 
