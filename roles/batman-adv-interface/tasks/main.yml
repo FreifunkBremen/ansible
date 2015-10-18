@@ -1,5 +1,8 @@
 ---
-- name: install bridge-utils
+- name: Install batctl
+  apt: name=batctl
+
+- name: Install bridge-utils
   apt: name=bridge-utils
 
 - name: Install batman pre-up script
