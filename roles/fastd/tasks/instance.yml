@@ -1,4 +1,9 @@
 ---
+- name: Check interface length
+  fail:
+    msg: "{{ fastd_interface }} has more than 15 characters!"
+  when: fastd_interface|length > 15
+
 - name: Create fastd directory
   file: path=/etc/fastd/{{ fastd_instance }} state=directory
 
