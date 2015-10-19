@@ -14,7 +14,7 @@
 - name: Fix systemd unit for fastd
   lineinfile:
     dest: /lib/systemd/system/fastd@.service
-    line: "ExecStopPost=/bin/rm -vf /run/fastd-%I.sock"
+    line: "ExecStopPost=/bin/rm -f /run/fastd-%I.sock"
     regexp: "^ExecStopPost="
     insertafter: "^ExecReload="
   notify:
