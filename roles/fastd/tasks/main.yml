@@ -11,17 +11,24 @@
 - name: Install haveged to create entropy
   apt: name=haveged
 
+- name: Copy systemd unit file
+  command: /bin/cp /lib/systemd/system/fastd@.service /etc/systemd/system/fastd@.service creates=/etc/systemd/system/fastd@.service
+
+- name: Stop fastd via System V init script
+  service: name=fastd state=stopped
+
 - name: Fix systemd unit for fastd
   lineinfile:
-    dest: /lib/systemd/system/fastd@.service
+    dest: /etc/systemd/system/fastd@.service
     line: "ExecStopPost=/bin/rm -f /run/fastd-%I.sock"
     regexp: "^ExecStopPost="
     insertafter: "^ExecReload="
   notify:
+  - reload systemd
   - restart fastd
 
 - name: Stop and disable fastd via System V init script
-  service: name=fastd enabled=no state=stopped
+  service: name=fastd enabled=no
 
 - name: Create peers directory
   file: path={{ fastd_peers_directory }} state=directory
