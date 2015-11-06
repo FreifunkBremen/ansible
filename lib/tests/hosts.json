@@ -72,9 +72,9 @@
                 "site_code": "ffhb",
                 "site_name": "Freifunk Bremen",
                 "prefix6": "2001:bf7:540::/64",
-                "prefix4": "10.196.0.0/17"
+                "prefix4": "10.196.0.0/16"
             },
-            "ipv4_network": "10.196.0.0/17"
+            "ipv4_network": "10.196.0.0/16"
         }
     }
 }
