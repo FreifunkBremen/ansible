@@ -1,8 +1,19 @@
 ---
+# Interface-Namen dürfen maximal 15 Zeichen lang sein
+# http://lxr.free-electrons.com/source/include/uapi/linux/if.h?v=3.19#L26
+
 fastd_repository_key: '6664E7BDA6B669881EC52E7516EF3F64CB201D9C'
 fastd_repository_url: 'http://repo.universe-factory.net/debian/ sid main'
-fastd_peers_directory: /etc/fastd/{{ site_code }}/peers
-fastd_interface: vpn-{{ site_code }}
-fastd_port: 10000
-fastd_mtu: 1426
 fastd_peers_limit: -1
+fastd_anonymous: true
+
+fastd_interface: vpn-{{ site_code }}
+fastd_port: 50000
+fastd_mtu: 1406
+
+fastd_backbone_interface: vpn-{{ site_code }}-bbone
+fastd_backbone_port: 50001
+
+fastd_legacy_interface: vpn-{{ site_code }}-legacy
+fastd_legacy_port: 10000
+fastd_legacy_mtu: 1426

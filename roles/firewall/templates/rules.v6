@@ -16,6 +16,8 @@
 -A INPUT -p tcp -m tcp --dport 656 -j ACCEPT
 -A INPUT -p udp -m udp --dport 656 -j ACCEPT
 -A INPUT -p udp -m udp --dport 10000 -j ACCEPT
+-A INPUT -p udp -m udp --dport 50000 -j ACCEPT
+-A INPUT -p udp -m udp --dport 50001 -j ACCEPT
 -A INPUT -i {{ batman_dummy_interface }} -p udp -m udp --dport 16962 -j ACCEPT
 -A INPUT -i {{ alfred_interface }} -p udp -m udp --dport 16962 -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
