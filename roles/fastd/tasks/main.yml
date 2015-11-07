@@ -30,42 +30,48 @@
 - name: Stop and disable fastd via System V init script
   service: name=fastd enabled=no
 
-- name: Create peers directory
-  file: path={{ fastd_peers_directory }} state=directory
+- name: Include fastd instance
+  include: instance.yml
+  vars:
+    fastd_instance:  "{{site_code}}"
+    fastd_interface: "{{site_code}}"
+    fastd_bind:      any
+    fastd_anonymous: true
+    fastd:
+      peers: {}
 
-- name: Create peer configurations
-  template: src=peer.conf dest={{ fastd_peers_directory }}/{{item.key}}.conf
-  with_dict: "{{fastd.peers}}"
-  notify:
-  - restart fastd
+- name: Include legacy fastd instance
+  include: instance.yml
+  vars:
+    fastd_instance:  "{{site_code}}_legacy"
+    fastd_bind:      "0.0.0.0"
+    fastd_interface: "{{fastd_legacy_interface}}"
+    fastd_port:      "{{fastd_legacy_port}}"
+    fastd_mtu:       "{{fastd_legacy_mtu}}"
+    fastd_anonymous: true
 
-- name: List peers
-  command: ls -1 {{ fastd_peers_directory }}
-  changed_when: False
-  register: contents
-
-- name: Delete unused peers
-  file: path={{ fastd_peers_directory }}/{{ item }} state=absent
-  with_items: contents.stdout_lines
-  when: item.replace(".conf","") not in fastd.peers
-  notify:
-  - restart fastd
+- name: Include backbone fastd instance
+  include: instance.yml
+  vars:
+    fastd_instance:  "{{site_code}}_backbone"
+    fastd_bind:      any
+    fastd_interface: "{{fastd_backbone_interface}}"
+    fastd_port:      "{{fastd_backbone_port}}"
+    fastd_anonymous: false
 
 - name: Generate fastd secret
   fastd_key: /etc/fastd/{{ site_code }}/secret.conf
   notify:
   - restart fastd
 
-- name: Generate dynamic configration part
-  template: >
-    src=fastd.conf
-    dest=/etc/fastd/{{ site_code }}/fastd.conf
-    mode=0644
-  notify:
-  - restart fastd
-
-- name: Add network configuration
-  template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface }}
+- name: Symlink fastd secrets
+  file:
+    src: /etc/fastd/{{ site_code }}/secret.conf
+    dest: /etc/fastd/{{ item }}/secret.conf
+    state: link
+  with_items:
+    - "{{ site_code }}_legacy"
+    - "{{ site_code }}_backbone"
 
 - name: Install fastd blacklist
   include: blacklist.yml
