@@ -10,7 +10,7 @@ DAEMON_OPTS=""
 MASTER={{ alfred_master | ternary('1','0') }}
 
 # Interface for A.L.F.R.E.D. to listen on. Has to be specified.
-{% if alfred_master == "1" %}
+{% if alfred_master == true %}
 INTERFACE={{ alfred_mtu_interface }}
 {% else %}
 INTERFACE={{ alfred_interface }}
