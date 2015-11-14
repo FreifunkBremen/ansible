@@ -11,7 +11,7 @@
   with_items:
     - lsof
     - linux-headers-amd64
-    - "{{ batman_adv_14_pkg_name }}"
+    - batman-adv-dkms
 
 - name: Copy kernel postinst downgrade hook
   copy: >
