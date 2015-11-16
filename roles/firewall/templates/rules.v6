@@ -9,18 +9,11 @@
 
 # Firewall facts
 {% for item in firewall_open|from_json %}
-{% if item.interface is defined %}
--A INPUT -i {{item.interface}} -p {{item.proto}} -m {{item.proto}} --dport {{item.port}} -j ACCEPT
-{% else %}
--A INPUT -p {{item.proto}} -m {{item.proto}} --dport {{item.port}} -j ACCEPT
+{% if item.onlyipv4 is not defined %}
+-A INPUT {% if item.interface is defined %}-i {{item.interface}} {% endif %} -p {{item.proto}} -m {{item.proto}} --dport {{item.port}} -j ACCEPT
 {% endif %}
 {% endfor%}
 
--A INPUT -i {{ alfred_interface }} -p udp -m udp --dport 123 -j ACCEPT
--A INPUT -i {{ icvpn_interface }} -p tcp -m tcp --dport 179 -j ACCEPT
--A INPUT -i {{ alfred_interface }} -p tcp -m tcp --dport 179 -j ACCEPT
--A INPUT -i {{ batman_dummy_interface }} -p udp -m udp --dport 16962 -j ACCEPT
--A INPUT -i {{ alfred_interface }} -p udp -m udp --dport 16962 -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # Traffic between our network and ICVPN
