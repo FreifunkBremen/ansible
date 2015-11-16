@@ -1,3 +1,3 @@
 # {{ ansible_managed }}
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-* * * * * root sh /opt/{{ site_code }}/alfred-announce/announce.sh -i {{ alfred_interface }} -b {{ batman_interface }}
+* * * * * root sh /opt/{{ site_code }}/alfred-announce/announce.sh -i {{ alfred_mtu_interface }} -b {{ batman_interface }}
