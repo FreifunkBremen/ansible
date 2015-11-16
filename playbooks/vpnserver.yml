@@ -2,6 +2,10 @@
 - hosts: vpnservers
   vars:
     batman_gateway: true
+  pre_tasks:
+  - name: Firewall open ssh- and dns-ports
+    set_fact: firewall_open='{"proto":"tcp","port":22},{"proto":"tcp","port":53},{"proto":"udp","port":53}'
+  
   roles:
   - apt
   - openssh
