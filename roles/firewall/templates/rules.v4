@@ -5,6 +5,7 @@
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A INPUT -i lo -j ACCEPT
+-A INPUT -p ipv6 -j ACCEPT
 -A INPUT -p gre -j ACCEPT
 -A INPUT -p ipip -j ACCEPT
 -A INPUT -p icmp -j ACCEPT
