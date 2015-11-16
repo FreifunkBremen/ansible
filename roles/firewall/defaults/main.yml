@@ -1,7 +1,7 @@
 ---
 icvpn_interface: 'icvpn'
 batman_interface: 'bat-{{ site_code }}'
-batman_dummy_interface: 'bat-{{ site_code }}-dummy'
+alfred_mtu_interface: 'br-{{ site_code }}-mtu'
 main_bridge: 'br-{{ site_code }}'
 fastd_interface: vpn-{{ site_code }}
 ipp2p_drop: false
