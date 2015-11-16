@@ -35,8 +35,8 @@
 - name: Firewall open bgp-port
   set_fact: firewall_open='{{firewall_open}}, {"proto":"tcp","port":179,"interface":"{{ item }}" }'
   with_items:
-  - {{icvpn_interface}}
-  - {{alfred_interface}}
+  - "{{icvpn_interface}}"
+  - "{{alfred_interface}}"
 
 - name: Start bird
   service: name={{ item }} state=started enabled=yes
