@@ -8,11 +8,17 @@
 - name: Install debian-goodies for checkrestart
   apt: name=debian-goodies
 
+- name: Configure periodic APT updates
+  copy: src=apt-periodic.conf dest=/etc/apt/apt.conf.d/10periodic
+
 - name: Install unattended-upgrades
   apt: name=unattended-upgrades
 
 - name: Configure unattended-upgrades
   copy: src=unattended-upgrades.conf dest=/etc/apt/apt.conf.d/50unattended-upgrades
+
+- name: Configure dpkg run with unattended-upgrades
+  copy: src=unattended-upgrades-dpkg.conf dest=/etc/apt/apt.conf.d/51unattended-upgrades
 
 - name: Configure APT to run checkrestart after updates
   copy: src=apt-checkrestart.conf dest=/etc/apt/apt.conf.d/99checkrestart
