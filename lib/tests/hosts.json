@@ -40,7 +40,7 @@
                 "batman_ipv6_global": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
-                    "address": "2001:bf7:540::1"
+                    "address": "2a06:8782:ffbb:1337::1"
                 }
             },
             "service.example.com": {
@@ -58,7 +58,7 @@
                 "batman_ipv6_global": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
-                    "address": "2001:bf7:540::a"
+                    "address": "2a06:8782:ffbb:1337::a"
                 }
             }
         }
@@ -71,7 +71,7 @@
             "site": {
                 "site_code": "ffhb",
                 "site_name": "Freifunk Bremen",
-                "prefix6": "2001:bf7:540::/64",
+                "prefix6": "2a06:8782:ffbb:1337::/64",
                 "prefix4": "10.196.0.0/16"
             },
             "ipv4_network": "10.196.0.0/16"
