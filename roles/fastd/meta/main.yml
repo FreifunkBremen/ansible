@@ -8,3 +8,4 @@ galaxy_info:
 dependencies:
 - batman-adv-interface
 - git
+- firewall

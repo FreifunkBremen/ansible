@@ -8,3 +8,4 @@ galaxy_info:
 dependencies:
 - git
 - router-bird
+- firewall
