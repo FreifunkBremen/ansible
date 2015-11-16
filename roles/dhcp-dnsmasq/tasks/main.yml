@@ -6,5 +6,8 @@
   template: src=dnsmasq.conf dest=/etc/
   notify: restart dnsmasq
 
+- name: Firewall open dhcp-port
+  set_fact: firewall_open='{{firewall_open}}, {"proto":"udp","port":"67:68","interface":"{{ alfred_interface }}" }'
+
 - name: Enable dnsmasq
   service: name=dnsmasq enabled=yes

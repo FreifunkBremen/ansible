@@ -8,5 +8,8 @@
     mode=0644
   notify: restart chrony
 
+- name: Firewall open ntp-port
+  set_fact: firewall_open='{{firewall_open}}, {"proto":"udp","port":123,"interface":"{{ alfred_interface }}" }'
+
 - name: Autostart chrony
   service: name=chrony enabled=yes
