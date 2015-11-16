@@ -16,3 +16,6 @@
     value: 'no'
   notify:
   - reload ssh
+- name: Firewall open ssh- and dns-ports
+  set_fact: firewall_open='{"proto":"tcp","port":22}'
+
