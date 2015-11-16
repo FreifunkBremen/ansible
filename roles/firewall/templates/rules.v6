@@ -16,7 +16,6 @@
 {% endif %}
 {% endfor%}
 
--A INPUT -i {{ alfred_interface }} -p tcp -m tcp --dport 80 -j ACCEPT
 -A INPUT -i {{ alfred_interface }} -p udp -m udp --dport 123 -j ACCEPT
 -A INPUT -i {{ icvpn_interface }} -p tcp -m tcp --dport 179 -j ACCEPT
 -A INPUT -i {{ alfred_interface }} -p tcp -m tcp --dport 179 -j ACCEPT
