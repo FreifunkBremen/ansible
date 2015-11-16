@@ -1,5 +1,6 @@
 ---
 batman_interface: bat-{{ site_code }}
+batman_dummy_interface: 'bat-{{ site_code }}-dummy'
 batman_hop_penalty: 96
 batman_gateway: false
 batman_table: default-freifunk
