@@ -3,6 +3,9 @@
   copy: src=sysctl.d/ dest=/etc/sysctl.d/
   notify: reload sysctl
 
+- name: Load modules needed for sysctl configs early
+  lineinfile: dest=/etc/modules line=nf_conntrack_ipv4
+
 - name: Setting hostname
   hostname: name={{ hostname }}
   when: hostname != 'defaulthost'
