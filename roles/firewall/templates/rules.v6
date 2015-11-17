@@ -8,7 +8,7 @@
 -A INPUT -p ipv6-icmp -j ACCEPT
 
 # Firewall facts
-{% for item in firewall_open|from_json %}
+{% for item in firewall.output %}
 {% if item.onlyipv4 is not defined %}
 -A INPUT {% if item.interface is defined %}-i {{item.interface}} {% endif %} -p {{item.proto}} -m {{item.proto}} --dport {{item.port}} -j ACCEPT
 {% endif %}

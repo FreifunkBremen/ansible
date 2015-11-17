@@ -11,7 +11,7 @@
 -A INPUT -p icmp -j ACCEPT -m comment --comment ICMP
 
 # Firewall facts
-{% for item in firewall_open|from_json %}
+{% for item in firewall.output %}
 {% if item.onlyipv6 is not defined %}
 -A INPUT {% if item.interface is defined %}-i {{item.interface}} {% endif %} -p {{item.proto}} -m {{item.proto}} --dport {{item.port}} -j ACCEPT
 {% endif %}
