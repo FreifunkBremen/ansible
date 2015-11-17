@@ -7,7 +7,7 @@
   when: ipp2p_drop
 
 - name: Firewall open port format
-  mf_readall
+  mf_readall:
   register: firewall
 
 - name: Install firewall rules
