@@ -9,7 +9,7 @@
   notify: restart chrony
 
 - name: Firewall open ntp-port
-  mf_add: role=ntp proto=udp port=123 interface="{{ alfred_interface }}"
+  mf_add: role=ntp proto=udp port=123 interface="{{ main_bridge }}"
 
 - name: Autostart chrony
   service: name=chrony enabled=yes
