@@ -11,7 +11,7 @@ import json
 import io
 import os
 
-PATH = '/tmp/microfirewall.d/'
+PATH = '/etc/microfirewall.d/'
 def main():
 	changed   = False
 	module = AnsibleModule(

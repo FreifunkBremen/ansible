@@ -9,7 +9,7 @@ import io
 from os import listdir,makedirs
 from os.path import join,isfile,exists
 
-PATH = '/tmp/microfirewall.d/'
+PATH = '/etc/microfirewall.d/'
 	
 def main():
 
