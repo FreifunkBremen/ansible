@@ -1,3 +1,3 @@
 ---
 dhcp_dns: '{{batman_ipv4.address}}'
-alfred_interface: 'br-{{ site_code }}'
+main_bridge: 'br-{{ site_code }}'

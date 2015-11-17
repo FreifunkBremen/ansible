@@ -4,6 +4,12 @@ Role Name
 Configure IPv6 exit
 
 
+Role Variables
+--------------
+
+    exit_ipv6_remote: SIT tunnel endpoint
+
+
 Example Playbook
 ----------------
 

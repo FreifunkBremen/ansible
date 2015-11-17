@@ -13,7 +13,7 @@ MASTER={{ alfred_master | ternary('1','0') }}
 {% if alfred_master %}
 INTERFACE={{ alfred_mtu_interface }}
 {% else %}
-INTERFACE={{ alfred_interface }}
+INTERFACE={{ main_bridge }}
 {% endif %}
 
 # Specify the batman-adv interface configured on the system (default: bat0).

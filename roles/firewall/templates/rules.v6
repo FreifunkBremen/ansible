@@ -17,8 +17,11 @@
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # Traffic between our network and ICVPN
--A FORWARD -i {{ alfred_interface }} -o {{ icvpn_interface }} -j ACCEPT
--A FORWARD -o {{ alfred_interface }} -i {{ icvpn_interface }} -j ACCEPT
+-A FORWARD -i {{ main_bridge }} -o {{ icvpn_interface }} -j ACCEPT
+-A FORWARD -o {{ main_bridge }} -i {{ icvpn_interface }} -j ACCEPT
+
+-A FORWARD -i {{ main_bridge }} -o vpn-uplink6 -j ACCEPT
+-A FORWARD -o {{ main_bridge }} -i vpn-uplink6 -j ACCEPT
 
 # Reject all other forwarding traffic
 -A FORWARD -j REJECT --reject-with icmp6-adm-prohibited

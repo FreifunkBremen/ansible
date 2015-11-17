@@ -5,12 +5,8 @@ In this repository are playbooks for deploying services on Freifunk Bremen machi
 
 ### Playbooks
 
-    serviceserver-jabber
-    serviceserver-omd
-    serviceserver-web
-    vpnserver
-
-Playbooks serviceserver* set up 3rd party services on machines defined in hosts. Playbook vpnserver sets up a Freifunk Bremen gateway.
+  * services: Generic service host for Freifunk Bremen community.
+  * vpnserver: vpnserver sets up a Freifunk Bremen gateway.
 
 ### Site-Conf
 

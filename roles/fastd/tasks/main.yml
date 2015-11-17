@@ -33,8 +33,8 @@
 - name: Include fastd instance
   include: instance.yml
   vars:
-    fastd_instance:  "{{site_code}}"
-    fastd_interface: "{{site_code}}"
+    fastd_instance:  "{{ site_code }}"
+    fastd_interface: "{{ site_code }}"
     fastd_bind:      any
     fastd_anonymous: true
     fastd:
@@ -43,20 +43,20 @@
 - name: Include legacy fastd instance
   include: instance.yml
   vars:
-    fastd_instance:  "{{site_code}}_legacy"
+    fastd_instance:  "{{ site_code }}_legacy"
     fastd_bind:      "0.0.0.0"
-    fastd_interface: "{{fastd_legacy_interface}}"
-    fastd_port:      "{{fastd_legacy_port}}"
-    fastd_mtu:       "{{fastd_legacy_mtu}}"
+    fastd_interface: "{{ fastd_legacy_interface }}"
+    fastd_port:      "{{ fastd_legacy_port }}"
+    fastd_mtu:       "{{ fastd_legacy_mtu }}"
     fastd_anonymous: true
 
 - name: Include backbone fastd instance
   include: instance.yml
   vars:
-    fastd_instance:  "{{site_code}}_backbone"
+    fastd_instance:  "{{ site_code }}_backbone"
     fastd_bind:      any
-    fastd_interface: "{{fastd_backbone_interface}}"
-    fastd_port:      "{{fastd_backbone_port}}"
+    fastd_interface: "{{ fastd_backbone_interface }}"
+    fastd_port:      "{{ fastd_backbone_port }}"
     fastd_anonymous: false
 
 - name: Generate fastd secret
