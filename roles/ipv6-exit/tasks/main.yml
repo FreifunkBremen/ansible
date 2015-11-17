@@ -1,4 +1,16 @@
 ---
+- name: Install uplink6 interfaces file
+  template: >
+    src=vpn-uplink6
+    dest=/etc/network/interfaces.d/vpn-uplink6
+  when: exit_ipv6_remote is defined
+
+- name: Set interfaces up
+  command: ifup vpn-uplink6
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'
+  when: exit_ipv6_remote is defined
+
 - name: Install radv protocol for bird
   template: src=bird-radv.conf dest=/etc/bird/bird6.conf.d/radv.conf
   notify: reload bird6
