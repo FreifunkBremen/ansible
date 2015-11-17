@@ -42,10 +42,15 @@
                     "size": 64,
                     "address": "2a06:8782:ffbb:1337::1"
                 },
-                "ipv6_uplink_own_network": {
+                "ipv6_uplink_own_gateway": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
                     "address": "2a06:8782:ffbb:1::1"
+                },
+                "ipv6_uplink_own_vpnserver": {
+                    "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
+                    "size": 64,
+                    "address": "2a06:8782:ffbb:1::2"
                 }
             },
             "service.example.com": {
@@ -54,10 +59,15 @@
                     "size": 64,
                     "address": "fd2f:5119:f2c::a"
                 },
-                "ipv6_uplink_own_network": {
+                "ipv6_uplink_own_gateway": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
                     "address": "2a06:8782:ffbb:a::1"
+                },
+                "ipv6_uplink_own_vpnserver": {
+                    "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
+                    "size": 64,
+                    "address": "2a06:8782:ffbb:a::2"
                 },
                 "batman_ipv4": {
                     "netmask": "255.255.0.0",

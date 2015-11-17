@@ -121,7 +121,8 @@ class Group:
       vars["icvpn_ipv4"] = self.calculate_address("icvpn_ipv4_network", (id << 8))
       vars["icvpn_ipv6"] = self.calculate_address("icvpn_ipv6_network", (id << 16))
      
-    vars["ipv6_uplink_own_network"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
+    vars["ipv6_uplink_own_gateway"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
+    vars["ipv6_uplink_own_vpnserver"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+2)
 
     self.hosts.append((hostname, vars))
 
