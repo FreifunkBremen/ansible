@@ -10,8 +10,8 @@ Role Variables
 
     icvpn_interface: 'icvpn'
     batman_interface: 'bat-{{ site_code }}'
-    batman_dummy_interface: 'bat-{{ site_code }}-dummy'
-    alfred_interface: 'br-{{ site_code }}'
+    alfred_mtu_interface: 'br-{{ site_code }}-mtu'
+    main_bridge: 'br-{{ site_code }}'
     fastd_interface: vpn-{{ site_code }}
 
 `exit_interface` must be set if the `exit` role is not included in the playbook.

@@ -20,6 +20,7 @@ class TestHosts(unittest2.TestCase):
 
         inv = hosts.Inventory('site.conf',
           ipv6_local_network = "fd2f:5119:f2c::/64",
+          ipv6_uplink_network = "2a06:8782:ffbb::/64",
           icvpn_ipv4_network = "10.207.0.196",
           icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
         )
