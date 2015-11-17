@@ -44,9 +44,7 @@
   notify: restart batadv-vis
 
 - name: Firewall open alfred-port (batman_dummy_interface)
-  set_fact: firewall_open='{{firewall_open}}, {"proto":"udp","port":"16962","interface":"{{ batman_dummy_interface }}" ,"onlyipv6":true}'
-
-- name: Firewall open alfred-port (alfred_interface)
-  set_fact: firewall_open='{{firewall_open}}, {"proto":"udp","port":"16962","interface":"{{ alfred_interface }}" ,"onlyipv6":true}'
-
-
+  mf_add: role=alfred proto=udp port=16962 interface="{{ item }}" onlyipv6=yes
+  with_items:
+  - "{{ alfred_interface }}"
+  - "{{ batman_dummy_interface }}"

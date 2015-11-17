@@ -18,5 +18,5 @@
   - reload ssh
 
 - name: Firewall open ssh-port
-  set_fact: firewall_open='{{firewall_open}},{"proto":"tcp","port":22}'
+  mf_add: role=ssh proto=tcp port=22
 
