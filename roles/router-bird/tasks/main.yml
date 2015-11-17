@@ -36,7 +36,7 @@
   mf_add: role=tinc proto=tcp port=179 interface="{{item}}"
   with_items:
   - "{{ icvpn_interface }}"
-  - "{{ alfred_interface }}"
+  - "{{ main_bridge }}"
 
 - name: Start bird
   service: name={{ item }} state=started enabled=yes
