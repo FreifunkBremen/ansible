@@ -16,7 +16,7 @@ class Inventory:
 
   groups = {}
 
-  def __init__(self, site_conf, ipv6_local_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
+  def __init__(self, site_conf, ipv6_local_network=None, ipv6_uplink_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
 
     # read and parse site.conf
     with open(site_conf,'r') as f:
@@ -27,6 +27,7 @@ class Inventory:
     self.ipv4_network        = ipcalc.Network(self.site["prefix4"])
     self.icvpn_ipv4_network  = ipcalc.Network(icvpn_ipv4_network)
     self.icvpn_ipv6_network  = ipcalc.Network(icvpn_ipv6_network)
+    self.ipv6_uplink_network = ipcalc.Network(ipv6_uplink_network)
     self.ipv6_local_network  = ipcalc.Network(ipv6_local_network)
 
     if "prefix6" in self.site:
@@ -52,6 +53,7 @@ class Inventory:
       "site_code":           self.site["site_code"],
       "ipv4_network":        self.attributeString("ipv4_network"),
       "ipv6_local_network":  self.attributeString("ipv6_local_network"),
+      "ipv6_uplink_network": self.attributeString("ipv6_uplink_network"),
       "ipv6_global_network": self.attributeString("ipv6_global_network"),
     }}
 
@@ -118,6 +120,8 @@ class Group:
     if self.icvpn:
       vars["icvpn_ipv4"] = self.calculate_address("icvpn_ipv4_network", (id << 8))
       vars["icvpn_ipv6"] = self.calculate_address("icvpn_ipv6_network", (id << 16))
+     
+    vars["ipv6_uplink_own_network"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
 
     self.hosts.append((hostname, vars))
 
