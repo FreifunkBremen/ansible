@@ -2,10 +2,11 @@
 
 EXAMPLES = '''
 # Micro Firewall, saves json-rules for convertion to iptables
-- mf_add: role=ssh proto=tcp port=22 interface=eth0 onlyipv6=yes
-- mf_add: role=ssh proto=tcp port=22
+- mf_del: role=ssh proto=tcp port=22 interface=eth0 onlyipv6=yes 
+- mf_del: role=ssh proto=tcp port=22
 '''
 
+#from ansible.constants import mk_boolean
 from ansible.module_utils.basic import *
 import json
 import io
@@ -13,7 +14,7 @@ import os
 
 PATH = '/etc/microfirewall.d/'
 def main():
-	found   = False
+	change   = False
 	module = AnsibleModule(
 		argument_spec={
 			'role': {'required': True, 'type': 'str'},
@@ -50,19 +51,20 @@ def main():
 		with open(filename) as data_file:    
 			data = json.load(data_file)
 
-	# Append rule to role if neccessary
+	newlist = []
+	# Remove rule from role
 	for item in data:
 		if sorted(item.items()) == sorted(obj.items()):
-			found = True
-	if not found:
-		data.append(obj)
+			change = True
+		else:
+			newlist.append(item)
 
-	# Write role	
+	# Write role
 	with io.open(filename, 'w', encoding='utf-8') as f:
-		f.write(unicode(json.dumps(data, ensure_ascii=False)))
+		f.write(unicode(json.dumps(newlist, ensure_ascii=False)))
 
 	module.exit_json(
-        changed=(not found)
-   )
+		changed=change
+	)
 
 main()

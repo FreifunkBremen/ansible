@@ -1,0 +1,34 @@
+#!/usr/bin/python
+
+EXAMPLES = '''
+# Micro Firewall, saves json-rules for convertion to iptables
+- mf_reset: role=dns
+- mf_reset: all
+'''
+from json import dumps
+import io
+from sys import argv
+from os import listdir,makedirs,remove
+from os.path import join,isfile,exists
+
+PATH = '/etc/microfirewall.d/'
+
+def main():
+	change=False
+	if not exists(PATH):
+		makedirs(PATH)
+	if "all" in argv[1]:
+		for file in listdir(PATH):
+			filename = join(PATH,file)
+			if isfile(filename) and '.json' in file:
+				remove(filename)
+		change = True
+	if "=" in argv[1]:
+		(key, value) = argv[1].split("=")
+		if "role" == key:
+			filename = join(PATH,value+'.json')
+			remove(filename)
+			change = True
+
+	print dumps({"changed":change})
+main()
