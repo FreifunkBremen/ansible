@@ -1,0 +1,20 @@
+---
+- name: Install bridge-utils
+  apt: name=bridge-utils
+
+- name: Create batman routing table
+  lineinfile: >
+    dest=/etc/iproute2/rt_tables
+    line="252 {{ ffhb_routing_table }}"
+    regexp="^252 "
+    state="{{ "absent" if ffhb_routing_table == "default" else "present" }}"
+
+- name: Install interfaces file
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/br-{{ site_code }}
+
+- name: Set interfaces up
+  command: ifup br-{{ site_code }}
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'

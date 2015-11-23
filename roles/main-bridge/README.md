@@ -1,12 +1,13 @@
 Role Name
 =========
 
-Install the batman interface
+Install the bridge for Freifunk Bremen VPN gateways
 
 
 Role Variables
 --------------
 
+    ffhb_routing_table: Routing table for default gateway via VPN and ICVPN (default: default-freifunk)
     batman_interface: Interface on which works Batman (default: 'bat-{{ site_code }}' )
 
 
@@ -17,7 +18,7 @@ Example Playbook
       vars:
         site_code: ffhb
       roles:
-         - batman-adv-interface
+         - main-bridge
 
 License
 -------
