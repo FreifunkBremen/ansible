@@ -1,0 +1,3 @@
+---
+batman_interface: bat-{{ site_code }}
+ffhb_routing_table: default-freifunk
