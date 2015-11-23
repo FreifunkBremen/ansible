@@ -22,5 +22,5 @@ iface {{ exit_interface }} inet manual
 	pre-down ip address del {{ exit_address_global }}/32 dev $IFACE
 
 	# Default route
-	post-up  ip route add default via {{ exit_address_peer }} dev $IFACE table default-freifunk
-	pre-down ip route del default via {{ exit_address_peer }} dev $IFACE table default-freifunk
+	post-up  ip route add default via {{ exit_address_peer }} dev $IFACE table {{ ffhb_routing_table }}
+	pre-down ip route del default via {{ exit_address_peer }} dev $IFACE table {{ ffhb_routing_table }}

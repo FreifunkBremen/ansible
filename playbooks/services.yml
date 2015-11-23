@@ -2,7 +2,7 @@
 - hosts: services
   vars:
     batman_gateway: false
-    batman_table: default
+    ffhb_routing_table: default
   roles:
   - apt
   - openssh

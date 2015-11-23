@@ -6,6 +6,7 @@
   - apt
   - openssh
   - batman-adv-14
+  - main-bridge
   - fastd
   - alfred-announce
   - icvpn
