@@ -1,0 +1,10 @@
+---
+- name: Install uplink6 interfaces file
+  template: >
+    src=vpn-uplink6
+    dest=/etc/network/interfaces.d/vpn-uplink6
+
+- name: Set interfaces up
+  command: ifup vpn-uplink6
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'
