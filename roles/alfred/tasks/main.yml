@@ -36,7 +36,7 @@
     mode=0644
   notify: restart alfred
 
-- name: Configurate batadv-vis interfaces
+- name: Configure batadv-vis interfaces
   template: >
     src=batadv-vis-default
     dest=/etc/default/batadv-vis
