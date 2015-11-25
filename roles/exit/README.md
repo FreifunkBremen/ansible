@@ -23,6 +23,12 @@ Role Variables
     exit_openvpn_username: Username for openvpn auth
     exit_openvpn_password: Passwort for openvpn auth
 
+### default (dangerous)
+
+Be aware of the german "Störerhaftung"!
+
+    exit: default
+
 
 Example Playbook
 ----------------
