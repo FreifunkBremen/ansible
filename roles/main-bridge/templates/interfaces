@@ -6,7 +6,6 @@ iface br-{{ site_code }} inet static
 	bridge-maxwait 0
 	address {{ batman_ipv4.address }}
 	netmask {{ batman_ipv4.netmask }}
-{% if ffhb_routing_table != "default" %}
 	# unreachable route in {{ ffhb_routing_table }}
 	# prevents leak of data
 	post-up  ip -4 route add unreachable default metric 2048 table {{ ffhb_routing_table }}
@@ -18,7 +17,6 @@ iface br-{{ site_code }} inet static
 	pre-down ip -4 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
 	post-up  ip -6 rule add iif $IFACE table {{ ffhb_routing_table }} priority 16385
 	pre-down ip -6 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
-{% endif %}
 
 iface br-{{ site_code }} inet6 static
 	address {{ batman_ipv6_local.address }}/64
