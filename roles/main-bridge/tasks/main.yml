@@ -7,7 +7,6 @@
     dest=/etc/iproute2/rt_tables
     line="252 {{ ffhb_routing_table }}"
     regexp="^252 "
-    state="{{ "absent" if ffhb_routing_table == "default" else "present" }}"
 
 - name: Install interfaces file
   template: >
