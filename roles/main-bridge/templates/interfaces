@@ -24,4 +24,6 @@ iface br-{{ site_code }} inet6 static
 {% if batman_ipv6_global %}
 	up   ip -6 addr add {{ batman_ipv6_global.address }}/64 dev $IFACE
 	down ip -6 addr del {{ batman_ipv6_global.address }}/64 dev $IFACE
+	post-up  ip -6 route add 2001:bf7:540::/64 dev $IFACE
+	pre-down ip -6 route add 2001:bf7:540::/64 dev $IFACE
 {% endif %}
