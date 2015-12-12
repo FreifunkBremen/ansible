@@ -1,0 +1,68 @@
+#!/usr/bin/python
+
+EXAMPLES = '''
+# Micro Firewall, saves json-rules for convertion to iptables
+- mf_add: role=ssh proto=tcp port=22 interface=eth0 onlyipv6=yes
+- mf_add: role=ssh proto=tcp port=22
+'''
+
+from ansible.module_utils.basic import *
+import json
+import io
+import os
+
+PATH = '/etc/microfirewall.d/'
+def main():
+	found   = False
+	module = AnsibleModule(
+		argument_spec={
+			'role': {'required': True, 'type': 'str'},
+			'proto': {'required': True, 'type': 'str'},
+			'port': {'required': True, 'type': 'str'},
+			'interface': {'type': 'str'},
+			'onlyipv6': {'type': 'bool'},
+			'onlyipv4': {'type': 'bool'},
+		}
+	)
+	role = module.params['role']
+	proto = module.params['proto']
+	port = module.params['port']
+	interface = module.params['interface']
+	onlyipv6 = module.params['onlyipv6']
+	onlyipv4 = module.params['onlyipv4']
+
+	obj = {"proto":proto,"port":port}
+	if interface is not None:
+		obj["interface"] = interface
+	if onlyipv6 is not None:
+		obj["onlyipv6"] = onlyipv6
+	if onlyipv4 is not None:
+		obj["onlyipv4"] = onlyipv4
+
+
+	if not os.path.exists(PATH):
+		os.makedirs(PATH)
+	filename = os.path.join(PATH,role+'.json')
+	data = []
+
+	# Read role
+	if os.path.isfile(filename):
+		with open(filename) as data_file:    
+			data = json.load(data_file)
+
+	# Append rule to role if neccessary
+	for item in data:
+		if sorted(item.items()) == sorted(obj.items()):
+			found = True
+	if not found:
+		data.append(obj)
+
+	# Write role	
+	with io.open(filename, 'w', encoding='utf-8') as f:
+		f.write(unicode(json.dumps(data, ensure_ascii=False)))
+
+	module.exit_json(
+        changed=(not found)
+   )
+
+main()

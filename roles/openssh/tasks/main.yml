@@ -16,3 +16,7 @@
     value: 'no'
   notify:
   - reload ssh
+
+- name: Firewall open ssh-port
+  mf_add: role=ssh proto=tcp port=22
+

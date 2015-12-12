@@ -36,5 +36,8 @@
   notify:
   - restart fastd
 
+- name: Firewall open fastd-port
+  mf_add: role="fastd_{{fastd_instance}}" proto=udp port="{{fastd_port}}"
+
 - name: Enable fastd instance
   service: name=fastd@{{ fastd_instance }} enabled=yes
