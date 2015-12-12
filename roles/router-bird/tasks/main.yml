@@ -32,6 +32,12 @@
   notify:
   - reload bird6
 
+- name: Firewall open bgp-port (icvpn_interface)
+  mf_add: role=tinc proto=tcp port=179 interface="{{item}}"
+  with_items:
+  - "{{ icvpn_interface }}"
+  - "{{ main_bridge }}"
+
 - name: Start bird
   service: name={{ item }} state=started enabled=yes
   with_items:

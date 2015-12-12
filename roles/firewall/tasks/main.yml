@@ -6,6 +6,10 @@
   apt: name=xtables-addons-dkms
   when: ipp2p_drop
 
+- name: Firewall open port format
+  mf_readall:
+  register: firewall
+
 - name: Install firewall rules
   template: >
     src={{ item }}

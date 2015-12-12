@@ -6,19 +6,14 @@
 :OUTPUT ACCEPT [0:0]
 -A INPUT -i lo -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT -m comment --comment SSH
--A INPUT -p udp -m udp --dport 53 -j ACCEPT -m comment --comment DNS
--A INPUT -p tcp -m tcp --dport 53 -j ACCEPT -m comment --comment DNS
--A INPUT -i {{ main_bridge }} -p udp -m udp --dport 123 -j ACCEPT -m comment --comment NTP
--A INPUT -i {{ icvpn_interface }} -p tcp -m tcp --dport 179 -j ACCEPT -m comment --comment BGP
--A INPUT -i {{ main_bridge }} -p tcp -m tcp --dport 179 -j ACCEPT -m comment --comment BGP
--A INPUT -p tcp -m tcp --dport 656 -j ACCEPT -m comment --comment ICVPN
--A INPUT -p udp -m udp --dport 656 -j ACCEPT -m comment --comment ICVPN
--A INPUT -p udp -m udp --dport 10000 -j ACCEPT -m comment --comment fastd
--A INPUT -p udp -m udp --dport 50000 -j ACCEPT -m comment --comment fastd
--A INPUT -p udp -m udp --dport 50001 -j ACCEPT -m comment --comment fastd
--A INPUT -i {{ alfred_mtu_interface }} -p udp -m udp --dport 16962 -j ACCEPT -m comment --comment alfred
--A INPUT -i {{ main_bridge }} -p udp -m udp --dport 16962 -j ACCEPT -m comment --comment alfred
+
+# Firewall facts
+{% for item in firewall.output %}
+{% if item.onlyipv4 is not defined %}
+-A INPUT {% if item.interface is defined %}-i {{item.interface}} {% endif %} -p {{item.proto}} -m {{item.proto}} --dport {{item.port}} -j ACCEPT
+{% endif %}
+{% endfor%}
+
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # Traffic between our network and ICVPN
