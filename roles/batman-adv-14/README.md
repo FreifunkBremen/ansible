@@ -1,11 +1,11 @@
-Role Name
-=========
+batman-adv-14
+=========================
 
 Install batman-adv compat 14 from universe-factory repo
 
 
 Role Variables
---------------
+-------------------------
 
     pgp_keyserver: keyserver for retreiving the repository key (default: 'pgp.surfnet.nl')
     batman-adv-14_repository: (default: 'http://repo.universe-factory.net/debian sid main')
@@ -13,14 +13,15 @@ Role Variables
     batman-adv-14_pkg_name: (default: 'batman-adv-dkms')
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - batman-adv-14
 
+
 License
--------
+-------------------------
 
 GPLv3

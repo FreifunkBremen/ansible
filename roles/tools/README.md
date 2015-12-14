@@ -1,17 +1,18 @@
-Role Name
-=========
+tools
+=========================
 
 Installing several useful tools
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - tools
 
+
 License
--------
+-------------------------
 
 GPLv3

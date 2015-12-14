@@ -1,17 +1,18 @@
-Role Name
-=========
+ntp-chrony
+=========================
 
 Install NTP server
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - ntp-chrony
 
+
 License
--------
+-------------------------
 
 GPLv3

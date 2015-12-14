@@ -1,17 +1,18 @@
-Role Name
-=========
+system
+=========================
 
 Install sysctl files
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - system
 
+
 License
--------
+-------------------------
 
 GPLv3

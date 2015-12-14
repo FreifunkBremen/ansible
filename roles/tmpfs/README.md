@@ -1,17 +1,18 @@
-Role Name
-=========
+tmpfs
+=========================
 
 Enable tmpfs for /tmp
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - tmpfs
 
+
 License
--------
+-------------------------
 
 GPLv3

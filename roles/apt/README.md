@@ -1,17 +1,18 @@
-Role Name
-=========
+apt
+=========================
 
 Configures APT
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - apt
 
+
 License
--------
+-------------------------
 
 GPLv3
