@@ -1,0 +1,9 @@
+---
+- name: Install ZSH
+  apt: name=zsh
+
+- name: Fetch and install grml zshrc
+  get_url: url='http://git.grml.org/?p=grml-etc-core.git;a=blob_plain;f=etc/zsh/zshrc;hb=HEAD' dest=/etc/zsh/zshrc mode=0644 force=yes
+
+- name: Change shell of user root
+  user: name=root shell=/bin/zsh
