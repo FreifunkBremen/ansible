@@ -3,7 +3,6 @@
   apt: name={{ item }}
   with_items:
     - tinc
-    - sudo
     - python-yaml
 
 - name: Clone ICVPN repository
