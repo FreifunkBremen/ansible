@@ -20,3 +20,6 @@
   notify:
     - reload iptables-v4
     - reload iptables-v6
+
+- name: Copy sysctl file for conntrack
+  copy: src=ipv4-netfilter-ip-conntrack-max.conf dest=/etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf mode=0644 owner=root group=root
