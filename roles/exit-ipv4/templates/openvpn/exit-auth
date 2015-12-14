@@ -1,0 +1,2 @@
+{{ exit_ipv4_openvpn_username }}
+{{ exit_ipv4_openvpn_password }}

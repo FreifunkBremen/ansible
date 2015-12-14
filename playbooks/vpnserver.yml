@@ -10,9 +10,9 @@
   - fastd
   - alfred-announce
   - icvpn
-  - ipv6-exit
+  - exit-ipv4
+  - exit-ipv6
   - ntp-chrony
-  - exit
   - dns-unbound
   - dhcp-dnsmasq
   - system

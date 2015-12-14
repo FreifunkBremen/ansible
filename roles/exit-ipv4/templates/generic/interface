@@ -1,0 +1,26 @@
+# {{ ansible_managed }}
+
+auto {{ exit_ipv4_interface }}
+iface {{ exit_ipv4_interface }} inet manual
+	mode {{ exit_ipv4 }}
+
+	pre-up    ip tunnel add $IFACE mode {{ exit_ipv4 }} remote {{ exit_ipv4_remote }} local {{ exit_ipv4_local }} ttl 255
+	post-down ip tunnel del $IFACE mode {{ exit_ipv4 }} remote {{ exit_ipv4_remote }} local {{ exit_ipv4_local }} ttl 255
+
+	up   ip link set up   dev $IFACE
+	down ip link set down dev $IFACE
+
+	up   ip link set mtu {{ exit_ipv4_mtu }} dev $IFACE
+	down ip link set mtu {{ exit_ipv4_mtu }} dev $IFACE
+
+	# Set address to interface with scope local
+	up   ip address add {{ exit_ipv4_address }}/32 peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
+	down ip address del {{ exit_ipv4_address }}/32 peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
+
+	# Set address for NAT
+	post-up  ip address add {{ exit_ipv4_address_global }}/32 dev $IFACE
+	pre-down ip address del {{ exit_ipv4_address_global }}/32 dev $IFACE
+
+	# Default route
+	post-up  ip route add default via {{ exit_ipv4_address_peer }} dev $IFACE table {{ ffhb_routing_table }}
+	pre-down ip route del default via {{ exit_ipv4_address_peer }} dev $IFACE table {{ ffhb_routing_table }}

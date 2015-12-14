@@ -1,11 +1,11 @@
 ---
 - name: Include openvpn
   include: openvpn.yml
-  when: exit == "openvpn"
+  when: exit_ipv4 == "openvpn"
 
 - name: Include generic
   include: generic.yml
-  when: exit.lower() in ["gre","ipip"]
+  when: exit_ipv4.lower() in ["gre", "ipip"]
 
 - name: Include default
   include: default.yml

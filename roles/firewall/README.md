@@ -1,12 +1,11 @@
-Role Name
-=========
+firewall
+=========================
 
 Configure firewall
 
 
-
 Role Variables
---------------
+-------------------------
 
     icvpn_interface: 'icvpn'
     batman_interface: 'bat-{{ site_code }}'
@@ -14,16 +13,18 @@ Role Variables
     main_bridge: 'br-{{ site_code }}'
     fastd_interface: vpn-{{ site_code }}
 
-`exit_interface` must be set if the `exit` role is not included in the playbook.
+`exit_ipv4_interface` must be set if the `exit_ipv4` role is not included in the playbook.
 
-Example Playbook
-----------------
+
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - firewall
 
+
 License
--------
+-------------------------
 
 GPLv3
