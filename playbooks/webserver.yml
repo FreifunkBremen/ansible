@@ -1,0 +1,8 @@
+---
+- hosts: webserver
+  roles:
+  - apt
+  - openssh
+  - system
+  - tmpfs
+  - tools
