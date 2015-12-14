@@ -1,0 +1,4 @@
+---
+- name: Include openvpn
+  include: openvpn.yml
+  when: offload == "openvpn"

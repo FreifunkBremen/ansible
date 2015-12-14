@@ -9,7 +9,7 @@ Role Variables
 
 ### OpenVPN Offloader
 
-    offloader: openvpn
+    offload: openvpn
 
 
 Example Playbook
@@ -17,7 +17,7 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: offloader, offloader: "openvpn" }
+         - { role: offloader, offload: "openvpn" }
 
 License
 -------
