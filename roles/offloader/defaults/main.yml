@@ -1,2 +1,4 @@
 ---
+offload_port: 30001
 offload_interface: vpn-offload
+main_bridge: br-{{ site_code }}
