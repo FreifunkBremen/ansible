@@ -15,7 +15,7 @@
     src=openvpn/exit-auth
     dest=/etc/openvpn/
     mode=0600
-  when: exit_openvpn_username is defined
+  when: exit_ipv4_openvpn_username is defined
   notify: restart openvpn
 
 - name: Install script

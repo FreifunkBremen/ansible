@@ -1,5 +1,0 @@
----
-exit: ""
-exit_mtu: 1400
-exit_interface: vpn-uplink
-ffhb_routing_table: default-freifunk

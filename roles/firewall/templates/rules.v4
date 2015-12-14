@@ -28,14 +28,14 @@
 
 {% if ipp2p_drop %}
 {% for protocol in ipp2p_protocols %}
--A FORWARD -i {{ main_bridge }} -o {{ exit_interface }} -m ipp2p --{{protocol}} -j DROP
--A FORWARD -i {{ exit_interface }} -o {{ main_bridge }} -m ipp2p --{{protocol}} -j DROP
+-A FORWARD -i {{ main_bridge }} -o {{ exit_ipv4_interface }} -m ipp2p --{{protocol}} -j DROP
+-A FORWARD -i {{ exit_ipv4_interface }} -o {{ main_bridge }} -m ipp2p --{{protocol}} -j DROP
 {% endfor %}
 {% endif %}
 
 # Traffic from out network to the Internet
--A FORWARD -i {{ main_bridge }} -o {{ exit_interface }} -j ACCEPT
--A FORWARD -o {{ main_bridge }} -i {{ exit_interface }} -j ACCEPT
+-A FORWARD -i {{ main_bridge }} -o {{ exit_ipv4_interface }} -j ACCEPT
+-A FORWARD -o {{ main_bridge }} -i {{ exit_ipv4_interface }} -j ACCEPT
 
 # Reject all other forwarding traffic
 -A FORWARD -j REJECT --reject-with icmp-admin-prohibited
@@ -46,5 +46,5 @@ COMMIT
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s {{ ipv4_network }} -o {{ exit_interface }} -j MASQUERADE
+-A POSTROUTING -s {{ ipv4_network }} -o {{ exit_ipv4_interface }} -j MASQUERADE
 COMMIT
