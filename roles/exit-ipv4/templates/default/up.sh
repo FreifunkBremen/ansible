@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /usr/bin/env sh
 
 # Copy default route
 if [ "$IFACE" = "{{ ansible_default_ipv4.interface }}" ]; then
