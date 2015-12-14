@@ -1,4 +1,4 @@
-dns-nsd
+nsd
 =========================
 
 Install and configure NSD
@@ -9,7 +9,7 @@ Usage
 
     - hosts: servers
       roles:
-         - dns-nsd
+         - nsd
 
 
 License

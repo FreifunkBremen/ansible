@@ -13,6 +13,6 @@ sudo -u nobody /opt/{{ site_code }}/icvpn-scripts/mkbgp -6 -s "$DATADIR" -x brem
 birdc configure > /dev/null
 birdc6 configure > /dev/null
 
-# TODO: This doesn't belong here but in the dns-unbound role
+# TODO: This doesn't belong here but in the unbound role
 sudo -u nobody /opt/{{ site_code }}/icvpn-scripts/mkdns -s "$DATADIR" -x bremen -f unbound > /etc/unbound/unbound.conf.d/icvpn.conf
 unbound-control reload > /dev/null
