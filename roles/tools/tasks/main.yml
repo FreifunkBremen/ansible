@@ -5,7 +5,6 @@
     - ca-certificates
     - curl
     - less
-    - lsb-release
     - lsof
     - molly-guard
     - rkhunter
