@@ -1,0 +1,7 @@
+[user]
+	name = ffhb root-user
+	email = server@bremen.freifunk.net
+[pull]
+	rebase = true
+[push]
+	default = simple
