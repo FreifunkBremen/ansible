@@ -6,7 +6,6 @@
     - curl
     - less
     - molly-guard
-    - rkhunter
     - screen
     - tcpdump
     - tmux
