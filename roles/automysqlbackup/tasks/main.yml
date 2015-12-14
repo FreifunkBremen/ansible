@@ -1,0 +1,3 @@
+---
+- name: Install Backup for MySQL
+  apt: name=automysqlbackup state=present
