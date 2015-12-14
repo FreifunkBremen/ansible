@@ -1,0 +1,8 @@
+---
+- name: Install deborphan
+  apt: name={{item}}
+  with_items:
+    - deborphan
+
+- name: Deinstall orphaned packages
+  shell: apt-get --assume-yes purge $(deborphan | xargs)
