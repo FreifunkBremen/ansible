@@ -1,4 +1,4 @@
-ntp-chrony
+chrony
 =========================
 
 Install NTP server
@@ -9,7 +9,7 @@ Usage
 
     - hosts: servers
       roles:
-         - ntp-chrony
+         - chrony
 
 
 License

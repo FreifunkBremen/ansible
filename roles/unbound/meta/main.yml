@@ -1,6 +1,6 @@
 ---
 dependencies:
-  - dns-nsd
+  - nsd
 galaxy_info:
   platforms:
     - name: Debian

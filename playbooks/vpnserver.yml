@@ -12,9 +12,9 @@
   - icvpn
   - exit-ipv4
   - exit-ipv6
-  - ntp-chrony
-  - dns-unbound
-  - dhcp-dnsmasq
+  - chrony
+  - unbound
+  - dnsmasq
   - system
   - tmpfs
   - tools

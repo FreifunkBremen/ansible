@@ -55,9 +55,9 @@ The following roles are excecuted in the playbook vpnserver:
     icvpn
     exit-ipv4
     exit-ipv6
-    ntp-chrony
-    dns-unbound
-    dhcp-dnsmasq
+    chrony
+    unbound
+    dnsmasq
     system
 
 For detailed information about the roles see README.md inside of the role.

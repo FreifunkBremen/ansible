@@ -1,7 +1,7 @@
-dhcp-dnsmasq
+unbound
 =========================
 
-Install and configure dnsmasq for DHCP
+Install and configure unbound
 
 
 Usage
@@ -9,7 +9,7 @@ Usage
 
     - hosts: servers
       roles:
-         - dhcp-dnsmasq
+         - unbound
 
 
 License
