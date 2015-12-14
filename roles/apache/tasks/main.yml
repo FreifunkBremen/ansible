@@ -1,0 +1,52 @@
+---
+- name: Install apache2
+  apt: name={{item}}
+  with_items:
+    - apache2
+    - apache2-suexec-pristine
+    - libapache2-mod-fcgid
+
+- name: Start apache2
+  service: name=apache2 state=started enabled=yes
+
+- name: Copy configuration files
+  copy: src={{item}} dest=/etc/apache2/conf-available/{{item}}
+  with_items:
+    - anon-logs.conf
+    - default-dir-options.conf
+
+- name: Copy user included configuration files
+  copy: src=user-php-exec.conf dest=/etc/apache2/user-php-exec.conf
+
+- name: Enable needed modules
+  apache2_module: state=present name={{item}}
+  with_items:
+    - access_compat
+    - actions
+    - alias
+    - auth_basic
+    - auth_digest
+    - authn_core
+    - authn_file
+    - authz_core
+    - authz_host
+    - authz_user
+    - autoindex
+    - cgid
+    - deflate
+    - dir
+    - env
+    - fcgid
+    - filter
+    - mime
+    - mpm_event
+    - negotiation
+    - proxy
+    - proxy_http
+    - rewrite
+    - setenvif
+    - socache_shmcb
+    - ssl
+    - status
+    - suexec
+    - unique_id
