@@ -5,7 +5,6 @@
     - ca-certificates
     - curl
     - less
-    - lsof
     - molly-guard
     - rkhunter
     - screen
