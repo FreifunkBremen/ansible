@@ -1,14 +1,14 @@
 ---
+dependencies: []
 galaxy_info:
   author: kaleng
-  description: install batman-adv compat 14
+  categories:
+    - networking
+  description: "install batman-adv compat 14"
   license: GPLv3
   min_ansible_version: 1.6
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
-  categories:
-  - networking
-dependencies: []
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie

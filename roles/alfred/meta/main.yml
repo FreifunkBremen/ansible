@@ -1,9 +1,9 @@
 ---
+dependencies:
+  - batman-adv-14
 galaxy_info:
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
-dependencies:
-- batman-adv-14
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie

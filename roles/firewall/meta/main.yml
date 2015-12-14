@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
