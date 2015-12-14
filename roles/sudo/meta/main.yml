@@ -1,8 +1,4 @@
 ---
-dependencies:
-  - git
-  - router-bird
-  - sudo
 galaxy_info:
   platforms:
     - name: Debian
