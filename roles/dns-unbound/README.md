@@ -1,17 +1,18 @@
-Role Name
-=========
+dns-unbound
+=========================
 
 Install and configure unbound
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - dns-unbound
 
+
 License
--------
+-------------------------
 
 GPLv3

@@ -1,11 +1,11 @@
-Role Name
-=========
+alfred
+=========================
 
 Install alfred from debian.draic.info repo
 
 
 Role Variables
---------------
+-------------------------
 
     alfred_repository: (default: 'http://debian.draic.info/ wheezy main')
     alfred_master: Start Alfred-Daemon on Mastermode (default false)
@@ -13,8 +13,8 @@ Role Variables
     main_bridge: Interface on which Listen Batman Nodes(default:'br-{{ site_code }}' )
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       vars:
@@ -23,6 +23,6 @@ Example Playbook
          - alfred
 
 License
--------
+-------------------------
 
 GPLv3

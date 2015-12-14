@@ -1,17 +1,17 @@
-Role Name
-=========
+batman-adv-interface
+=========================
 
 Install the batman interface
 
 
 Role Variables
---------------
+-------------------------
 
     batman_interface: Interface on which works Batman (default: 'bat-{{ site_code }}' )
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       vars:
@@ -19,7 +19,8 @@ Example Playbook
       roles:
          - batman-adv-interface
 
+
 License
--------
+-------------------------
 
 GPLv3

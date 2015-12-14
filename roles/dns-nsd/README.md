@@ -1,17 +1,18 @@
-Role Name
-=========
+dns-nsd
+=========================
 
 Install and configure NSD
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - dns-nsd
 
+
 License
--------
+-------------------------
 
 GPLv3

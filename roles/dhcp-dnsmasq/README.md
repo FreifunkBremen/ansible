@@ -1,17 +1,18 @@
-Role Name
-=========
+dhcp-dnsmasq
+=========================
 
 Install and configure dnsmasq for DHCP
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - dhcp-dnsmasq
 
+
 License
--------
+-------------------------
 
 GPLv3

@@ -1,17 +1,18 @@
-Role Name
-=========
+router-bird
+=========================
 
 Install bird
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - router-bird
 
+
 License
--------
+-------------------------
 
 GPLv3

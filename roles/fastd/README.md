@@ -1,11 +1,11 @@
-Role Name
-=========
+fastd
+=========================
 
 Install fastd
 
 
 Configuration
-----------------
+-------------------------
 
 This role creates three instances of fastd:
 
@@ -14,14 +14,15 @@ This role creates three instances of fastd:
 * `/etc/fastd/{{ site_code }}-backbone` listening on port 50001 (IPv4 and IPv6) for only known peers
 
 
-Example Playbook
-----------------
+Usage
+-------------------------
 
     - hosts: servers
       roles:
          - fastd
 
+
 License
--------
+-------------------------
 
 GPLv3
