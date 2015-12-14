@@ -1,10 +1,10 @@
 ---
+dependencies:
+  - batman-adv-interface
+  - git
 galaxy_info:
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
-dependencies:
-- batman-adv-interface
-- git
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie

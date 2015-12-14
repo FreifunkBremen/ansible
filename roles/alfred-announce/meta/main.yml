@@ -1,10 +1,10 @@
 ---
+dependencies:
+  - alfred
+  - git
 galaxy_info:
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
-dependencies:
-- alfred
-- git
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie

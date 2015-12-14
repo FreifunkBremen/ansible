@@ -1,10 +1,10 @@
 ---
+dependencies:
+  - git
+  - router-bird
 galaxy_info:
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
-dependencies:
-- git
-- router-bird
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie

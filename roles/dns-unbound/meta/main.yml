@@ -1,9 +1,9 @@
 ---
+dependencies:
+  - dns-nsd
 galaxy_info:
   platforms:
-  - name: Debian
-    versions:
-    - wheezy
-    - jessie
-dependencies:
-- dns-nsd
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
