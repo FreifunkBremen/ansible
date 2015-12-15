@@ -1,0 +1,15 @@
+---
+- name: Add user
+  user: name=ffhb-wiki home=/home/ffhb-wiki shell=/bin/zsh
+
+- name: Create needed folder structure
+  file: path={{ item }} state=directory recurse=yes owner=ffhb-wiki group=ffhb-wiki mode=0755
+  with_items:
+  - /home/ffhb-wiki/.opt
+  - /home/ffhb-wiki/.var/gollum-envs
+
+- name: Clone gollum git repository
+  git: repo=https://github.com/gollum/gollum.git dest=/home/ffhb-wiki/.opt/gollum
+
+- name: Install dependencies via bundler
+  shell: bundle install --path .bundle chdir=/home/ffhb-wiki/.opt/gollum sudo=true sudo_user=ffhb-wiki
