@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+# These environment variables are sometimes needed by the running daemons
+export USER=ffhb
+export HOME=/home/ffhb
+
+export GOLLUM_ENV_PATH="$HOME/.var/gollum-envs/ff-bremen"
+export GOLLUM_BASE_PATH='/'
+export GOLLUM_BIND_ADDR='127.0.0.1'
+export GOLLUM_BIND_PORT='63112'
+
+# Include the user-specific profile, it's actually called .profile on debian.
+. /etc/profile.d/ruby_version.sh
+
+cd $HOME/.opt/gollum
+# Now let's go!
+exec bundle exec bin/gollum --port "${GOLLUM_BIND_PORT}" --host "${GOLLUM_BIND_ADDR}" --adapter rugged --live-preview --css --h1-title "${GOLLUM_ENV_PATH}" 2>&1
