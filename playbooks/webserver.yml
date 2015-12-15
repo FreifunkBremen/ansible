@@ -6,3 +6,5 @@
   - system
   - tmpfs
   - tools
+  - apache
+  - gatemon
