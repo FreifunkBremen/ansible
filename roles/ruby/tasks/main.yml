@@ -1,0 +1,10 @@
+---
+- name: Install Ruby
+  apt: name={{item}}
+  with_items:
+    - build-essential
+    - bundler
+    - libsqlite3-dev
+    - ruby
+    - ruby-dev
+    - ruby-i18n
