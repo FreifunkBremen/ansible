@@ -7,3 +7,6 @@
 
 - name: Clone gatemon git repository
   git: repo=https://github.com/FreifunkBremen/gatemon-html.git dest=/home/ffhb-status/domains/status.ffhb.tk
+
+- name: Change ownership
+  shell: chown -R ffhb-status:ffhb-status /home/ffhb-status/domains/status.ffhb.tk
