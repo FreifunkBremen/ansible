@@ -1,5 +1,6 @@
 ---
 dependencies:
+  - apache
   - php
 galaxy_info:
   platforms:
