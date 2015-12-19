@@ -2,6 +2,7 @@
 dependencies:
   - apt
   - sudo
+  - zsh
   - apache
   - php
   - ruby

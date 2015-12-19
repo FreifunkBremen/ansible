@@ -1,6 +1,6 @@
 ---
 - name: Add user
-  user: name={{ website_user }} home=/home/{{ website_user }}
+  user: name={{ website_user }} home=/home/{{ website_user }} shell=/bin/zsh
 
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ website_user }} group={{ website_group }} mode=0755
