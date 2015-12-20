@@ -11,15 +11,18 @@
   - /var/www/{{ website_user }}/domains/{{ website_domain }}/
   - /var/www/{{ website_user }}/cgi-bin/
 
-- name: Install Jekyll and dependencies
-  gem: name={{ item.name }} version={{ item.version }} user_install=no
-  with_items:
-  - { name: 'jekyll', version: '3.0.1' }
-  - { name: 'jekyll-paginate', version: '1.1.0' }
-  - { name: 'redcarpet', version: '3.3.3' }
-
 - name: Clone content repository
   git: repo=https://github.com/FreifunkBremen/bremen.freifunk.net dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/ force=yes
+  sudo: true
+  sudo_user: "{{ website_user }}"
+
+- name: Install Gemfile for Jekyll
+  copy: src=Gemfile dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/ owner={{ website_user }} group={{ website_user }}
+
+- name: Install Jekyll and dependencies via bundler
+  command: bundle install --path .bundle
+  args:
+    chdir: /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/
   sudo: true
   sudo_user: "{{ website_user }}"
 

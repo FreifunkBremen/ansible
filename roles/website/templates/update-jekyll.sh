@@ -15,4 +15,4 @@ git submodule --quiet update --init
 
 rm -f "$SOURCE/.jekyll-metadata"
 
-exec jekyll build --quiet --destination "$DESTINATION" --incremental
+exec bundle exec jekyll build --quiet --destination "$DESTINATION" --incremental
