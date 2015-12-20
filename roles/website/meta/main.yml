@@ -1,0 +1,12 @@
+---
+dependencies:
+  - apt
+  - sudo
+  - apache
+  - php
+  - ruby
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - jessie

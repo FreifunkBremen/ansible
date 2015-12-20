@@ -1,0 +1,50 @@
+---
+- name: Add user
+  user: name={{ website_user }} home=/home/{{ website_user }}
+
+- name: Create needed folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ website_user }} group={{ website_group }} mode=0755
+  with_items:
+  - /home/{{ website_user }}/.local/bin/
+  - /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/
+  - /home/{{ website_user }}/.var/log/
+  - /var/www/{{ website_user }}/domains/{{ website_domain }}/
+  - /var/www/{{ website_user }}/cgi-bin/
+
+- name: Install Jekyll and dependencies
+  gem: name={{ item.name }} version={{ item.version }} user_install=no
+  with_items:
+  - { name: 'jekyll', version: '3.0.1' }
+  - { name: 'jekyll-paginate', version: '1.1.0' }
+  - { name: 'redcarpet', version: '3.3.3' }
+
+- name: Clone content repository
+  git: repo=https://github.com/FreifunkBremen/bremen.freifunk.net dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/ force=yes
+  sudo: true
+  sudo_user: "{{ website_user }}"
+
+- name: Install CGI wrapper
+  template: src=php-cgi-starter dest=/var/www/{{ website_user }}/cgi-bin/ mode=755 owner={{ website_user }} group={{ website_user }}
+
+- name: Install .htaccess file
+  copy: src=htaccess dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess owner={{ website_user }} group={{ website_user }}
+
+- name: Create log file for Github webhook target
+  file: path=/home/{{ website_user }}/.var/log/github-webhook.log state=touch owner={{ website_user }} group={{ website_user }}
+
+- name: Install Github webhook target
+  template: src=webhook.php dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/ owner={{ website_user }} group={{ website_user }}
+
+- name: Install Jekyll update script
+  template: src=update-jekyll.sh dest=/home/{{ website_user }}/.local/bin/update-jekyll.sh mode=755 owner={{ website_user }} group={{ website_user }}
+
+- name: Install Apache site config
+  template: src=ffhb-website.conf dest=/etc/apache2/sites-available/ mode=644
+
+- name: Enable Apache CGI module
+  command: a2enmod cgi
+  notify: restart apache
+
+- name: Enable Apache site config
+  command: a2ensite ffhb-website
+  notify: restart apache

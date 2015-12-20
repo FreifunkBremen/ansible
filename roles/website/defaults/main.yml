@@ -1,0 +1,6 @@
+---
+website_email: 'info@bremen.freifunk.net'
+website_user: 'ffhb-website'
+website_group: 'ffhb-website'
+website_domain: 'bremen.freifunk.net'
+#website_webhook_secret: '' # must be provided on command line
