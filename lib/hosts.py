@@ -7,10 +7,12 @@
 import copy
 import ipcalc
 import json
+import sys
 from slpp import slpp as lua
 
 if ipcalc.__version__.startswith("0.5."):
-  raise Exception("ipcalc 0.5 ist zu alt")
+  sys.stderr.write("ipcalc 0.5 ist zu alt, nutze pip es zu aktualisieren (z.B. pip install --upgrade ipcalc)")
+  sys.exit(1)
 
 class Inventory:
 
