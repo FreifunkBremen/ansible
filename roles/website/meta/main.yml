@@ -6,6 +6,7 @@ dependencies:
   - apache
   - php
   - ruby
+  - git
 galaxy_info:
   platforms:
     - name: Debian
