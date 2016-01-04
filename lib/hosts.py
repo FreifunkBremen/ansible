@@ -116,13 +116,13 @@ class Group:
       vars["dhcp"] = {
         "netmask":     str(self.inventory.ipv4_network.netmask()),
         "range_begin": str(ipcalc.IP(begin)),
-        "range_end":   str(ipcalc.IP(begin+255)),
+        "range_end":   str(ipcalc.IP(begin+256*10-1)),
       }
 
     if self.icvpn:
       vars["icvpn_ipv4"] = self.calculate_address("icvpn_ipv4_network", (id << 8))
       vars["icvpn_ipv6"] = self.calculate_address("icvpn_ipv6_network", (id << 16))
-     
+
     vars["ipv6_uplink_own_gateway"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
     vars["ipv6_uplink_own_vpnserver"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+2)
 
