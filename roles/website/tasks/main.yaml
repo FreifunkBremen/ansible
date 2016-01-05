@@ -44,6 +44,13 @@
 - name: Install Jekyll update script
   template: src=update-jekyll.sh dest=/home/{{ website_user }}/.local/bin/update-jekyll.sh mode=755 owner={{ website_user }} group={{ website_user }}
 
+# TODO: this should be replaced by some actually signed certificate:
+- name: Generate self-signed SSL certificate
+  command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ website_domain }}.pem -keyout /etc/ssl/private/{{ website_domain }}.key -days 365 -subj "/CN={{ website_domain }}"
+  args:
+    creates: /etc/ssl/certs/{{ website_domain }}.pem
+    creates: /etc/ssl/private/{{ website_domain }}.key
+
 - name: Install Apache site config
   template: src=ffhb-website.conf dest=/etc/apache2/sites-available/ mode=644
 
