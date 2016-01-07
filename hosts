@@ -26,6 +26,5 @@ grp.host(5, "vpn05.bremen.freifunk.net", exit_ipv4="openvpn")
 grp.host(6, "vpn06.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0")
 
 grp = inv.group("services")
-grp.host(10, "monitoring.ffhb.ml")
 
 print inv.json_dump(indent=4)
