@@ -15,6 +15,14 @@
   become: yes
   become_user: "{{ wiki_user }}"
 
+- name: Install dependencies via apt
+  apt: name={{ item }}
+  with_items:
+  - libicu-dev
+  - zlib1g-dev
+  - cmake
+  - pkg-config
+
 - name: Install dependencies via bundler
   shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum
   become: yes
