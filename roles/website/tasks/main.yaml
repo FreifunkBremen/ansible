@@ -8,6 +8,7 @@
   - /home/{{ website_user }}/.local/bin/
   - /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/
   - /home/{{ website_user }}/.var/log/
+  - /home/{{ website_user }}/.cache/
   - /var/www/{{ website_user }}/domains/{{ website_domain }}/
   - /var/www/{{ website_user }}/cgi-bin/
 
@@ -43,6 +44,38 @@
 
 - name: Install Jekyll update script
   template: src=update-jekyll.sh dest=/home/{{ website_user }}/.local/bin/update-jekyll.sh mode=755 owner={{ website_user }} group={{ website_user }}
+
+
+# Meshviewer
+- name: Install ruby-sass
+  apt: name=ruby-sass
+
+- name: Clone Meshviewer repository
+  git: repo=https://github.com/FreifunkBremen/meshviewer.git dest=/home/{{ website_user }}/.cache/meshviewer/ force=yes
+  sudo: true
+  sudo_user: "{{ website_user }}"
+
+- name: Install Meshviewer dependencies
+  npm: path=/home/{{ website_user }}/.cache/meshviewer
+
+- name: Install grunt-cli for Meshviewer
+  npm: name=grunt-cli path=/home/{{ website_user }}/.cache/meshviewer
+
+- name: Build Meshviewer
+  command: chdir=/home/{{ website_user }}/.cache/meshviewer ./node_modules/.bin/grunt
+  args:
+    creates: /home/{{ website_user }}/.cache/meshviewer/build/
+
+- name: Copy built Meshviewer to www directory
+  command: cp -r /home/{{ website_user }}/.cache/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+  args:
+    creates: /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+
+- name: Install Meshviewer config
+  copy: src=config.json dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+
+
+# Apache
 
 # TODO: this should be replaced by some actually signed certificate:
 - name: Generate self-signed SSL certificate
