@@ -37,8 +37,6 @@
     fastd_interface: "{{ site_code }}"
     fastd_bind:      any
     fastd_anonymous: true
-    fastd:
-      peers: {}
 
 - name: Include legacy fastd instance
   include: instance.yml
@@ -58,6 +56,8 @@
     fastd_interface: "{{ fastd_backbone_interface }}"
     fastd_port:      "{{ fastd_backbone_port }}"
     fastd_anonymous: false
+    fastd:
+      peers: {}
 
 - name: Generate fastd secret
   fastd_key: /etc/fastd/{{ site_code }}/secret.conf
