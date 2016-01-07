@@ -1,15 +1,36 @@
 ---
 - name: Add user
-  user: name=ffhb-wiki home=/home/ffhb-wiki shell=/bin/zsh
+  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh
 
 - name: Create needed folder structure
-  file: path={{ item }} state=directory recurse=yes owner=ffhb-wiki group=ffhb-wiki mode=0755
+  file: path={{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
   with_items:
-  - /home/ffhb-wiki/.opt
-  - /home/ffhb-wiki/.var/gollum-envs
+  - /home/{{ wiki_user }}/.opt/
+  - /home/{{ wiki_user }}/.var/gollum-envs/
+  - /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/
+  - /var/www/{{ wiki_user }}/cgi-bin/
 
-- name: Clone gollum git repository
-  git: repo=https://github.com/gollum/gollum.git dest=/home/ffhb-wiki/.opt/gollum
+- name: Clone gollum repository
+  git: repo=https://github.com/gollum/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum become=yes become_user={{ wiki_user }}
 
 - name: Install dependencies via bundler
-  shell: bundle install --path .bundle chdir=/home/ffhb-wiki/.opt/gollum sudo=true sudo_user=ffhb-wiki
+  shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum become=yes become_user={{ wiki_user }}
+
+- name: Clone wiki repository
+  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen become=yes become_user={{ wiki_user }}
+
+- name: Install .htaccess file
+  copy: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess owner={{ wiki_user }} group={{ wiki_user }}
+
+- name: Install robots.txt file
+  copy: src=robots.txt dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt owner={{ wiki_user }} group={{ wiki_user }}
+
+- name: Install favicon.ico file
+  copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_user }}
+
+- name: Install Apache site config
+  template: src=ffhb-wiki.conf dest=/etc/apache2/sites-available/ mode=644
+
+- name: Enable Apache site config
+  command: a2ensite ffhb-wiki
+  notify: restart apache
