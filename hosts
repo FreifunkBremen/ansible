@@ -24,7 +24,6 @@ grp.host(3, "vpn03.bremen.freifunk.net", exit_ipv4="gre", exit_ipv6_remote=False
 grp.host(4, "vpn04.bremen.freifunk.net", exit_ipv4="gre", ansible_ssh_port=60023)
 grp.host(5, "vpn05.bremen.freifunk.net", exit_ipv4="openvpn")
 grp.host(6, "vpn06.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0")
-grp.host(7, "ffhb.sum7.de", exit_ipv4="openvpn")
 
 grp = inv.group("services")
 grp.host(10, "monitoring.ffhb.ml")
