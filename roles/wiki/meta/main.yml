@@ -1,7 +1,11 @@
 ---
 dependencies:
   - apache
+  - apt
+  - git
   - ruby
+  - sudo
+  - zsh
 galaxy_info:
   platforms:
     - name: Debian
