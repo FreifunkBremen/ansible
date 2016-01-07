@@ -21,6 +21,12 @@
     - reload iptables-v4
     - reload iptables-v6
 
+- name: Add nf_conntrack_ipv4 to /etc/modules
+  lineinfile: dest=/etc/modules regexp="nf_conntrack_ipv4" line=nf_conntrack_ipv4
+
 - name: Copy sysctl file for conntrack
   copy: src=ipv4-netfilter-ip-conntrack-max.conf dest=/etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf mode=0644 owner=root group=root
   notify: reload sysctl
+
+- name: Add sysctl call to /etc/rc.local
+  lineinfile: name=/etc/rc.local insertbefore="^exit" line="sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf"
