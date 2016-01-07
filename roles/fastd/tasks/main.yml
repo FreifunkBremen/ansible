@@ -49,6 +49,8 @@
     fastd_port:      "{{ fastd_legacy_port }}"
     fastd_mtu:       "{{ fastd_legacy_mtu }}"
     fastd_anonymous: true
+    fastd:
+      peers: {}
 
 - name: Include backbone fastd instance
   include: instance.yml
