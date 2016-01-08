@@ -11,13 +11,19 @@
   - /var/www/{{ wiki_user }}/cgi-bin/
 
 - name: Clone gollum repository
-  git: repo=https://github.com/gollum/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum become=yes become_user={{ wiki_user }}
+  git: repo=https://github.com/gollum/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum
+  become: yes
+  become_user: {{ wiki_user }}
 
 - name: Install dependencies via bundler
-  shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum become=yes become_user={{ wiki_user }}
+  shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum
+  become: yes
+  become_user: {{ wiki_user }}
 
 - name: Clone wiki repository
-  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen become=yes become_user={{ wiki_user }}
+  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
+  become: yes
+  become_user: {{ wiki_user }}
 
 - name: Install .htaccess file
   copy: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess owner={{ wiki_user }} group={{ wiki_user }}
