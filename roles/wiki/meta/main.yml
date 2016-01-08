@@ -2,6 +2,7 @@
 dependencies:
   - apache
   - apt
+  - daemontools
   - git
   - ruby
   - sudo
