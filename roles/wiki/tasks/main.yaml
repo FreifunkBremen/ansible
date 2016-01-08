@@ -1,6 +1,6 @@
 ---
 - name: Add user
-  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh
+  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh groups=webusers
 
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
