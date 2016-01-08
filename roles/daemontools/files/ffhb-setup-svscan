@@ -1,0 +1,110 @@
+#! /usr/bin/env bash
+########################################################################
+#
+# 2014-08
+# Moritz Kaspar Rudert (mortzu)
+# mr@planetcyborg.de
+#
+# 2011-03-03
+# Jonas Pasche
+# jpasche@jonaspasche.com
+#
+########################################################################
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+########################################################################
+#
+# This script sets up a personal ~/.config/service directory for svscan
+#
+########################################################################
+
+# Set path to defaults
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+if [ "$(id -nu)" = 'root' ]; then
+  if [ -z "${SUDO_USER}" ]; then
+    echo 'This script is intended to be run by sudo!' >&2
+    exit 1
+  fi
+
+  # Confirm that there aren't any bad characters in the username
+  # w00t for some reason, usernames are to be only 7 chars long. Increasing to 10
+  if ! grep -q -E '^[a-z0-9-]{0,32}$' <<< "${SUDO_USER}"; then
+    echo 'SUDO_USER does not contain a valid username!' >&2
+    exit 2
+  fi
+
+  if [ ! -d /etc/service ]; then
+    echo '/etc/service does not exist!' >&2
+    mkdir -p /etc/service
+  fi
+
+  # This is the user's ~/service directory ("eval echo" is needed for tilde expansion)
+  SERVICE_DIR="$(eval echo ~${SUDO_USER}/.config/service)"
+
+  # Check if we already have some job running here
+  for DIR in "/etc/service/svscan-${SUDO_USER}" "/etc/run-svscan-${SUDO_USER}"; do
+    if [ -d "$DIR" ]; then
+      echo "The $DIR directory already exists!" >&2
+      exit 4
+    fi
+  done
+
+  echo "Creating the /etc/run-svscan-${SUDO_USER}/run script"
+  mkdir -p "/etc/run-svscan-${SUDO_USER}"
+  cat <<__EOF__ > "/etc/run-svscan-${SUDO_USER}/run"
+#! /usr/bin/env bash
+ulimit -u 300
+exec setuidgid ${SUDO_USER} /usr/bin/svscan ${SERVICE_DIR} 2>&1
+__EOF__
+  chmod 755 "/etc/run-svscan-${SUDO_USER}/run"
+
+  echo "Symlinking /etc/run-svscan-${SUDO_USER} to /etc/service/svscan-${SUDO_USER} to start the service"
+  ln -s "/etc/run-svscan-${SUDO_USER}" "/etc/service/svscan-${SUDO_USER}"
+
+  WAIT=0
+  echo -n 'Waiting for the service to start ...'
+  while [ $WAIT -lt 7 ]; do
+    WAIT=$(($WAIT+1))
+    echo -n " $WAIT"
+    if svok "/etc/service/svscan-${SUDO_USER}"; then
+      break
+    fi
+    sleep 1
+  done
+
+  if ! svok "/etc/service/svscan-${SUDO_USER}" 2>/dev/null; then
+    echo ' failed :-(' >&2
+    echo "We're really sorry; this shouldn't have happened." >&2
+    exit 4
+  fi
+
+  echo ' started!'
+
+  # Final information
+  echo
+  echo 'Congratulations - your personal ~/.config/service directory is now ready to use!'
+  echo
+else
+  if [ -d "$HOME/.config/service" ] ; then
+    echo 'You already have a ~/.config/service directory' >&2
+    exit 2
+  fi
+
+  mkdir -p "$HOME/.config/etc" "$HOME/.config/service"
+
+  # -n prevents from asking for a password if /etc/sudoers isn't configured correctly yet
+  exec sudo -n $(readlink -nf $0)
+fi

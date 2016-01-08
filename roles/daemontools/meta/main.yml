@@ -1,0 +1,4 @@
+---
+dependencies:
+    - group-webusers
+    - sudo

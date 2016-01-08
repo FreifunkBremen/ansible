@@ -1,0 +1,3 @@
+---
+- name: Added webusers group
+  group: name=webusers state=present

@@ -1,0 +1,151 @@
+#! /usr/bin/env bash
+########################################################################
+#
+# 2014-08
+# Moritz Kaspar Rudert (mortzu)
+# mr@planetcyborg.de
+#
+# 2011-03-03
+# Jonas Pasche
+# jpasche@jonaspasche.com
+#
+########################################################################
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+########################################################################
+#
+# This script sets up a service in your personal ~/.config/service directory
+#
+########################################################################
+
+# Set path to defaults
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Get prefix of script
+SCRIPT_PREFIX="$(awk -F- '{ print $1 }' <<<$(basename $0))"
+
+usage() {
+  echo "Usage: $0 <servicename> <command> [<args> ...]"
+  echo "for example: $0 mydaemon ~/bin/daemon"
+  exit 1
+}
+
+SERVICENAME=$1
+shift
+
+if [ -z "$(egrep '^[a-z]' <<< "$SERVICENAME")" ]; then
+  usage
+fi
+
+TESTCOMMAND=$1
+shift
+
+if [ -z "$TESTCOMMAND" ]; then
+  usage
+fi
+
+COMMAND="$(which $TESTCOMMAND 2>/dev/null)"
+
+if [ -z "$COMMAND" ]; then
+  echo "The given command $TESTCOMMAND could not be found" >&2
+  exit 1
+fi
+
+if [ ! -d "$HOME/.config/service" ] ; then
+  echo "You don't seem to have a ~/.config/service directory. Did you execute ${SCRIPT_PREFIX}-setup-svscan before?" >&2
+  exit 2
+fi
+
+for DIR in "$HOME/.config/etc/run-$SERVICENAME" "$HOME/.config/service/$SERVICENAME"; do
+  if [ -d "$DIR" ]; then
+    echo "The $DIR directory already exists" >&2
+    exit 2
+  fi
+done
+
+if [ ! -x "$COMMAND" ]; then
+  echo "Cannot find the command $COMMAND or it isn't executable" >&2
+  exit 3
+fi
+
+echo "Creating the ~/.config/etc/run-$SERVICENAME/run service run script" >&2
+mkdir -p "$HOME/.config/etc/run-$SERVICENAME"
+cat <<__EOF__ > "$HOME/.config/etc/run-$SERVICENAME/run"
+#! /usr/bin/env bash
+
+# These environment variables are sometimes needed by the running daemons
+export USER=$USER
+export HOME=$HOME
+
+# Include the user-specific profile, it's actually called .profile on debian.
+. \$HOME/.profile
+
+# Now let's go!
+exec $COMMAND $@ 2>&1
+__EOF__
+chmod +x "$HOME/.config/etc/run-$SERVICENAME/run"
+
+echo "Creating the ~/.config/etc/run-$SERVICENAME/log/run logging run script"
+mkdir -p "$HOME/.config/etc/run-$SERVICENAME/log"
+cat <<__EOF__ > "$HOME/.config/etc/run-$SERVICENAME/log/run"
+#! /usr/bin/env bash
+exec multilog t ./main
+__EOF__
+chmod +x "$HOME/.config/etc/run-$SERVICENAME/log/run"
+
+echo "Symlinking ~/.config/etc/run-$SERVICENAME to ~/.config/service/$SERVICENAME to start the service"
+ln -s ../etc/run-$SERVICENAME "$HOME/.config/service/$SERVICENAME"
+
+WAIT=0
+echo -n "Waiting for the service to start ..."
+while [ $WAIT -lt 7 ]; do
+  WAIT=$(($WAIT+1))
+  echo -n " $WAIT"
+  if svok "$HOME/.config/service/$SERVICENAME"; then
+    break
+  fi
+  sleep 1
+done
+
+if ! svok "$HOME/.config/service/$SERVICENAME" 2>/dev/null; then
+  echo " failed :-(" >&2
+  echo "We're really sorry; this shouldn't have happened." >&2
+  exit 4
+fi
+
+echo " started!"
+
+# final information
+cat <<EOF
+
+Congratulations - the ~/.config/service/$SERVICENAME service is now ready to use!
+To control your service you'll need the svc command (hint: svc = service control):
+
+To start the service (hint: u = up):
+  svc -u ~/.config/service/$SERVICENAME
+To stop the service (hint: d = down):
+  svc -d ~/.config/service/$SERVICENAME
+To reload the service (hint: h = HUP):
+  svc -h ~/.config/service/$SERVICENAME
+To restart the service (hint: du = down, up):
+  svc -du ~/.config/service/$SERVICENAME
+
+To remove the service:
+  cd ~/.config/service/$SERVICENAME
+  rm ~/.config/service/$SERVICENAME
+  svc -dx . log
+  rm -rf ~/.config/etc/run-$SERVICENAME
+
+EOF
