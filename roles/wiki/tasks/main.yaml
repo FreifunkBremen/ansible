@@ -25,6 +25,26 @@
   become: yes
   become_user: {{ wiki_user }}
 
+- name: Create daemontools folder
+  shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ wiki_user }}/.config/service
+  become: yes
+  become_user: {{ wiki_user }}
+
+- name: Create gollum daemontools folders
+  file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  with_items:
+    - run-gollum
+    - run-gollum/log
+
+- name: Copy startscripts of gollum
+  copy: src={{ item }} dest=/home/{{ wiki_user }}/.config/etc/run-gollum/{{ item }} owner={{ wiki_user }} group={{ wiki_user }} mode=0755
+  with_items:
+    - run
+    - log/run
+
+- name: Create symlink to start gollum
+  file: src=/home/{{ wiki_user }}/.config/service/redis dest=/home/{{ wiki_user }}/.config/etc/run-redis state=link owner={{ wiki_user }} group={{ wiki_group }}
+
 - name: Install .htaccess file
   copy: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess owner={{ wiki_user }} group={{ wiki_user }}
 
