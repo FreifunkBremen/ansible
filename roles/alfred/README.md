@@ -8,6 +8,7 @@ Role Variables
 -------------------------
 
     alfred_repository: (default: 'http://debian.draic.info/ wheezy main')
+    alfred_service: Start Alfred-Daemon on Mtu-Interface (default: false)
     alfred_master: Start Alfred-Daemon on Mastermode (default false)
     batman_interface: Interface on which works Batman (default: 'bat-{{ site_code }}' )
     main_bridge: Interface on which Listen Batman Nodes(default:'br-{{ site_code }}' )
