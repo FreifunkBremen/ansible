@@ -45,23 +45,23 @@
   apt: name=ruby-sass
 
 - name: Clone Meshviewer repository
-  git: repo=https://github.com/FreifunkBremen/meshviewer.git dest=/home/{{ website_user }}/.cache/meshviewer/ force=yes
+  git: repo=https://github.com/FreifunkBremen/meshviewer.git dest=/home/{{ website_user }}/.var/meshviewer/ force=yes
   sudo: true
   sudo_user: "{{ website_user }}"
 
 - name: Install Meshviewer dependencies
-  npm: path=/home/{{ website_user }}/.cache/meshviewer
+  npm: path=/home/{{ website_user }}/.var/meshviewer
 
 - name: Install grunt-cli for Meshviewer
-  npm: name=grunt-cli path=/home/{{ website_user }}/.cache/meshviewer
+  npm: name=grunt-cli path=/home/{{ website_user }}/.var/meshviewer
 
 - name: Build Meshviewer
-  command: chdir=/home/{{ website_user }}/.cache/meshviewer ./node_modules/.bin/grunt
+  command: chdir=/home/{{ website_user }}/.var/meshviewer ./node_modules/.bin/grunt
   args:
-    creates: /home/{{ website_user }}/.cache/meshviewer/build/
+    creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
-  command: cp -r /home/{{ website_user }}/.cache/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+  command: cp -r /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
   args:
     creates: /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
 
