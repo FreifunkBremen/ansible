@@ -45,9 +45,10 @@
   apt: name=ruby-sass
 
 - name: Clone Meshviewer repository
-  git: repo=https://github.com/FreifunkBremen/meshviewer.git dest=/home/{{ website_user }}/.var/meshviewer/ force=yes
+  git: repo=https://github.com/FreifunkBremen/meshviewer.git version=v4 dest=/home/{{ website_user }}/.var/meshviewer/ force=yes
   sudo: true
   sudo_user: "{{ website_user }}"
+  register: meshviewer_checkout
 
 - name: Install Meshviewer dependencies
   npm: path=/home/{{ website_user }}/.var/meshviewer
@@ -57,16 +58,19 @@
 
 - name: Build Meshviewer
   command: chdir=/home/{{ website_user }}/.var/meshviewer ./node_modules/.bin/grunt
+  when: meshviewer_checkout.changed
   args:
     creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
   command: cp -r /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+  when: meshviewer_checkout.changed
   args:
     creates: /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
 
 - name: Install Meshviewer config
   copy: src=config.json dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+  when: meshviewer_checkout.changed
 
 
 # Apache
