@@ -84,6 +84,9 @@
     creates: /etc/ssl/certs/{{ website_domain }}.pem
     creates: /etc/ssl/private/{{ website_domain }}.key
 
+- name: Install Apache site config (common part)
+  template: src=ffhb-website-common.conf dest=/etc/apache2/ mode=644
+
 - name: Install Apache site config
   template: src=ffhb-website.conf dest=/etc/apache2/sites-available/ mode=644
 
