@@ -6,8 +6,10 @@ RedirectMatch ^/blog/2015/06/28/Erste-stabile-Firmware.html$ http://bremen.freif
 RedirectMatch ^/blog/2015/05/26/Haeufigere-Treffen.html$ http://bremen.freifunk.net/blog/2015/05/26/haeufigere-treffen.html
 RedirectMatch ^/blog/2015/05/16/Neue-Karte.html$ http://bremen.freifunk.net/blog/2015/05/16/neue-karte.html
 RedirectMatch ^/blog/2015/05/03/Neue-Firmware.html$ http://bremen.freifunk.net/blog/2015/05/03/neue-firmware.html
+RedirectMatch ^/blog/2015/03/30/Freifunk-in-den-Medien.html http://bremen.freifunk.net/blog/2015/03/30/freifunk-in-den-medien.html
 RedirectMatch ^/blog/2015/03/07/Sielwall-jetzt-Freifunk.html$ http://bremen.freifunk.net/blog/2015/03/07/sielwall-jetzt-freifunk.html
 RedirectMatch ^/blog/2015/03/03/Unbrick.html$ http://bremen.freifunk.net/blog/2015/03/03/unbrick.html
+RedirectMatch ^/blog/2014/12/22/Buten-un-Binnen.html$ http://bremen.freifunk.net/blog/2014/12/22/buten-un-binnen.html
 RedirectMatch ^/blog/2014/10/03/Computerboerse.html$ http://bremen.freifunk.net/blog/2014/10/03/computerboerse.html
 RedirectMatch ^/blog/2014/09/21/Auswertung-Kanalanalyse.html$ http://bremen.freifunk.net/blog/2014/09/21/auswertung-kanalanalyse.html
 RedirectMatch ^/blog/2014/09/06/Neue-Testing-Channel-Survey.html$ http://bremen.freifunk.net/blog/2014/09/06/neue-testing-channel-survey.html
