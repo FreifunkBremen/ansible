@@ -33,9 +33,6 @@
 - name: Install CGI wrapper
   template: src=php-cgi-starter dest=/var/www/{{ website_user }}/cgi-bin/ mode=755 owner={{ website_user }} group={{ website_user }}
 
-- name: Install .htaccess file
-  copy: src=htaccess dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess owner={{ website_user }} group={{ website_user }}
-
 - name: Create log file for Github webhook target
   file: path=/home/{{ website_user }}/.var/log/github-webhook.log state=touch owner={{ website_user }} group={{ website_user }}
 
