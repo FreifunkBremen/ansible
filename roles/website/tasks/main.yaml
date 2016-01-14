@@ -20,9 +20,6 @@
 - name: Install Pygments
   apt: name=python-pygments
 
-- name: Install Gemfile for Jekyll
-  copy: src=Gemfile dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/ owner={{ website_user }} group={{ website_user }}
-
 - name: Install Jekyll and dependencies via bundler
   command: bundle install --path .bundle
   args:
