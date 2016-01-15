@@ -103,3 +103,8 @@
 - name: Enable Apache site config
   command: a2ensite ffhb-website
   notify: restart apache
+
+- name: Run Jekyll
+  command: /home/{{ website_user }}/.local/bin/update-jekyll.sh
+  sudo: true
+  sudo_user: "{{ website_user }}"
