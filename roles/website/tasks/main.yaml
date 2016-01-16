@@ -98,6 +98,8 @@
 
 - name: Enable Apache site config
   command: a2ensite ffhb-website
+  args:
+    creates: /etc/apache2/sites-enabled/ffhb-website.conf
   notify: restart apache
 
 - name: Run Jekyll
