@@ -1,3 +1,7 @@
 # {{ ansible_managed }}
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+{% if alfred_master %}
 * * * * * root sh /opt/{{ site_code }}/alfred-announce/announce.sh -i {{ alfred_mtu_interface }} -b {{ batman_interface }}
+{% else %}
+* * * * * root sh /opt/{{ site_code }}/alfred-announce/announce.sh -i {{ main_bridge }} -b {{ batman_interface }}
+{% endif %}
