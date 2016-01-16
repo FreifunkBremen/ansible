@@ -52,24 +52,32 @@
 
 - name: Install Meshviewer dependencies
   npm: path=/home/{{ website_user }}/.var/meshviewer
+  sudo: true
+  sudo_user: "{{ website_user }}"
 
 - name: Install grunt-cli for Meshviewer
   npm: name=grunt-cli path=/home/{{ website_user }}/.var/meshviewer
+  sudo: true
+  sudo_user: "{{ website_user }}"
 
 - name: Build Meshviewer
   command: chdir=/home/{{ website_user }}/.var/meshviewer ./node_modules/.bin/grunt
   when: meshviewer_checkout.changed
+  sudo: true
+  sudo_user: "{{ website_user }}"
   args:
     creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
   command: cp -r /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
   when: meshviewer_checkout.changed
+  sudo: true
+  sudo_user: "{{ website_user }}"
   args:
     creates: /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
 
 - name: Install Meshviewer config
-  copy: src=config.json dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+  copy: src=config.json dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/ mode=0644 owner={{ website_user }} group={{ website_user }}
   when: meshviewer_checkout.changed
 
 
