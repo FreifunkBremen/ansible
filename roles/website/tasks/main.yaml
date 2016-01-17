@@ -96,10 +96,6 @@
 - name: Install Apache site config
   template: src=ffhb-website.conf dest=/etc/apache2/sites-available/ mode=644
 
-- name: Enable Apache CGI module
-  command: a2enmod cgi
-  notify: restart apache
-
 - name: Enable Apache site config
   command: a2ensite ffhb-website
   notify: restart apache
