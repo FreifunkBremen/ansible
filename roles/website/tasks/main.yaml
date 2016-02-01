@@ -92,9 +92,11 @@
 
 - name: Install Apache site config (common part)
   template: src=ffhb-website-common.conf dest=/etc/apache2/ mode=644
+  notify: restart apache
 
 - name: Install Apache site config
   template: src=ffhb-website.conf dest=/etc/apache2/sites-available/ mode=644
+  notify: restart apache
 
 - name: Enable Apache site config
   command: a2ensite ffhb-website
