@@ -13,4 +13,6 @@ git fetch --quiet origin
 git reset --quiet --hard origin/master
 git submodule --quiet update --init
 
+bundle install --path .bundle --quiet
+
 exec bundle exec jekyll build --quiet --destination "$DESTINATION"
