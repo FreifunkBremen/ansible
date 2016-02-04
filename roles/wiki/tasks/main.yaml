@@ -13,22 +13,22 @@
 - name: Clone gollum repository
   git: repo=https://github.com/gollum/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
 
 - name: Install dependencies via bundler
   shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
 
 - name: Clone wiki repository
   git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
 
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ wiki_user }}/.config/service
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
 
 - name: Create gollum daemontools folders
   file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
