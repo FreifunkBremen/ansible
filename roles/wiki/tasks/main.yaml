@@ -45,10 +45,10 @@
     - run-gollum/log
 
 - name: Copy startscripts of gollum
-  copy: src={{ item }} dest=/home/{{ wiki_user }}/.config/etc/run-gollum/{{ item }} owner={{ wiki_user }} group={{ wiki_user }} mode=0755
+  copy: src={{ item.src }} dest=/home/{{ wiki_user }}/.config/etc/run-gollum/{{ item.dest }} owner={{ wiki_user }} group={{ wiki_user }} mode=0755
   with_items:
-    - run
-    - log/run
+    - { src: "run", dest: "run" }
+    - { src: "run-log", dest: "log/run" }
 
 - name: Create symlink to start gollum
   file: src=/home/{{ wiki_user }}/.config/service/redis dest=/home/{{ wiki_user }}/.config/etc/run-redis state=link owner={{ wiki_user }} group={{ wiki_group }}
