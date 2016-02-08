@@ -39,7 +39,7 @@
   become_user: "{{ wiki_user }}"
 
 - name: Create gollum daemontools folders
-  file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
   with_items:
     - run-gollum
     - run-gollum/log
