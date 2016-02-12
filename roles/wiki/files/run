@@ -11,4 +11,4 @@ export GOLLUM_BIND_PORT='63112'
 
 cd $HOME/.opt/gollum
 # Now let's go!
-exec bundle exec bin/gollum --port "${GOLLUM_BIND_PORT}" --host "${GOLLUM_BIND_ADDR}" --adapter rugged --live-preview --css --h1-title "${GOLLUM_ENV_PATH}" 2>&1
+exec bundle exec ~/.opt/gollum/bin/gollum --port "${GOLLUM_BIND_PORT}" --host "${GOLLUM_BIND_ADDR}" --adapter rugged --live-preview --css --h1-title "${GOLLUM_ENV_PATH}" 2>&1
