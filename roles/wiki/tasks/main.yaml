@@ -51,7 +51,7 @@
     - { src: "run-log", dest: "log/run" }
 
 - name: Create symlink to start gollum
-  file: src=/home/{{ wiki_user }}/.config/service/redis dest=/home/{{ wiki_user }}/.config/etc/run-redis state=link owner={{ wiki_user }} group={{ wiki_group }}
+  file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Install .htaccess file
   copy: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess owner={{ wiki_user }} group={{ wiki_user }}
