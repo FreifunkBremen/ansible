@@ -6,7 +6,7 @@ SetEnvIfNoCase Request_URI ^/(create|edit|livepreview|delete|rename)/ require_au
 
 AuthType basic
 AuthName "Dies ist ein Spamschutz. Benutzername: wellenfunk, Passwort: foobar"
-AuthUserFile /var/www/users/ffhb/domains/net.freifunk.bremen.wiki/.htpasswd
+AuthUserFile /var/www/ffhb-wiki/domains/wiki.bremen.freifunk.net/.htpasswd
 ErrorDocument 401 "Die Benutzerabfrage dient lediglich der Spamvermeidung. Die Benutzerdaten lauten: Benutzername: wellenfunk, Passwort: foobar"
 
 Order Deny,Allow
