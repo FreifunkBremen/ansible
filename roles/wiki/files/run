@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 
 # These environment variables are sometimes needed by the running daemons
-export USER=ffhb
-export HOME=/home/ffhb
+export USER=ffhb-wiki
+export HOME=/home/ffhb-wiki
 
 export GOLLUM_ENV_PATH="$HOME/.var/gollum-envs/ff-bremen"
 export GOLLUM_BASE_PATH='/'
