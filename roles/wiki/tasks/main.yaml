@@ -11,7 +11,7 @@
   - /var/www/{{ wiki_user }}/cgi-bin/
 
 - name: Clone gollum repository
-  git: repo=https://github.com/gollum/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum force=yes
+  git: repo=https://github.com/FreifunkBremen/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum force=yes
   become: yes
   become_user: "{{ wiki_user }}"
 
