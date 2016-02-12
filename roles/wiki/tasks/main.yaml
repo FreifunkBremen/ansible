@@ -62,6 +62,12 @@
 - name: Install favicon.ico file
   copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_user }}
 
+# TODO: this should be replaced by some actually signed certificate:
+- name: Generate self-signed SSL certificate
+  command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ wiki_domain }}.pem -keyout /etc/ssl/private/{{ wiki_domain }}.key -days 365 -subj "/CN={{ wiki_domain }}"
+  args:
+    creates: /etc/ssl/certs/{{ wiki_domain }}.pem
+
 - name: Install Apache site config
   template: src=ffhb-wiki.conf dest=/etc/apache2/sites-available/ mode=644
 
