@@ -60,9 +60,6 @@
 - name: Install .gitconfig file
   copy: src=gitconfig dest=/home/{{ wiki_user }}/.gitconfig owner={{ wiki_user }} group={{ wiki_user }}
 
-- name: Install .htaccess file
-  copy: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess owner={{ wiki_user }} group={{ wiki_user }}
-
 - name: Install robots.txt file
   copy: src=robots.txt dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt owner={{ wiki_user }} group={{ wiki_user }}
 
