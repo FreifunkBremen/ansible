@@ -53,7 +53,7 @@
   file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Create .htpasswd file
-  command: htpasswd -c -b /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd wellenfunk foobar
+  command: htpasswd -c -b /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd {{ wiki_http_username }} {{ wiki_http_password }}
   args:
     creates: /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd
 
