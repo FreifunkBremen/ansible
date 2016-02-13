@@ -8,7 +8,6 @@
   - /home/{{ wiki_user }}/.opt/
   - /home/{{ wiki_user }}/.var/gollum-envs/
   - /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/
-  - /var/www/{{ wiki_user }}/cgi-bin/
 
 - name: Clone gollum repository
   git: repo=https://github.com/FreifunkBremen/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum force=yes
