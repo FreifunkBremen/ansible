@@ -43,11 +43,11 @@
     - run-gollum
     - run-gollum/log
 
-- name: Copy startscripts of gollum
-  copy: src={{ item.src }} dest=/home/{{ wiki_user }}/.config/etc/run-gollum/{{ item.dest }} owner={{ wiki_user }} group={{ wiki_user }} mode=0755
-  with_items:
-    - { src: "run", dest: "run" }
-    - { src: "run-log", dest: "log/run" }
+- name: Copy start script of gollum
+  template: src=run dest=/home/{{ wiki_user }}/.config/etc/run-gollum/run owner={{ wiki_user }} group={{ wiki_user }} mode=0755
+
+- name: Copy log script of gollum
+  copy: src=run-log dest=/home/{{ wiki_user }}/.config/etc/run-gollum/log/run owner={{ wiki_user }} group={{ wiki_user }} mode=0755
 
 - name: Create symlink to start gollum
   file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
