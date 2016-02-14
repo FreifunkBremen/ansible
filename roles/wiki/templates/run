@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+set -eu
+
 # These environment variables are sometimes needed by the running daemons
 export USER={{ wiki_user }}
 export HOME=/home/{{ wiki_user }}
