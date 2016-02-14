@@ -21,6 +21,7 @@
   - zlib1g-dev
   - cmake
   - pkg-config
+  - python-passlib
 
 - name: Install dependencies via bundler
   shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum
@@ -53,9 +54,7 @@
   file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Create .htpasswd file
-  command: htpasswd -c -b /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd {{ wiki_http_username }} {{ wiki_http_password }}
-  args:
-    creates: /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd
+  htpasswd: path=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd name={{ wiki_http_username }} password={{ wiki_http_password }} owner={{ wiki_user }} group={{ wiki_user }}
 
 - name: Install .gitconfig file
   copy: src=gitconfig dest=/home/{{ wiki_user }}/.gitconfig owner={{ wiki_user }} group={{ wiki_user }}
