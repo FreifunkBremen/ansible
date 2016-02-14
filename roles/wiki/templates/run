@@ -5,7 +5,6 @@ export USER={{ wiki_user }}
 export HOME=/home/{{ wiki_user }}
 
 export GOLLUM_ENV_PATH="$HOME/.var/gollum-envs/ff-bremen"
-export GOLLUM_BASE_PATH='/'
 export GOLLUM_BIND_ADDR='127.0.0.1'
 export GOLLUM_BIND_PORT='{{ wiki_gollum_port }}'
 
