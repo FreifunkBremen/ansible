@@ -1,6 +1,6 @@
 ---
 - name: Add user
-  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh groups=webusers
+  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh groups=webusers generate_ssh_key=yes
 
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
@@ -32,6 +32,21 @@
   git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen force=yes
   become: yes
   become_user: "{{ wiki_user }}"
+
+- name: Add Github public SSH key to known_hosts
+  known_hosts: name="github.com" key="github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
+  become: yes
+  become_user: "{{ wiki_user }}"
+
+- name: Configure push-able Github URL for wiki repository
+  command: git remote set-url --push origin git@github.com:FreifunkBremen/wiki.git
+  become: yes
+  become_user: "{{ wiki_user }}"
+  args:
+    chdir: /home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
+
+- name: Add cron job for pushing wiki contents to Github
+  cron: name="github-push" user="{{ wiki_user }}" minute="*/5" job="git -C '/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen' push --quiet origin master"
 
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ wiki_user }}/.config/service
