@@ -91,4 +91,6 @@
 
 - name: Enable Apache site config
   command: a2ensite ffhb-wiki
+  args:
+    creates: /etc/apache2/sites-enabled/ffhb-wiki.conf
   notify: restart apache
