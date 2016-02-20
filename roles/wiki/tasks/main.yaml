@@ -88,6 +88,7 @@
 
 - name: Install Apache site config
   template: src=ffhb-wiki.conf dest=/etc/apache2/sites-available/ mode=644
+  notify: restart apache
 
 - name: Enable Apache site config
   command: a2ensite ffhb-wiki
