@@ -1,0 +1,45 @@
+---
+- name: Install packages
+  apt: name={{ item }}
+  with_items:
+  - git
+  - npm
+  - ruby-sass
+
+- name: Install grunt
+  npm: name=grunt-cli global=yes
+
+- name: Clone repository
+  git: repo={{ site_git_root }}/meshviewer.git
+       dest=/usr/src/meshviewer/
+       force=yes
+
+- name: Install node dependencies
+  npm: path=/usr/src/meshviewer
+
+- name: Build meshviewer
+  command: nodejs /usr/local/bin/grunt
+  args:
+    chdir: /usr/src/meshviewer
+
+- name: Create destination directory
+  file: path=/var/www/html/meshviewer state=directory
+
+# does not work (https://github.com/ansible/ansible/issues/11873)
+#- name: Copy generated files
+#  delegate_to: "{{ inventory_hostname }}"
+#  synchronize:
+#    src: /usr/src/meshviewer/build/
+#    dest: /var/www/html/meshviewer/
+#    delete: True
+#    rsync_opts:
+#    - "--exclude=config.json"
+
+- name: Copy files
+  command: >
+    rsync -a --delete --exclude config.json
+    /usr/src/meshviewer/build/
+    /var/www/html/meshviewer/
+
+- name: Upload config
+  template: src=config.json dest=/var/www/html/meshviewer/

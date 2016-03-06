@@ -1,0 +1,30 @@
+{
+  "DON'T CHANGE!": "{{ ansible_managed }}",
+  "dataPath": "https://downloads.bremen.freifunk.net/data/",
+  "siteName": "Freifunk Bremen",
+  "mapSigmaScale": 0.5,
+  "showContact": false,
+  "maxAge": 3,
+  "globalInfos": [
+    {
+      "name": "Wochenstatistik",
+      "href": "https://downloads.bremen.freifunk.net/data/nodes/globalGraph.png",
+      "thumbnail": "https://downloads.bremen.freifunk.net/data/nodes/globalGraph.png",
+      "caption": "Entwicklung der Anzahl der Knoten und der Clients innerhalb der letzten 7 Tage"
+    }
+  ],
+  "mapLayers": [
+    { "name": "MapQuest",
+      "url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg",
+      "config": {
+        "subdomains": "1234",
+        "type": "osm",
+        "attribution": "Tiles &copy; <a href=\"https://www.mapquest.com/\" target=\"_blank\">MapQuest</a>, Data CC-BY-SA OpenStreetMap",
+        "maxZoom": 18
+      }
+    },
+    {
+      "name": "Stamen.TonerLite"
+    }
+  ]
+}
