@@ -1,0 +1,23 @@
+---
+- name: Install apt-transport-https
+  apt: name=apt-transport-https
+
+- name: Add influxdb key
+  apt_key: >
+    id=684A14CF2582E0C5
+    url=https://repos.influxdata.com/influxdb.key
+
+- name: Add repository
+  apt_repository: >
+    repo='deb [arch=amd64] https://repos.influxdata.com/{{ansible_distribution|lower}} {{ansible_distribution_release|lower}} stable'
+
+- name: Install influxdb
+  apt: name=influxdb
+
+- name: Start influxdb
+  service: name=influxdb state=started
+
+# TODO Zugriff einschränken
+
+#- name: Upload influxdb configuration
+#  template: src=influxdb.conf dest=/etc/influxdb/
