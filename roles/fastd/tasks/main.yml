@@ -60,7 +60,7 @@
     fastd_anonymous: false
 
 - name: Generate fastd secret
-  fastd_key: /etc/fastd/{{ site_code }}/secret.conf
+  fastd_key: path=/etc/fastd/{{ site_code }}/secret.conf
   notify:
   - restart fastd
 
