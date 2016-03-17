@@ -1,0 +1,24 @@
+---
+respondd:
+  enable: true
+  collectinterval: 60
+webserver:
+  enable: {{ respond_collector_webserver }}
+  port: 80
+  address: 0.0.0.0
+  webroot: webroot
+  websocketnode: false
+nodes:
+  enable: true
+  nodes_path: {{ respond_collector_nodes_path }}/nodes.json
+  graphs_path: {{ respond_collector_nodes_path }}/graph.json
+  saveinterval: 20
+  aliases_enable: false
+  aliases_path: {{ respond_collector_nodes_path }}/aliases.json
+  vpn_addresses:[]
+influxdb:
+  enable: {{ respond_collector_influxdb }}
+  database: {{ respond_collector_influxdb_database }}
+  username: {{ respond_collector_influxdb_username }}
+  password: {{ respond_collector_influxdb_password }}
+
