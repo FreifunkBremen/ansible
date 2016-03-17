@@ -10,27 +10,27 @@
   npm: name=grunt-cli global=yes
 
 - name: Clone repository
-  git: repo={{ site_git_root }}/meshviewer.git
-       dest=/usr/src/meshviewer/
+  git: repo={{ meshviewer_git_root }}
+       dest={{ meshviewer_path_src }}/
        force=yes
 
 - name: Install node dependencies
-  npm: path=/usr/src/meshviewer
+  npm: path={{ meshviewer_path_src }}
 
 - name: Build meshviewer
   command: nodejs /usr/local/bin/grunt
   args:
-    chdir: /usr/src/meshviewer
+    chdir: {{ meshviewer_path_src }}
 
 - name: Create destination directory
-  file: path=/var/www/html/meshviewer state=directory
+  file: path={{ meshviewer_path_bin }} state=directory
 
 # does not work (https://github.com/ansible/ansible/issues/11873)
 #- name: Copy generated files
 #  delegate_to: "{{ inventory_hostname }}"
 #  synchronize:
-#    src: /usr/src/meshviewer/build/
-#    dest: /var/www/html/meshviewer/
+#    src: {{ meshviewer_path_src }}/build/
+#    dest: {{ meshviewer_path_bin }}/
 #    delete: True
 #    rsync_opts:
 #    - "--exclude=config.json"
@@ -38,8 +38,8 @@
 - name: Copy files
   command: >
     rsync -a --delete --exclude config.json
-    /usr/src/meshviewer/build/
-    /var/www/html/meshviewer/
+    {{ meshviewer_path_src }}/build/
+    {{ meshviewer_path_bin }}/
 
 - name: Upload config
-  template: src=config.json dest=/var/www/html/meshviewer/
+  template: src=config.json dest={{ meshviewer_path_bin }}/

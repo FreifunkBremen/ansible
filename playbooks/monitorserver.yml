@@ -1,0 +1,20 @@
+---
+- hosts: services
+  vars:
+    batman_gateway: false
+    ffhb_routing_table: default
+    respond_collector_web: true
+    meshviewer_path_bin: /opt/respond-collector/webroot
+  roles:
+  - apt
+  - openssh
+  - batman-adv-14
+  - main-bridge
+  - fastd
+  - alfred-announce
+  - respondd
+  - meshviewer
+  - respond-collector
+  - system
+  - tmpfs
+  - tools
