@@ -9,6 +9,7 @@
   - main-bridge
   - fastd
   - alfred-announce
+  - respondd
   - icvpn
   - exit-ipv4
   - exit-ipv6
