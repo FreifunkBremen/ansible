@@ -34,7 +34,7 @@
   include: instance.yml
   vars:
     fastd_instance:  "{{ site_code }}"
-    fastd_interface: "{{ site_code }}"
+    fastd_interface: "vpn-{{ site_code }}"
     fastd_bind:      any
     fastd_anonymous: true
     fastd:
