@@ -1,4 +1,5 @@
 ---
 meshviewer_git_root: {{ site_git_root }}/meshviewer.git
+meshviewer_git_version: master
 meshviewer_path_bin: /var/www/html/meshviewer
 meshviewer_path_src: /usr/src/meshviewer
