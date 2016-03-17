@@ -1,0 +1,23 @@
+---
+- name: Install dependencies
+  apt: name={{item}}
+  with_items:
+    - python3-netifaces
+
+- name: Clone respondd repository
+  git: >
+    repo={{ respondd_git_root }}
+    dest=/opt/{{ site_code }}/respondd/
+  notify:
+    - restart respondd
+
+- name: Install system unit
+  template: >
+    src=service
+    dest=/lib/systemd/system/respondd.service
+  notify:
+    - reload systemd
+    - restart respondd
+
+- name: Enable respondd
+  service: name=respondd enabled=yes

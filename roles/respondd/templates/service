@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Respondd
+
+[Service]
+ExecStart=/opt/ffhb/respondd/respondd
+Restart=always
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target
