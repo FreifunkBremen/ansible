@@ -6,6 +6,10 @@
     - curl
     - less
     - molly-guard
-    - screen
     - tcpdump
     - tmux
+
+- name: Remove useless tools
+  apt: name={{item}} state=absent
+  with_items:
+    - screen
