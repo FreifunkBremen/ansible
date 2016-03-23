@@ -1,13 +1,9 @@
 ---
-- name: Install dependencies
-  apt: name={{item}}
-  with_items:
-    - python3-netifaces
-
-- name: Clone respondd repository
+- name: Clone respondd announce repository
   git: >
-    repo={{ respondd_git_root }}
-    dest=/opt/{{ site_code }}/respondd/
+    repo={{ respondd_announce_git_root }}
+    dest=/opt/{{ site_code }}/respondd-announce/
+    version=respondd
   notify:
     - restart respondd
 
