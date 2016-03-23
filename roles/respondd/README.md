@@ -7,7 +7,7 @@ Install respondd from git repo with systemd unit
 Role Variables
 -------------------------
 
-    respondd_git_root: (default: 'https://github.com/FreifunkBremen/respondd/')
+    respondd_announce_git_root: (default: 'https://github.com/ffnord/ffnord-alfred-announce/')
 
 
 Usage

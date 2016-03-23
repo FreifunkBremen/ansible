@@ -1,2 +1,4 @@
 ---
-respondd_git_root: 'https://github.com/FreifunkBremen/respondd/'
+respondd_announce_git_root: 'https://github.com/ffnord/ffnord-alfred-announce/'
+batman_interface: 'bat-{{ site_code }}'
+main_bridge: 'br-{{ site_code }}'
