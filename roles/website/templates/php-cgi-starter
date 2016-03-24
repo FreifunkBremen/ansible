@@ -1,0 +1,10 @@
+#! /usr/bin/env sh
+
+# Set safe path
+export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Set user environment
+export USER={{ website_user }}
+export HOME=/home/{{ website_user }}
+
+exec php-cgi
