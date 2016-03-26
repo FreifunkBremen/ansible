@@ -1,0 +1,5 @@
+#! /usr/bin/env sh
+
+if [ -e /var/run/motd.dynamic ]; then
+  rm /var/run/motd.dynamic
+fi
