@@ -22,6 +22,11 @@
 
 - name: Install script to copy zone files
   copy: src=update-dns-zones.sh dest=/usr/local/sbin/update-dns-zones.sh owner=root group=root mode=0755 force=yes
+  when: "'dnsserver' in group_names"
+
+- name: Copy zone files
+  command: /usr/local/sbin/update-dns-zones.sh
+  when: "'dnsserver' in group_names"
 
 - name: Firewall open dns-port
   mf_add: role=dns proto={{item}} port=53
