@@ -18,13 +18,16 @@
 
 - name: Install cronjob for internal dns
   file: src=/opt/{{ site_code }}/dns/update-dns-nodes.sh dest=/etc/cron.hourly/update-dns-nodes state=link
+  when: nsd_update_nodes == True
+
+- name: Install script to copy zone files
+  copy: src=update-dns-zones.sh dest=/usr/local/sbin/update-dns-zones.sh owner=root group=root mode=0755 force=yes
 
 - name: Firewall open dns-port
   mf_add: role=dns proto={{item}} port=53
   with_items:
   - udp
   - tcp
-
 
 - name: Autostart nsd
   service: name=nsd enabled=yes
