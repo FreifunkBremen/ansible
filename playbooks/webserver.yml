@@ -6,6 +6,7 @@
   - system
   - tmpfs
   - tools
+  - motd
   - apache
   - gatemon
   - website

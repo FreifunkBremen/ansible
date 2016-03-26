@@ -1,0 +1,5 @@
+#! /usr/bin/env sh
+
+if [ -e /etc/motd.tail ]; then
+  cat /etc/motd.tail
+fi
