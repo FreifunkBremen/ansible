@@ -31,4 +31,7 @@ grp.host(10, "ffhb.sum7.de")
 grp = inv.group("webserver")
 grp.host(11, "bremen.freifunk.net")
 
+grp = inv.group("dnsserver");
+grp.host(0, "ns-1.ffhb.de", nsd_update_nodes=False);
+
 print inv.json_dump(indent=4)

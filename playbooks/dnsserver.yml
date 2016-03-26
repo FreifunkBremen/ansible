@@ -1,0 +1,10 @@
+---
+- hosts: dnsserver
+  roles:
+  - apt
+  - openssh
+  - system
+  - tmpfs
+  - tools
+  - motd
+  - nsd
