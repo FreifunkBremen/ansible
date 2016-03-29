@@ -1,18 +1,12 @@
 ---
 - name: Add user
-  user: name=ffhb-status home=/home/ffhb-status shell=/bin/zsh
+  user: name={{ gatemon_user }} home=/home/{{ gatemon_user }} shell=/bin/zsh
 
-- name: Create folder for vhosts
-  file: path=/home/ffhb-status/domains state=directory recurse=yes owner=ffhb-status group=ffhb-status mode=0755
-
-- name: Create folder for readonly stuff
-  file: path=/readonly/ffhb-status state=directory recurse=yes owner=root group=ffhb-status mode=0750
-
-- name: Create folder for Apache logs
-  file: path=/readonly/ffhb-status/log state=directory recurse=yes owner=root group=root mode=0755
+- name: Create needed folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ gatemon_user }} group={{ gatemon_group }} mode=0755
+  with_items:
+  - /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/
+  - /var/www/{{ gatemon_user }}/cgi-bin/
 
 - name: Clone gatemon git repository
-  git: repo=https://github.com/FreifunkBremen/gatemon-html.git dest=/home/ffhb-status/domains/status.ffhb.tk force=yes
-
-- name: Change ownership
-  shell: chown -R ffhb-status:ffhb-status /home/ffhb-status/domains/status.ffhb.tk
+  git: repo=https://github.com/FreifunkBremen/gatemon-html.git dest=/var/www/{{ gatemon_user }}/domains/status.ffhb.tk force=yes become=yes become_user={{ gatemon_user }}
