@@ -34,4 +34,7 @@ grp.host(11, "bremen.freifunk.net")
 grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net", nsd_update_nodes=False);
 
+grp = inv.group("standardserver")
+grp.host(0, "mail.ffhb.de")
+
 print inv.json_dump(indent=4)
