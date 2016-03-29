@@ -1,0 +1,9 @@
+---
+- hosts: standardserver
+  roles:
+  - apt
+  - openssh
+  - system
+  - tmpfs
+  - tools
+  - motd
