@@ -18,7 +18,7 @@ grp = inv.group("vpnservers",
   batman_gateway=True,
   alfred_master=True,
 )
-grp.host(1, "vpn01.bremen.freifunk.net", exit_ipv4="ipip", ansible_ssh_port=60023)
+grp.host(1, "vpn01.bremen.freifunk.net", exit_ipv4="ipip", alfred_master=False)
 grp.host(2, "vpn02.bremen.freifunk.net", exit_ipv4="openvpn")
 grp.host(3, "vpn03.bremen.freifunk.net", exit_ipv4="gre", exit_ipv6_remote=False)
 grp.host(4, "vpn04.bremen.freifunk.net", exit_ipv4="gre", ansible_ssh_port=60023, alfred_master=False)
