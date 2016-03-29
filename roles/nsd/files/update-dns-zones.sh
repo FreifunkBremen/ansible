@@ -16,10 +16,8 @@ for DNS_ZONE in ${DNS_ZONES_FOLDER}/*.zone; do
   fi
 
   cp "$DNS_ZONE" "/var/lib/nsd/"
-
-  # Reload DNS server configuration
-  nsd-control reconfig >/dev/null
-
-  # Notify slaves about changed zones
-  nsd-control notify "$(basename ${DNS_ZONE} '.zone')"
 done
+
+# Reload changed zones
+nsd-control reload
+# NOTIFYs are sent out automatically according to nsd-control(8)
