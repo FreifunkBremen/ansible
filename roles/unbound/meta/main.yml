@@ -1,6 +1,4 @@
 ---
-dependencies:
-  - nsd
 galaxy_info:
   platforms:
     - name: Debian
