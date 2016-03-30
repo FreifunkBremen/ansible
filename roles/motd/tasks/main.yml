@@ -14,8 +14,5 @@
 - name: Copy script to add motd.tail to motd
   copy: src=add-motd-tail dest=/etc/update-motd.d/30add-motd-tail owner=root group=root mode=0755
 
-- name: Remove /etc/motd
-  file: name=/etc/motd state=absent
-
 - name: Create symlink
   file: src=/run/motd dest=/etc/motd state=link force=yes
