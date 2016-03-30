@@ -31,7 +31,6 @@
     mode=0644
   with_items:
     - access-control.conf
-    - forward-ffhb.conf
     - listen-on-all-interfaces.conf
   notify: restart unbound
 
