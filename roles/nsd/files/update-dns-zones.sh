@@ -2,13 +2,15 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-DNS_ZONES_FOLDER='/opt/ffhb/dns/data'
+DNS_ZONES_FOLDER='/opt/ffhb/dns'
 
 # Check if DNS zones folder exists
 if [ ! -d "$DNS_ZONES_FOLDER" ]; then
   echo "${DNS_ZONES_FOLDER} does not exists!" >&2
   exit 1
 fi
+
+git -C "$DNS_ZONES_FOLDER" pull
 
 for DNS_ZONE in ${DNS_ZONES_FOLDER}/*.zone; do
   if ! nsd-checkzone "$(basename ${DNS_ZONE} '.zone')" "${DNS_ZONE}"; then

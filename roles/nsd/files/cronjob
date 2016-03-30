@@ -1,0 +1,8 @@
+#!/bin/sh
+/usr/local/bin/zonegen.py \
+    http://downloads.bremen.freifunk.net/data/nodes.json \
+    --contact=noc.bremen.freifunk.net \
+    --prefix=2a06:8782:ffbb:1337::/64 \
+    --nserver dns.bremen.freifunk.net ns-1.moritzrudert.de ns2.he.net \
+    --file=/var/lib/nsd/nodes.bremen.freifunk.net.zone \
+    && nsd-control reload
