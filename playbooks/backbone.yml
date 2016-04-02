@@ -1,0 +1,5 @@
+# Konfiguriert Batman und GRE-Tunnel für das Backbone
+---
+- hosts: backbone
+  roles:
+  - backbone-gre

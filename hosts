@@ -30,10 +30,18 @@ grp.host(10, "ffhb.sum7.de")
 grp = inv.group("webserver")
 grp.host(11, "bremen.freifunk.net")
 
+grp = inv.group("downlinks", batman_gateway=True)
+grp.host(12, "ipv6-downlink.ffhb.de")
+
 grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net");
 
 grp = inv.group("standardserver")
 grp.host(0, "mail.ffhb.de")
+
+# vpnservers und downlinks zu backbone zusammenfassen
+grp = inv.group("backbone")
+grp.child("vpnservers")
+grp.child("downlinks")
 
 print inv.json_dump(indent=4)
