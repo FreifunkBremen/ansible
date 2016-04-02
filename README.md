@@ -3,12 +3,16 @@ Ansible Freifunk Bremen
 
 In this repository are playbooks for deploying services on Freifunk Bremen machines.
 
-### Playbooks
+## Dependencies
+
+    apt-get install python-dnspython
+
+## Playbooks
 
   * services: Generic service host for Freifunk Bremen community.
   * vpnserver: vpnserver sets up a Freifunk Bremen gateway.
 
-### Site-Conf
+## Site-Conf
 
 Community related variables are defined in `site/site.conf` and `group_vars/all.yml`.
 This variables are used by the ansible-tasks.
@@ -23,7 +27,7 @@ This variables are used by the ansible-tasks.
 
 Other communities need to modify this variables.
 
-### Hosts
+## Hosts
 
 The hosts-file defines all machines where our services are deployed on as well as community related variables. For other communities the variables are to be changed.
 Variables:
@@ -38,7 +42,7 @@ Hosts:
 
 with exit_ipv4=openvpn/gre and ansible_ssh_port=* (both optional).
 
-### Gateway Playbook
+## Gateway Playbook
 
 Playbook vpnserver sets up a Freifunk Bremen gateway. When executed additional variabels need to be defined. For example to set up a Freifunk gateway on vpn05 the following command is used:
 
