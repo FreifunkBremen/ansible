@@ -48,9 +48,6 @@
     fastd_mtu:       "{{ fastd_legacy_mtu }}"
     fastd_anonymous: true
 
-- name: Include legacy peers
-  include: legacy_peers.yml
-
 - name: Disable deprecated backbone instance
   service: name=fastd@{{ site_code }}_backbone enabled=no state=stopped
 

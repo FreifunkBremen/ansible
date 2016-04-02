@@ -7,7 +7,8 @@
   - openssh
   - batman-adv-14
   - main-bridge
-  - fastd
+  - role: fastd
+    tags: fastd
   - alfred-announce
   - respondd
   - backbone-gre
