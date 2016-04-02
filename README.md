@@ -46,7 +46,7 @@ with exit_ipv4=openvpn/gre and ansible_ssh_port=* (both optional).
 
 Playbook vpnserver sets up a Freifunk Bremen gateway. When executed additional variabels need to be defined. For example to set up a Freifunk gateway on vpn05 the following command is used:
 
-    ansible-playbook playbooks/vpnserver.yml --limit=vpn05.bremen.freifunk.net -e "exit_ipv4_openvpn_username=* exit_ipv4_openvpn_password=* exit_ipv4_openvpn_host=* exit_ipv4=openvpn"
+    ansible-playbook playbooks/vpnserver.yml --limit=vpn05.bremen.freifunk.net -e "exit_ipv4_openvpn_username=* exit_ipv4_openvpn_password=*"
 
 Username, host and password can be found by your exit-vpn provider.
 
