@@ -37,3 +37,9 @@
 - name: Get root.hints
   get_url: url='{{ dns_root_hints }}' dest='/var/lib/unbound/root.hints'
   notify: restart unbound
+
+- name: Firewall open dns-port
+  mf_add: role=dns proto={{item}} port=53
+  with_items:
+  - udp
+  - tcp
