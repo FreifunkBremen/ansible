@@ -10,6 +10,7 @@
   - fastd
   - alfred-announce
   - respondd
+  - backbone-gre
   - icvpn
   - exit-ipv4
   - exit-ipv6
