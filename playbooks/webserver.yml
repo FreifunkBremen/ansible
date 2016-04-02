@@ -4,6 +4,7 @@
   - apt
   - openssh
   - system
+  - etckeeper
   - tmpfs
   - tools
   - motd
