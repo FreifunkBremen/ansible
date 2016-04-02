@@ -1,2 +1,3 @@
 ---
 main_bridge: 'br-{{ site_code }}'
+exit_ipv6_interface: vpn-uplink6
