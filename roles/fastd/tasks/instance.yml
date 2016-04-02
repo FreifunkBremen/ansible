@@ -4,22 +4,8 @@
     msg: "{{ fastd_interface }} has more than 15 characters!"
   when: fastd_interface|length > 15
 
-- name: Create peers directory
+- name: Create directories
   file: path=/etc/fastd/{{ fastd_instance }}/peers state=directory
-
-- name: List peers
-  command: ls -1 /etc/fastd/{{ fastd_instance }}/peers
-  changed_when: False
-  register: contents
-
-- name: Delete peers
-  file: path=/etc/fastd/{{ fastd_instance }}/peers/{{ item }} state=absent
-  with_items: '{{contents.stdout_lines}}'
-  notify:
-  - restart fastd
-
-- name: Create fastd directory
-  file: path=/etc/fastd/{{ fastd_instance }} state=directory
 
 - name: Upload fastd.conf
   template: src=fastd.conf dest=/etc/fastd/{{ fastd_instance }}/
