@@ -1,0 +1,32 @@
+---
+- name: Add user
+  user: name={{ downloads_user }} home=/home/{{ downloads_user }} shell=/bin/zsh
+
+- name: Create needed folder structure
+  file: path=/var/www/{{ downloads_user }}/domains/{{ downloads_domain }}{{ item }} state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  with_items:
+  - /
+  - /data/nodes
+  - /firmware/all
+  - /opkg/modules
+  - /video
+
+# TODO: this should be replaced by some actually signed certificate:
+- name: Generate self-signed SSL certificate
+  command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ downloads_domain }}.pem -keyout /etc/ssl/private/{{ downloads_domain }}.key -days 365 -subj "/CN={{ downloads_domain }}"
+  args:
+    creates: "/etc/ssl/*/{{ downloads_domain }}.*"
+
+- name: Install Apache site config (common part)
+  template: src=ffhb-downloads-common.conf dest=/etc/apache2/ mode=644
+  notify: restart apache
+
+- name: Install Apache site config
+  template: src=ffhb-downloads.conf dest=/etc/apache2/sites-available/ mode=644
+  notify: restart apache
+
+- name: Enable Apache site config
+  command: a2ensite ffhb-downloads
+  args:
+    creates: /etc/apache2/sites-enabled/ffhb-downloads.conf
+  notify: restart apache

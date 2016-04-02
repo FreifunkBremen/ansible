@@ -1,0 +1,9 @@
+---
+dependencies:
+  - zsh
+  - apache
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
