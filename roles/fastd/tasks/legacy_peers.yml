@@ -1,0 +1,18 @@
+---
+- name: Create peer configurations
+  template: src=peer.conf dest=/etc/fastd/{{ site_code }}_legacy/peers/{{item.key}}.conf
+  with_dict: "{{fastd.peers}}"
+  notify:
+  - restart fastd
+
+- name: List peers
+  command: ls -1 /etc/fastd/{{ site_code }}_legacy/peers
+  changed_when: False
+  register: contents
+
+- name: Delete unused peers
+  file: path=/etc/fastd/{{ site_code }}_legacy/peers/{{ item }} state=absent
+  with_items: contents.stdout_lines
+  when: item.replace(".conf","") not in fastd.peers
+  notify:
+  - restart fastd

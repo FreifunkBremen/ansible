@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+{% for host in groups['vpnservers'] %}
+{% if host != inventory_hostname %}
+{% set ifname = "backbone-vpn%d" % hostvars[host].vpn_id %}
+# {{ host }}
+auto {{ ifname }}
+iface {{ ifname }} inet manual
+  pre-up    ip link add $IFACE type gretap local {{ ansible_default_ipv4.address }} remote {{ host | resolve('a') }} ttl 64
+  post-down ip link del $IFACE
+  up   ip link set up   $IFACE
+  down ip link set down $IFACE
+  up   batctl -m {{ batman_interface }} if add $IFACE
+  down batctl -m {{ batman_interface }} if del $IFACE
+
+{% endif %}
+{% endfor %}

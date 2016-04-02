@@ -3,7 +3,6 @@
   service: name=fastd@{{item}} state=restarted
   with_items:
   - "{{ site_code }}"
-  - "{{ site_code }}_backbone"
   - "{{ site_code }}_legacy"
 
 - name: reload systemd
