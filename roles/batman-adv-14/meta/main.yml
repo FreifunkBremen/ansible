@@ -1,5 +1,6 @@
 ---
-dependencies: []
+dependencies:
+  - batman-adv-interface
 galaxy_info:
   author: kaleng
   categories:

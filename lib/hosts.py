@@ -45,7 +45,10 @@ class Inventory:
     data     = {}
 
     for name, group in self.groups.items():
-      data[name] = [hostname for (hostname,_) in group.hosts]
+      data[name] = {
+        "hosts":    [hostname for (hostname,_) in group.hosts],
+        "children": group.children,
+      }
       for (hostname,vars) in group.hosts:
         hostvars[hostname] = vars
 
@@ -90,6 +93,7 @@ class Group:
     self.icvpn     = icvpn
     self.vars      = vars
     self.hosts     = []
+    self.children  = []
 
   def host(self, id, hostname, **host_vars):
     vars = self.vars.copy()
@@ -130,3 +134,6 @@ class Group:
 
   def calculate_address(self, *args):
     return self.inventory.calculate_address(*args)
+
+  def child(self, child):
+    self.children.append(child)
