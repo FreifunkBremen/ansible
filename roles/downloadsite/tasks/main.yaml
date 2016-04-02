@@ -15,8 +15,7 @@
 - name: Generate self-signed SSL certificate
   command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ downloads_domain }}.pem -keyout /etc/ssl/private/{{ downloads_domain }}.key -days 365 -subj "/CN={{ downloads_domain }}"
   args:
-    creates: /etc/ssl/certs/{{ downloads_domain }}.pem
-    creates: /etc/ssl/private/{{ downloads_domain }}.key
+    creates: "/etc/ssl/*/{{ downloads_domain }}.*"
 
 - name: Install Apache site config (common part)
   template: src=ffhb-downloads-common.conf dest=/etc/apache2/ mode=644
