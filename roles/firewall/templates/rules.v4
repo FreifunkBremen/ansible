@@ -46,5 +46,7 @@ COMMIT
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+{% if exit_masquerade %}
 -A POSTROUTING -s {{ ipv4_network }} -o {{ exit_ipv4_interface }} -j MASQUERADE
+{% endif %}
 COMMIT

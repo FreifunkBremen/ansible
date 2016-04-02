@@ -4,6 +4,7 @@ batman_interface: 'bat-{{ site_code }}'
 alfred_mtu_interface: 'br-{{ site_code }}-mtu'
 main_bridge: 'br-{{ site_code }}'
 fastd_interface: vpn-{{ site_code }}
+exit_masquerade: true
 ipp2p_drop: false
 ipp2p_protocols:
 - apple
