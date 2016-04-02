@@ -1,6 +1,6 @@
 ---
 - name: Add user
-  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh groups=webusers
+  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh groups=webusers generate_ssh_key=yes
 
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
@@ -8,45 +8,71 @@
   - /home/{{ wiki_user }}/.opt/
   - /home/{{ wiki_user }}/.var/gollum-envs/
   - /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/
-  - /var/www/{{ wiki_user }}/cgi-bin/
 
 - name: Clone gollum repository
-  git: repo=https://github.com/gollum/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum
+  git: repo=https://github.com/FreifunkBremen/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum force=yes
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
+
+- name: Install dependencies via apt
+  apt: name={{ item }}
+  with_items:
+  - libicu-dev
+  - zlib1g-dev
+  - cmake
+  - pkg-config
+  - python-passlib
 
 - name: Install dependencies via bundler
   shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
 
 - name: Clone wiki repository
-  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
+  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen force=yes
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
+
+- name: Add Github public SSH key to known_hosts
+  known_hosts: name="github.com" key="github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
+  become: yes
+  become_user: "{{ wiki_user }}"
+
+- name: Configure push-able Github URL for wiki repository
+  command: git remote set-url --push origin git@github.com:FreifunkBremen/wiki.git
+  become: yes
+  become_user: "{{ wiki_user }}"
+  args:
+    chdir: /home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
+
+- name: Add cron job for pushing wiki contents to Github
+  cron: name="github-push" user="{{ wiki_user }}" minute="*/5" job="git -C '/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen' push --quiet origin master"
 
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ wiki_user }}/.config/service
   become: yes
-  become_user: {{ wiki_user }}
+  become_user: "{{ wiki_user }}"
 
 - name: Create gollum daemontools folders
-  file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
   with_items:
     - run-gollum
     - run-gollum/log
 
-- name: Copy startscripts of gollum
-  copy: src={{ item }} dest=/home/{{ wiki_user }}/.config/etc/run-gollum/{{ item }} owner={{ wiki_user }} group={{ wiki_user }} mode=0755
-  with_items:
-    - run
-    - log/run
+- name: Copy start script of gollum
+  template: src=run dest=/home/{{ wiki_user }}/.config/etc/run-gollum/run owner={{ wiki_user }} group={{ wiki_user }} mode=0755
+
+- name: Copy log script of gollum
+  copy: src=run-log dest=/home/{{ wiki_user }}/.config/etc/run-gollum/log/run owner={{ wiki_user }} group={{ wiki_user }} mode=0755
 
 - name: Create symlink to start gollum
-  file: src=/home/{{ wiki_user }}/.config/service/redis dest=/home/{{ wiki_user }}/.config/etc/run-redis state=link owner={{ wiki_user }} group={{ wiki_group }}
+  file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
 
-- name: Install .htaccess file
-  copy: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess owner={{ wiki_user }} group={{ wiki_user }}
+- name: Create .htpasswd file
+  htpasswd: path=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd name={{ wiki_http_username }} password={{ wiki_http_password }} owner={{ wiki_user }} group={{ wiki_user }}
+
+- name: Install .gitconfig file
+  copy: src=gitconfig dest=/home/{{ wiki_user }}/.gitconfig owner={{ wiki_user }} group={{ wiki_user }}
 
 - name: Install robots.txt file
   copy: src=robots.txt dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt owner={{ wiki_user }} group={{ wiki_user }}
@@ -54,9 +80,18 @@
 - name: Install favicon.ico file
   copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_user }}
 
+# TODO: this should be replaced by some actually signed certificate:
+- name: Generate self-signed SSL certificate
+  command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ wiki_domain }}.pem -keyout /etc/ssl/private/{{ wiki_domain }}.key -days 365 -subj "/CN={{ wiki_domain }}"
+  args:
+    creates: /etc/ssl/certs/{{ wiki_domain }}.pem
+
 - name: Install Apache site config
   template: src=ffhb-wiki.conf dest=/etc/apache2/sites-available/ mode=644
+  notify: restart apache
 
 - name: Enable Apache site config
   command: a2ensite ffhb-wiki
+  args:
+    creates: /etc/apache2/sites-enabled/ffhb-wiki.conf
   notify: restart apache
