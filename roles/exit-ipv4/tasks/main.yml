@@ -1,7 +1,8 @@
 ---
 - name: Include openvpn
   include: openvpn.yml
-  when: exit_ipv4 == "openvpn"
+  when: exit_ipv4.startswith("openvpn-")
+  tags: openvpn
 
 - name: Include generic
   include: generic.yml

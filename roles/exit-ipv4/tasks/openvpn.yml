@@ -1,18 +1,16 @@
 ---
 - name: Install packages
-  apt: name={{ item }}
-  with_items:
-    - openvpn
+  apt: name=openvpn
 
 - name: Install configuration
   template: >
-    src=openvpn/exit.conf
+    src={{exit_ipv4}}/exit.conf
     dest=/etc/openvpn/
   notify: restart openvpn
 
 - name: Upload credentials
   template: >
-    src=openvpn/exit-auth
+    src={{exit_ipv4}}/exit-auth
     dest=/etc/openvpn/
     mode=0600
   when: exit_ipv4_openvpn_username is defined
@@ -20,7 +18,7 @@
 
 - name: Install script
   template: >
-    src=openvpn/exit-up.sh
+    src={{exit_ipv4}}/exit-up.sh
     dest=/etc/openvpn/
     mode=0700
   notify: restart openvpn
