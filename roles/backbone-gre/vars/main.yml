@@ -1,0 +1,3 @@
+---
+# Other backbone hosts (not myself)
+backbone_peers: "{{ groups['backbone'] | remove(inventory_hostname) }}"

@@ -1,3 +1,5 @@
 ---
 - name: Setup GRE interfaces
   template: src=interfaces dest=/etc/network/interfaces.d/backbone
+  notify:
+  - ifup backbone-gre
