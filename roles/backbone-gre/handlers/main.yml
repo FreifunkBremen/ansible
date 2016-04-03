@@ -1,0 +1,5 @@
+---
+- name: ifup backbone-gre
+  # ifup && ifdown führt verlässlich zum Absturz des Systems
+  command: ifup backbone-vpn{{ hostvars[item].vpn_id }}
+  with_items: '{{ backbone_peers }}'

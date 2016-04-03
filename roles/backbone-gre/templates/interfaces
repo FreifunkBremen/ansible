@@ -1,7 +1,6 @@
 # {{ ansible_managed }}
 
-{% for host in groups['backbone'] %}
-{% if host != inventory_hostname %}
+{% for host in backbone_peers %}
 {% set ifname = "backbone-vpn%d" % hostvars[host].vpn_id %}
 # {{ host }}
 auto {{ ifname }}
@@ -13,5 +12,4 @@ iface {{ ifname }} inet manual
   up   batctl -m {{ batman_interface }} if add $IFACE
   down batctl -m {{ batman_interface }} if del $IFACE
 
-{% endif %}
 {% endfor %}
