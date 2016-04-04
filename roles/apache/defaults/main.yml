@@ -1,0 +1,3 @@
+---
+apache_redirect_target: 'bremen.freifunk.net'
+apache_ssl_host: 'bremen.freifunk.net'
