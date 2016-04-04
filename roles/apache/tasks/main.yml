@@ -24,6 +24,9 @@
 - name: Copy user included configuration files
   copy: src=user-php-exec.conf dest=/etc/apache2/user-php-exec.conf
 
+- name: Copy new default site configuration
+  template: src=000-default.conf dest=/etc/apache2/sites-available/
+
 - name: Enable needed modules
   apache2_module: state=present name={{ item }}
   with_items:
