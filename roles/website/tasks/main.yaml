@@ -14,8 +14,8 @@
 
 - name: Clone content repository
   git: repo=https://github.com/FreifunkBremen/bremen.freifunk.net dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/ force=yes
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
 
 - name: Install Pygments
   apt: name=python-pygments
@@ -24,8 +24,8 @@
   command: bundle install --path .bundle
   args:
     chdir: /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
 
 - name: Install CGI wrapper
   template: src=php-cgi-starter dest=/var/www/{{ website_user }}/cgi-bin/ mode=700 owner={{ website_user }} group={{ website_user }}
@@ -46,33 +46,33 @@
 
 - name: Clone Meshviewer repository
   git: repo=https://github.com/FreifunkBremen/meshviewer.git version=v4 dest=/home/{{ website_user }}/.var/meshviewer/ force=yes
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
   register: meshviewer_checkout
 
 - name: Install Meshviewer dependencies
   npm: path=/home/{{ website_user }}/.var/meshviewer
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
 
 - name: Install grunt-cli for Meshviewer
   npm: name=grunt-cli path=/home/{{ website_user }}/.var/meshviewer
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
 
 - name: Build Meshviewer
   command: chdir=/home/{{ website_user }}/.var/meshviewer ./node_modules/.bin/grunt
   when: meshviewer_checkout.changed
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
   args:
     creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
   command: cp -r /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
   when: meshviewer_checkout.changed
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
   args:
     creates: /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
 
@@ -88,7 +88,6 @@
   command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ website_domain }}.pem -keyout /etc/ssl/private/{{ website_domain }}.key -days 365 -subj "/CN={{ website_domain }}"
   args:
     creates: /etc/ssl/certs/{{ website_domain }}.pem
-    creates: /etc/ssl/private/{{ website_domain }}.key
 
 - name: Install Apache site config (common part)
   template: src=ffhb-website-common.conf dest=/etc/apache2/ mode=644
@@ -106,5 +105,5 @@
 
 - name: Run Jekyll
   command: /home/{{ website_user }}/.local/bin/update-jekyll.sh
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: true
+  become_user: "{{ website_user }}"
