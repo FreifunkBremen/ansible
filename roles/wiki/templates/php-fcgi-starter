@@ -4,8 +4,8 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # Set user environment
-export USER={{ gatemon_user }}
-export HOME=/home/{{ gatemon_user }}
+export USER={{ wiki_user }}
+export HOME=/home/{{ wiki_user }}
 
 PHP_FCGI_CHILDREN=0
 export PHP_FCGI_CHILDREN
