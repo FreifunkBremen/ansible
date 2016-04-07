@@ -2,4 +2,5 @@
 gatemon_email: 'gatemon@bremen.freifunk.net'
 gatemon_user: 'gatemon'
 gatemon_group: 'gatemon'
-gatemon_domain: 'status.bremen.freifunk.net'
+gatemon_subdomain: 'status'
+gatemon_domain: '{{ gatemon_subdomain }}.{{ main_domain }}'
