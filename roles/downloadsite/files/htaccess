@@ -1,0 +1,11 @@
+Options +Indexes
+IndexOptions FancyIndexing FoldersFirst HTMLTable IconsAreLinks SuppressRules SuppressDescription XHTML
+HeaderName /header.html
+IndexStyleSheet /style.css
+ReadmeName footer.html
+IndexIgnore header.html style.css footer.html robots.txt favicon.ico
+AddDescription "Knotendaten für <a href=\"http://bremen.freifunk.net/map/list.html\">die Liste</a>" data
+AddDescription "Aktuelle Firmware, s.a. <a href=\"http://wiki.bremen.freifunk.net/Firmware-flashen\">Anleitung zum Flashen</a>" firmware
+AddDescription "\"Freifunk verbindet!\"-Video" video
+AddOutputFilter DEFLATE json
+Header set Access-Control-Allow-Origin "*"
