@@ -52,6 +52,7 @@
     - env
     - fcgid
     - filter
+    - headers
     - mime
     - mpm_event
     - negotiation
