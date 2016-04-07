@@ -94,7 +94,7 @@
   copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_user }}
 
 - name: Install Apache user config
-  template: src=website.conf dest=/etc/apache2/sites-available/010-{{ wiki_user }}.conf mode=0644
+  template: src=wiki.conf dest=/etc/apache2/sites-available/010-{{ wiki_user }}.conf mode=0644
   notify: restart apache
 
 - name: Enable Apache user config
@@ -103,11 +103,11 @@
     creates: /etc/apache2/sites-enabled/010-{{ wiki_user }}.conf
 
 - name: Install Apache site config (common part)
-  template: src=website-common.conf dest=/etc/apache2/{{ wiki_user }}.{{ wiki_domain }}-common.conf mode=0644
+  template: src=wiki-common.conf dest=/etc/apache2/{{ wiki_user }}.{{ wiki_domain }}-common.conf mode=0644
   notify: restart apache
 
 - name: Install Apache vHost config (HTTP)
-  template: src=website-http.conf dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}.conf mode=0644
+  template: src=wiki-http.conf dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}.conf mode=0644
   notify: restart apache
 
 - name: Enable Apache vHost config (HTTP)
@@ -133,7 +133,7 @@
     creates: /readonly/{{ wiki_user }}/ssl/{{ wiki_domain }}.combined.pem
 
 - name: Install Apache vHost config (HTTPS)
-  template: src=website-https.conf dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}-https.conf mode=0644
+  template: src=wiki-https.conf dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}-https.conf mode=0644
   notify: restart apache
 
 - name: Enable Apache vHost config (HTTPS)
