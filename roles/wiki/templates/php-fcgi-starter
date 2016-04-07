@@ -1,0 +1,14 @@
+#! /usr/bin/env sh
+
+# Set safe path
+export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Set user environment
+export USER={{ gatemon_user }}
+export HOME=/home/{{ gatemon_user }}
+
+PHP_FCGI_CHILDREN=0
+export PHP_FCGI_CHILDREN
+PHP_FCGI_MAX_REQUESTS=250
+export PHP_FCGI_MAX_REQUESTS
+exec php-cgi
