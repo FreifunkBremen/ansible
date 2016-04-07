@@ -78,3 +78,6 @@
   args:
     creates: /etc/apache2/sites-enabled/{{ downloads_user }}.{{ downloads_domain }}-https.conf
   notify: restart apache
+
+- name: Copy htaccess file
+  copy: src=htaccess dest=/var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/.htaccess mode=0644 owner={{ downloads_user }} group={{ downloads_group }}
