@@ -7,9 +7,11 @@
     dest=/etc/chrony/chrony.conf
     mode=0644
   notify: restart chrony
+  when: "'vpnservers' in group_names"
 
 - name: Firewall open ntp-port
   mf_add: role=ntp proto=udp port=123 interface="{{ main_bridge }}"
+  when: "'vpnservers' in group_names"
 
 - name: Autostart chrony
   service: name=chrony enabled=yes
