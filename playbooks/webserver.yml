@@ -1,5 +1,8 @@
 ---
 - hosts: webserver
+  vars:
+    main_domain: bremen.freifunk.net
+    alt_domain: ffhb.de
   roles:
   - apt
   - openssh
