@@ -17,14 +17,14 @@ Usage
 Github SSH Deploy Key
 -------------------------
 During installation an SSH key will be created for the wiki user.
-The key will be created at /home/ffhb-wiki/.ssh/id_rsa.pub .
+The key will be created at /home/wiki/.ssh/id_rsa.pub .
 It must be added at https://github.com/FreifunkBremen/wiki/settings/keys
 as new key (with write access), so that wiki changes can be pushed to Github.
 
 
 Gollum Logs
 -------------------------
-Gollum log files are stored in /home/ffhb-wiki/.config/service/gollum/log/main/.
+Gollum log files are stored in /home/wiki/.config/service/gollum/log/main/.
 The "current" file contains the most recent log lines.
 To display human-readable timestamps, filter the log file through "tai64nlocal", eg. like this:
 
