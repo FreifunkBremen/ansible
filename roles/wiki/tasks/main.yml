@@ -120,7 +120,7 @@
   template: src=letsencrypt.sh.config.sh dest=/home/{{ wiki_user }}/.config/letsencrypt/config.sh owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ wiki_domain }}
+  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ wiki_subdomain }}.{{ main_domain }} -d {{ wiki_subdomain }}.{{ alt_domain }}
   args:
     chdir: /home/{{ wiki_user }}/.config/letsencrypt
     creates: /home/{{ wiki_user }}/.config/letsencrypt/certs/{{ wiki_domain }}/fullchain.pem

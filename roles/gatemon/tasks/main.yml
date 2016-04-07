@@ -55,7 +55,7 @@
   template: src=letsencrypt.sh.config.sh dest=/home/{{ gatemon_user }}/.config/letsencrypt/config.sh owner={{ gatemon_user }} group={{ gatemon_group }}
 
 - name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ gatemon_domain }}
+  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ gatemon_subdomain }}.{{ main_domain }} -d {{ gatemon_subdomain }}.{{ alt_domain }}
   args:
     chdir: /home/{{ gatemon_user }}/.config/letsencrypt
     creates: /home/{{ gatemon_user }}/.config/letsencrypt/certs/{{ gatemon_domain }}/fullchain.pem

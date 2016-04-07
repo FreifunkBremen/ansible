@@ -62,7 +62,7 @@
   template: src=letsencrypt.sh.config.sh dest=/home/{{ downloads_user }}/.config/letsencrypt/config.sh owner={{ downloads_user }} group={{ downloads_group }}
 
 - name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ downloads_domain }}
+  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ downloads_subdomain }}.{{ main_domain }} -d {{ downloads_subdomain }}.{{ alt_domain }}
   args:
     chdir: /home/{{ downloads_user }}/.config/letsencrypt
     creates: /home/{{ downloads_user }}/.config/letsencrypt/certs/{{ downloads_domain }}/fullchain.pem

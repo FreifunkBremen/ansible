@@ -2,5 +2,5 @@
 website_email: 'info@bremen.freifunk.net'
 website_user: 'website'
 website_group: 'website'
-website_domain: 'bremen.freifunk.net'
+website_domain: {{ main_domain }}
 #website_webhook_secret: '' # must be provided on command line
