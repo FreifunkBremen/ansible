@@ -1,5 +1,5 @@
 ---
 gatemon_email: 'gatemon@bremen.freifunk.net'
-gatemon_user: 'ffhb-status'
-gatemon_group: 'ffhb-status'
-gatemon_domain: 'status.ffhb.tk'
+gatemon_user: 'gatemon'
+gatemon_group: 'gatemon'
+gatemon_domain: 'status.bremen.freifunk.net'

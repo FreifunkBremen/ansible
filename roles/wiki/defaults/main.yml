@@ -1,7 +1,7 @@
 ---
 wiki_email: 'info@bremen.freifunk.net'
-wiki_user: 'ffhb-wiki'
-wiki_group: 'ffhb-wiki'
+wiki_user: 'wiki'
+wiki_group: 'wiki'
 wiki_domain: 'wiki.bremen.freifunk.net'
 wiki_gollum_port: '63112'
 wiki_http_username: 'wellenfunk'
