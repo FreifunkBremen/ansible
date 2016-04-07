@@ -2,20 +2,32 @@
 - name: Add user
   user: name={{ website_user }} home=/home/{{ website_user }} shell=/bin/zsh
 
+- name: Create directory for readonly files
+  file: path=/readonly/{{ website_user }} state=directory owner={{ website_user }} group={{ website_group }} mode=0750
+
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ website_user }} group={{ website_group }} mode=0755
   with_items:
-  - /home/{{ website_user }}/.local/bin/
-  - /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/
-  - /home/{{ website_user }}/.var/log/
-  - /home/{{ website_user }}/.cache/
-  - /var/www/{{ website_user }}/domains/{{ website_domain }}/
-  - /var/www/{{ website_user }}/cgi-bin/
+  - /home/{{ website_user }}/.config/letsencrypt
+  - /home/{{ website_user }}/.local/bin
+  - /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}
+  - /home/{{ website_user }}/.var/log
+  - /home/{{ website_user }}/.cache
+  - /var/www/{{ website_user }}/domains/{{ website_domain }}
+  - /var/www/{{ website_user }}/cgi-bin
+  - /var/www/{{ website_user }}/fcgi-bin
+  - /var/www/{{ website_user }}/letsencrypt
+
+- name: Create directories for Apache log files and SSL certificates
+  file: path=/readonly/{{ website_user }}/{{ item }} state=directory owner=root group=root mode=0755
+  with_items:
+    - log
+    - ssl
 
 - name: Clone content repository
-  git: repo=https://github.com/FreifunkBremen/bremen.freifunk.net dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/ force=yes
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  git: repo=https://github.com/FreifunkBremen/bremen.freifunk.net dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }} force=yes
+  become: yes
+  become_user: "{{ website_user }}"
 
 - name: Install Pygments
   apt: name=python-pygments
@@ -23,12 +35,12 @@
 - name: Install Jekyll and dependencies via bundler
   command: bundle install --path .bundle
   args:
-    chdir: /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}/
-  sudo: true
-  sudo_user: "{{ website_user }}"
+    chdir: /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}
+  become: yes
+  become_user: "{{ website_user }}"
 
 - name: Install CGI wrapper
-  template: src=php-cgi-starter dest=/var/www/{{ website_user }}/cgi-bin/ mode=700 owner={{ website_user }} group={{ website_user }}
+  template: src=php-cgi-starter dest=/var/www/{{ website_user }}/fcgi-bin/ mode=700 owner={{ website_user }} group={{ website_user }}
 
 - name: Create log file for Github webhook target
   file: path=/home/{{ website_user }}/.var/log/github-webhook.log state=touch owner={{ website_user }} group={{ website_user }}
@@ -45,34 +57,34 @@
   apt: name=ruby-sass
 
 - name: Clone Meshviewer repository
-  git: repo=https://github.com/FreifunkBremen/meshviewer.git version=v4 dest=/home/{{ website_user }}/.var/meshviewer/ force=yes
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  git: repo=https://github.com/FreifunkBremen/meshviewer.git version=v4 dest=/home/{{ website_user }}/.var/meshviewer force=yes
+  become: yes
+  become_user: "{{ website_user }}"
   register: meshviewer_checkout
 
 - name: Install Meshviewer dependencies
   npm: path=/home/{{ website_user }}/.var/meshviewer
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: yes
+  become_user: "{{ website_user }}"
 
 - name: Install grunt-cli for Meshviewer
   npm: name=grunt-cli path=/home/{{ website_user }}/.var/meshviewer
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: yes
+  become_user: "{{ website_user }}"
 
 - name: Build Meshviewer
   command: chdir=/home/{{ website_user }}/.var/meshviewer ./node_modules/.bin/grunt
   when: meshviewer_checkout.changed
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: yes
+  become_user: "{{ website_user }}"
   args:
     creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
   command: cp -r /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
   when: meshviewer_checkout.changed
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: yes
+  become_user: "{{ website_user }}"
   args:
     creates: /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
 
@@ -83,28 +95,56 @@
 
 # Apache
 
-# TODO: this should be replaced by some actually signed certificate:
-- name: Generate self-signed SSL certificate
-  command: openssl req -new -x509 -nodes -out /etc/ssl/certs/{{ website_domain }}.pem -keyout /etc/ssl/private/{{ website_domain }}.key -days 365 -subj "/CN={{ website_domain }}"
+- name: Install Apache user config
+  template: src=website.conf dest=/etc/apache2/sites-available/010-{{ website_user }}.conf mode=0644
+  notify: restart apache
+
+- name: Enable Apache user config
+  command: a2ensite 010-{{ website_user }}
   args:
-    creates: /etc/ssl/certs/{{ website_domain }}.pem
-    creates: /etc/ssl/private/{{ website_domain }}.key
+    creates: /etc/apache2/sites-enabled/010-{{ website_user }}.conf
 
 - name: Install Apache site config (common part)
-  template: src=ffhb-website-common.conf dest=/etc/apache2/ mode=644
+  template: src=website-common.conf dest=/etc/apache2/{{ website_user }}.{{ website_domain }}-common.conf mode=0644
   notify: restart apache
 
-- name: Install Apache site config
-  template: src=ffhb-website.conf dest=/etc/apache2/sites-available/ mode=644
+- name: Install Apache vHost config (HTTP)
+  template: src=website-http.conf dest=/etc/apache2/sites-available/{{ website_user }}.{{ website_domain }}.conf mode=0644
   notify: restart apache
 
-- name: Enable Apache site config
-  command: a2ensite ffhb-website
+- name: Enable Apache vHost config (HTTP)
+  command: a2ensite {{ website_user }}.{{ website_domain }}
   args:
-    creates: /etc/apache2/sites-enabled/ffhb-website.conf
+    creates: /etc/apache2/sites-enabled/{{ website_user }}.{{ website_domain }}.conf
+  notify: restart apache
+
+- name: Copy letsencrypt config
+  template: src=letsencrypt.sh.config.sh dest=/home/{{ website_user }}/.config/letsencrypt/config.sh owner={{ website_user }} group={{ website_group }}
+
+- name: Get letsencrypt certificates
+  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ website_domain }}
+  args:
+    chdir: /home/{{ website_user }}/.config/letsencrypt
+    creates: /home/{{ website_user }}/.config/letsencrypt/certs/{{ website_domain }}/fullchain.pem
+  become: yes
+  become_user: "{{ website_user }}"
+
+- name: Copy certificate
+  shell: cat /home/{{ website_user }}/.config/letsencrypt/certs/{{ website_domain }}/privkey.pem /home/{{ website_user }}/.config/letsencrypt/certs/{{ website_domain }}/fullchain.pem > /readonly/{{ website_user }}/ssl/{{ website_domain }}.combined.pem
+  args:
+    creates: /readonly/{{ website_user }}/ssl/{{ website_domain }}.combined.pem
+
+- name: Install Apache vHost config (HTTPS)
+  template: src=website-https.conf dest=/etc/apache2/sites-available/{{ website_user }}.{{ website_domain }}-https.conf mode=0644
+  notify: restart apache
+
+- name: Enable Apache vHost config (HTTPS)
+  command: a2ensite {{ website_user }}.{{ website_domain }}-https
+  args:
+    creates: /etc/apache2/sites-enabled/{{ website_user }}.{{ website_domain }}-https.conf
   notify: restart apache
 
 - name: Run Jekyll
   command: /home/{{ website_user }}/.local/bin/update-jekyll.sh
-  sudo: true
-  sudo_user: "{{ website_user }}"
+  become: yes
+  become_user: "{{ website_user }}"
