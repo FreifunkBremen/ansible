@@ -28,7 +28,7 @@ grp = inv.group("services")
 grp.host(10, "ffhb.sum7.de")
 
 grp = inv.group("webserver")
-grp.host(11, "bremen.freifunk.net")
+grp.host(0, "webserver.ffhb.de")
 
 grp = inv.group("downlinks", batman_gateway=True)
 grp.host(12, "ipv6-downlink.ffhb.de")
