@@ -8,6 +8,7 @@
   - tmpfs
   - tools
   - motd
+  - letsencrypt
   - apache
   - gatemon
   - website
