@@ -1,5 +1,5 @@
 ---
 downloads_email: 'info@bremen.freifunk.net'
-downloads_user: 'ffhb-downloads'
-downloads_group: 'ffhb-downloads'
+downloads_user: 'downloads'
+downloads_group: 'downloads'
 downloads_domain: 'downloads.bremen.freifunk.net'
