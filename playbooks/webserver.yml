@@ -4,6 +4,7 @@
   - apt
   - openssh
   - system
+  - sudo
   - etckeeper
   - tmpfs
   - tools
