@@ -1,6 +1,6 @@
 ---
 - name: Install apache2
-  apt: name={{item}}
+  apt: name={{ item }}
   with_items:
     - apache2
     - apache2-suexec-pristine
@@ -10,7 +10,13 @@
   service: name=apache2 state=started enabled=yes
 
 - name: Copy configuration files
-  copy: src={{item}} dest=/etc/apache2/conf-available/{{item}}
+  copy: src={{ item }} dest=/etc/apache2/conf-available/{{ item }}
+  with_items:
+    - anon-logs.conf
+    - default-dir-options.conf
+
+- name: Enable configurations
+  command: a2enconf {{ item }}
   with_items:
     - anon-logs.conf
     - default-dir-options.conf
@@ -19,7 +25,7 @@
   copy: src=user-php-exec.conf dest=/etc/apache2/user-php-exec.conf
 
 - name: Enable needed modules
-  apache2_module: state=present name={{item}}
+  apache2_module: state=present name={{ item }}
   with_items:
     - access_compat
     - actions
@@ -50,3 +56,6 @@
     - status
     - suexec
     - unique_id
+
+- name: Create directory for log files
+  file: path=/readonly state=directory mode=0755
