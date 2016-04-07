@@ -101,6 +101,9 @@
 - name: Set executable bit on rrsync
   file: path=/home/{{ downloads_user }}/.local/bin/rrsync mode=0755
 
+- name: Ensure that authorized_keys file exists
+  copy: dest=/home/{{ downloads_user }}/.ssh/authorized_keys content="" force=no owner={{ downloads_user }} group={{ downloads_group }} mode=0644
+
 - name: Add ffmap public key
   lineinfile: dest=/home/{{ downloads_user }}/.ssh/authorized_keys line='command="/home/{{ downloads_user }}/.local/bin/rrsync /var/www/users/ffhb/domains/net.freifunk.bremen.downloads" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC0UEJyJk93SwSqyQs7NJfaXqZXYucyLfvx5Yd94ZPOodb9B3NgyDhBwVl+9LlPPUR9+4Hkek7mEKSIdKLS0MwD+MsAvztt8icSfQZ/2LOgIwwrYgrIDi9n97M1/SKqlgyaue/PME7pHiKHT0sxAiEJNYJqIN1U5to+2fvlMUEi44jHPH6xmnKm/yq3mXh8e9nghJN/Mai8aetemw/TrR/c6KE6nXOxY8Ce2MaZrcs4J0pwRgpL0XGvFEe1lWoBVFH3MIXg962xvnj+Q5H9/gSE48Q+/JW7tDAOqldIV8ON7cSuKBN8gkRHMqH652uQS/6tWQDSsltvOiemvTLcIdlBfrpbfFJ043wK226SQfsFvMXEV2zVrA/UFQabXno5E4utKd/lFLm0gFdiVULRkkMGfa7kzOAoNgzzAigeYZZP9Zj2Nlgr/jIccdvYLFB5FZ0AuDqsclp50EPcI6CXzRDUc1905rj7ywpTIvt30hUYHpyaMROXegMavPv1midDXZy1tntr4y10tYWM3x/jFjYo1Eztc8WgK2H8n9uqIAc2F3y3wuJWBaGQZNk06NLOt9AWi2ssSEe0V/prAdTSTvzO3YnPJHTwjGHWOKbEzjhow/mVqT09WYdVM61b5H9Ui1KYPhV2sNCg0+GpOPeZuM8zpzx1QkrCVzUWRFJHM6MD7w== ffmap'
   args:
