@@ -33,7 +33,7 @@
   - /var/www/{{ downloads_user }}/letsencrypt
 
 - name: Install CGI wrapper
-  template: src=php-cgi-starter dest=/var/www/{{ downloads_user }}/cgi-bin/ mode=700 owner={{ downloads_user }} group={{ downloads_user }}
+  template: src=php-fcgi-starter dest=/var/www/{{ downloads_user }}/fcgi-bin/ mode=700 owner={{ downloads_user }} group={{ downloads_group }}
 
 - name: Install Apache user config
   template: src=downloads.conf dest=/etc/apache2/sites-available/010-{{ downloads_user }}.conf mode=0644

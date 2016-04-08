@@ -21,7 +21,7 @@
     - ssl
 
 - name: Install CGI wrapper
-  template: src=php-fcgi-starter dest=/var/www/{{ gatemon_user }}/fcgi-bin/ mode=700 owner={{ gatemon_user }} group={{ gatemon_user }}
+  template: src=php-fcgi-starter dest=/var/www/{{ gatemon_user }}/fcgi-bin/ mode=700 owner={{ gatemon_user }} group={{ gatemon_group }}
 
 - name: Clone gatemon git repository
   git: repo=https://github.com/FreifunkBremen/gatemon-html.git dest=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }} force=yes
