@@ -9,6 +9,7 @@
   file: path={{ item }} state=directory recurse=yes owner={{ gatemon_user }} group={{ gatemon_group }} mode=0755
   with_items:
   - /home/{{ gatemon_user }}/.config/letsencrypt
+  - /home/{{ gatemon_user }}/.local/bin
   - /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
   - /var/www/{{ gatemon_user }}/cgi-bin
   - /var/www/{{ gatemon_user }}/fcgi-bin
@@ -20,11 +21,21 @@
     - log
     - ssl
 
+- name: Install PHP composer
+  get_url: url=https://getcomposer.org/download/1.0.0/composer.phar dest=/home/{{ gatemon_user }}/.local/bin/composer mode=0755 owner={{ gatemon_user }} group={{ gatemon_group }}
+
 - name: Install CGI wrapper
-  template: src=php-fcgi-starter dest=/var/www/{{ gatemon_user }}/fcgi-bin/ mode=700 owner={{ gatemon_user }} group={{ gatemon_group }}
+  template: src=php-fcgi-starter dest=/var/www/{{ gatemon_user }}/fcgi-bin/ mode=0700 owner={{ gatemon_user }} group={{ gatemon_group }}
 
 - name: Clone gatemon git repository
   git: repo=https://github.com/FreifunkBremen/gatemon-html.git dest=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }} force=yes
+  become: yes
+  become_user: "{{ gatemon_user }}"
+
+- name: Install dependencies
+  shell: /home/{{ gatemon_user }}/.local/bin/composer install
+  args:
+    chdir: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
   become: yes
   become_user: "{{ gatemon_user }}"
 
