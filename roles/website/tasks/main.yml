@@ -40,7 +40,7 @@
   become_user: "{{ website_user }}"
 
 - name: Install CGI wrapper
-  template: src=php-cgi-starter dest=/var/www/{{ website_user }}/fcgi-bin/ mode=700 owner={{ website_user }} group={{ website_user }}
+  template: src=php-fcgi-starter dest=/var/www/{{ website_user }}/fcgi-bin/ mode=700 owner={{ website_user }} group={{ website_group }}
 
 - name: Create log file for Github webhook target
   file: path=/home/{{ website_user }}/.var/log/github-webhook.log state=touch owner={{ website_user }} group={{ website_user }}
