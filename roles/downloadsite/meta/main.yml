@@ -1,6 +1,6 @@
 ---
 dependencies:
-  - zsh
+  - tools
   - apache
 galaxy_info:
   platforms:
