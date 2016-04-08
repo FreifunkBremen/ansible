@@ -147,10 +147,3 @@
 
 - name: Copy htaccess file
   template: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess mode=0644 owner={{ wiki_user }} group={{ wiki_group }}
-
-- name: Create htpasswd file
-  shell: htpasswd -nb {{ wiki_http_username }} {{ wiki_http_password }} > /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess
-  args:
-    creates: /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess
-  become: yes
-  become_user: "{{ wiki_user }}"
