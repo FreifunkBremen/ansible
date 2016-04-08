@@ -10,6 +10,14 @@
 - name: Start apache2
   service: name=apache2 state=started enabled=yes
 
+- name: "Security settings: ServerTokens"
+  replace: dest=/etc/apache2/conf-available/security.conf regexp='ServerTokens\s*(.*)' replace='ServerTokens Prod'
+  notify: restart apache
+
+- name: "Security settings: ServerSignature"
+  replace: dest=/etc/apache2/conf-available/security.conf regexp='ServerSignature\s*(.*)' replace='ServerSignature Off'
+  notify: restart apache
+
 - name: Copy configuration files
   copy: src={{ item }} dest=/etc/apache2/conf-available/{{ item }}
   with_items:
