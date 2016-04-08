@@ -6,7 +6,7 @@ dependencies:
   - git
   - ruby
   - sudo
-  - zsh
+  - tools
 galaxy_info:
   platforms:
     - name: Debian
