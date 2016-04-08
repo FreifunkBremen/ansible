@@ -88,7 +88,7 @@
   copy: src=htaccess dest=/var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/.htaccess mode=0644 owner={{ downloads_user }} group={{ downloads_group }}
 
 - name: Copy rrsync
-  copy: src=/usr/share/doc/rsync/scripts/rrsync.gz dest=/home/{{ downloads_user }}/.local/bin/rrsync.gz owner={{ downloads_user }} group={{ downloads_group }} mode=0644
+  copy: src=/usr/share/doc/rsync/scripts/rrsync.gz dest=/home/{{ downloads_user }}/.local/bin/rrsync.gz owner={{ downloads_user }} group={{ downloads_group }} mode=0644 remote_src=True
 
 - name: Extract rrsync
   shell: gunzip rrsync.gz
