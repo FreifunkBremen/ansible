@@ -25,6 +25,10 @@
     - default-dir-options.conf
   notify: restart apache
 
+- name: Copy proxy configuration
+  copy: src=proxy.conf dest=/etc/apache2/mods-available/proxy.conf force=yes
+  notify: restart apache
+
 - name: Enable configurations
   command: a2enconf {{ item }}
   with_items:
