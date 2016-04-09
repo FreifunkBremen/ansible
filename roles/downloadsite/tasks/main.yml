@@ -5,9 +5,6 @@
 - name: Add user
   user: name={{ downloads_user }} home=/home/{{ downloads_user }} shell=/bin/zsh
 
-- name: Create directory for configs
-  file: path=/home/{{ downloads_user }}/.config/letsencrypt state=directory owner={{ downloads_user }} group={{ downloads_group }}
-
 - name: Create directory for readonly files
   file: path=/readonly/{{ downloads_user }} state=directory owner={{ downloads_user }} group={{ downloads_group }} mode=0750
 
@@ -33,7 +30,7 @@
   - /var/www/{{ downloads_user }}/letsencrypt
 
 - name: Install CGI wrapper
-  template: src=php-fcgi-starter dest=/var/www/{{ downloads_user }}/fcgi-bin/ mode=700 owner={{ downloads_user }} group={{ downloads_group }}
+  template: src=php-fcgi-starter dest=/var/www/{{ downloads_user }}/fcgi-bin/ mode=0700 owner={{ downloads_user }} group={{ downloads_group }}
 
 - name: Install Apache user config
   template: src=downloads.conf dest=/etc/apache2/sites-available/010-{{ downloads_user }}.conf mode=0644
