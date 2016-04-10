@@ -4,3 +4,4 @@ downloads_user: 'downloads'
 downloads_group: 'downloads'
 downloads_subdomain: 'downloads'
 downloads_domain: '{{ downloads_subdomain }}.{{ main_domain }}'
+downloads_rsync_port: 63113

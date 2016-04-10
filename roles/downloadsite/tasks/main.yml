@@ -3,7 +3,7 @@
   apt: name=rsync
 
 - name: Add user
-  user: name={{ downloads_user }} home=/home/{{ downloads_user }} shell=/bin/zsh
+  user: name={{ downloads_user }} home=/home/{{ downloads_user }} groups=webusers shell=/bin/zsh
 
 - name: Create directory for readonly files
   file: path=/readonly/{{ downloads_user }} state=directory owner={{ downloads_user }} group={{ downloads_group }} mode=0750
@@ -107,3 +107,30 @@
     owner: "{{ downloads_user }}"
     group: "{{ downloads_group }}"
     mode: 0644
+
+
+- name: Copy rsync daemon config
+  template: src=rsyncd.conf dest=/home/{{ downloads_user }}/.config/etc/rsyncd.conf owner={{ downloads_user }} group={{ downloads_group }} mode=0644
+
+- name: Create rsync run folder
+  file: path=/home/{{ downloads_user }}/.var/run state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+
+- name: Create daemontools folder
+  shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ downloads_user }}/.config/service
+  become: yes
+  become_user: "{{ downloads_user }}"
+
+- name: Create rsync daemontools folders
+  file: path=/home/{{ downloads_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  with_items:
+    - run-rsync
+    - run-rsync/log
+
+- name: Copy start script of rsync
+  template: src=run dest=/home/{{ downloads_user }}/.config/etc/run-rsync/run owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+
+- name: Copy log script of rsync
+  copy: src=run-log dest=/home/{{ downloads_user }}/.config/etc/run-rsync/log/run owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+
+- name: Create symlink to start rsync
+  file: src=/home/{{ downloads_user }}/.config/etc/run-rsync dest=/home/{{ downloads_user }}/.config/service/rsync state=link owner={{ downloads_user }} group={{ downloads_group }}

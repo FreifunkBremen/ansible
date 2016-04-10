@@ -2,6 +2,7 @@
 dependencies:
   - tools
   - apache
+  - daemontools
 galaxy_info:
   platforms:
     - name: Debian
