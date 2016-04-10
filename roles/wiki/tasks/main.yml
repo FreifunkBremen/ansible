@@ -73,25 +73,25 @@
     - run-gollum/log
 
 - name: Copy start script of gollum
-  template: src=run dest=/home/{{ wiki_user }}/.config/etc/run-gollum/run owner={{ wiki_user }} group={{ wiki_user }} mode=0755
+  template: src=run dest=/home/{{ wiki_user }}/.config/etc/run-gollum/run owner={{ wiki_user }} group={{ wiki_group }} mode=0755
 
 - name: Copy log script of gollum
-  copy: src=run-log dest=/home/{{ wiki_user }}/.config/etc/run-gollum/log/run owner={{ wiki_user }} group={{ wiki_user }} mode=0755
+  copy: src=run-log dest=/home/{{ wiki_user }}/.config/etc/run-gollum/log/run owner={{ wiki_user }} group={{ wiki_group }} mode=0755
 
 - name: Create symlink to start gollum
   file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Create .htpasswd file
-  htpasswd: path=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd name={{ wiki_http_username }} password={{ wiki_http_password }} owner={{ wiki_user }} group={{ wiki_user }}
+  htpasswd: path=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd name={{ wiki_http_username }} password={{ wiki_http_password }} owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Install .gitconfig file
-  copy: src=gitconfig dest=/home/{{ wiki_user }}/.gitconfig owner={{ wiki_user }} group={{ wiki_user }}
+  copy: src=gitconfig dest=/home/{{ wiki_user }}/.gitconfig owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Install robots.txt file
-  copy: src=robots.txt dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt owner={{ wiki_user }} group={{ wiki_user }}
+  copy: src=robots.txt dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Install favicon.ico file
-  copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_user }}
+  copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_group }}
 
 - name: Install Apache user config
   template: src=wiki.conf dest=/etc/apache2/sites-available/010-{{ wiki_user }}.conf mode=0644
