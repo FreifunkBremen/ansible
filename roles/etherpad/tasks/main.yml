@@ -1,0 +1,58 @@
+---
+- name: Add vHosts
+  shell: space-mod-vhost add --domain={{ item }} creates=/var/www/{{ etherpad_user }}/domains/{{ item }}
+  with_items:
+    - "{{ etherpad_subdomain }}.{{ main_domain }}"
+    - "{{ etherpad_subdomain }}.{{ alt_domain }}"
+
+- name: Create needed folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ etherpad_user }} group={{ etherpad_group }} mode=0755
+  with_items:
+    - /home/{{ etherpad_user }}/.local/bin
+    - /home/{{ etherpad_user }}/.ssh
+
+- name: Open port for etherpad
+  shell: space-mod-ports open creates=/readonly/{{ etherpad_user }}/ports
+
+- name: Read port
+  shell: head -n1 /readonly/ffhb-pads/ports
+  register: etherpad_port
+
+- name: Creates database
+  mysql_db:
+    name: "{{ etherpad_user }}_etherpad"
+    state: present
+
+- name: Read MySQL password
+  shell: awk '/password / { print $3 }' < /home/{{ etherpad_user }}/.my.cnf
+  register: etherpad_mysql_password
+
+- name: Clone etherpad repository
+  git: repo=https://github.com/ether/etherpad-lite.git dest=/home/{{ etherpad_user }}/.opt/etherpad force=yes
+
+- name: Copy settings file
+  template: src=settings.json dest=/home/{{ etherpad_user }}/.opt/etherpad/settings.json owner={{ etherpad_user }} group={{ etherpad_group }} mode=0644
+
+- name: Set NodeJS version
+  copy: src=nodeversion dest=/home/{{ etherpad_user }}/.config/etc/nodeversion owner={{ etherpad_user }} group={{ etherpad_group }} mode=0644
+
+- name: Create daemontools folder
+  shell: /usr/local/bin/space-setup-svscan creates=/home/{{ etherpad_user }}/.config/service
+
+- name: Create etherpad daemontools folders
+  file: path=/home/{{ etherpad_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ etherpad_user }} group={{ etherpad_group }} mode=0755
+  with_items:
+    - run-etherpad
+    - run-etherpad/log
+
+- name: Copy start script of etherpad
+  template: src=run dest=/home/{{ etherpad_user }}/.config/etc/run-etherpad/run owner={{ etherpad_user }} group={{ etherpad_group }} mode=0755
+
+- name: Copy log script of etherpad
+  copy: src=run-log dest=/home/{{ etherpad_user }}/.config/etc/run-etherpad/log/run owner={{ etherpad_user }} group={{ etherpad_group }} mode=0755
+
+- name: Create symlink to start etherpad
+  file: src=/home/{{ etherpad_user }}/.config/etc/run-etherpad dest=/home/{{ etherpad_user }}/.config/service/etherpad state=link owner={{ etherpad_user }} group={{ etherpad_group }}
+
+- name: Copy htaccess file
+  template: src=htaccess dest=/var/www/{{ etherpad_user }}/domains/{{ etherpad_domain }}/.htaccess mode=0644 owner={{ etherpad_user }} group={{ etherpad_group }}
