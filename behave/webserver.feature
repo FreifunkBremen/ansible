@@ -48,6 +48,18 @@ Scenario: access main page over HTTPS
     Then the status code will be 200
     And the page will contain "bereitgestellt, die sich häufig ändern oder sehr groß sind"
 
+Scenario: access list of stable firmware
+    When I access http://downloads.bremen.freifunk.net/firmware/stable/sysupgrade/
+    Then the status code will be 200
+    And the page will contain "-tp-link-tl-wr841n-nd-v3-sysupgrade.bin"
+    And the page will contain "stable.manifest"
+    And the page will contain "Hier findest du die aktuellen Firmware-Dateien."
+
+Scenario: access list of opkg module directories
+    When I access https://downloads.bremen.freifunk.net/opkg/modules/
+    Then the status code will be 200
+    And the page will contain "gluon-ffhb-201"
+
 
 # wiki
 Scenario: access wiki main page
