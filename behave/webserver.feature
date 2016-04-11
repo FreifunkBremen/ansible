@@ -74,3 +74,20 @@ Scenario: try to edit home page
     When I access http://wiki.bremen.freifunk.net/edit/Home as wellenfunk/foobar
     Then the status code will be 200
     And the page will contain "<h1>Editing <strong>Home</strong></h1>"
+
+
+# status
+Scenario: access status page
+    When I access http://status.bremen.freifunk.net/
+    Then the status code will be 200
+    And the page will contain "<h1>Freifunk Bremen Status</h1>"
+
+Scenario: access status page over HTTPS
+    When I access https://status.bremen.freifunk.net/
+    Then the status code will be 200
+    And the page will contain "<h1>Freifunk Bremen Status</h1>"
+
+Scenario: access JSON data file
+    When I access http://status.bremen.freifunk.net/data/merged.json
+    Then the status code will be 200
+    And the page will contain '"uuid":"'
