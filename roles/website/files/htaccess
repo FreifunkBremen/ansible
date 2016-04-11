@@ -1,0 +1,21 @@
+ErrorDocument 404 /404.html
+
+RedirectMatch ^/blog/2015/07/29/Breminale-Rückblick.html$ http://bremen.freifunk.net/blog/2015/07/29/breminale-rückblick.html
+RedirectMatch ^/blog/2015/08/24/Freifunk-auf-dem-Stadtwerder.html$ http://bremen.freifunk.net/blog/2015/08/24/freifunk-auf-dem-stadtwerder.html
+RedirectMatch ^/blog/2015/07/13/Breminale-Vorbereitungen.html$ http://bremen.freifunk.net/blog/2015/07/13/breminale-vorbereitungen.html
+RedirectMatch ^/blog/2015/06/28/Erste-stabile-Firmware.html$ http://bremen.freifunk.net/blog/2015/06/28/erste-stabile-firmware.html
+RedirectMatch ^/blog/2015/05/26/Haeufigere-Treffen.html$ http://bremen.freifunk.net/blog/2015/05/26/haeufigere-treffen.html
+RedirectMatch ^/blog/2015/05/16/Neue-Karte.html$ http://bremen.freifunk.net/blog/2015/05/16/neue-karte.html
+RedirectMatch ^/blog/2015/05/03/Neue-Firmware.html$ http://bremen.freifunk.net/blog/2015/05/03/neue-firmware.html
+RedirectMatch ^/blog/2015/03/30/Freifunk-in-den-Medien.html http://bremen.freifunk.net/blog/2015/03/30/freifunk-in-den-medien.html
+RedirectMatch ^/blog/2015/03/07/Sielwall-jetzt-Freifunk.html$ http://bremen.freifunk.net/blog/2015/03/07/sielwall-jetzt-freifunk.html
+RedirectMatch ^/blog/2015/03/03/Unbrick.html$ http://bremen.freifunk.net/blog/2015/03/03/unbrick.html
+RedirectMatch ^/blog/2014/12/22/Buten-un-Binnen.html$ http://bremen.freifunk.net/blog/2014/12/22/buten-un-binnen.html
+RedirectMatch ^/blog/2014/10/03/Computerboerse.html$ http://bremen.freifunk.net/blog/2014/10/03/computerboerse.html
+RedirectMatch ^/blog/2014/09/21/Auswertung-Kanalanalyse.html$ http://bremen.freifunk.net/blog/2014/09/21/auswertung-kanalanalyse.html
+RedirectMatch ^/blog/2014/09/06/Neue-Testing-Channel-Survey.html$ http://bremen.freifunk.net/blog/2014/09/06/neue-testing-channel-survey.html
+RedirectMatch ^/blog/2014/08/08/Neue-Testing.html$ http://bremen.freifunk.net/blog/2014/08/08/neue-testing.html
+RedirectMatch ^/blog/2014/06/23/Facebook-und-Testing-3.html$ http://bremen.freifunk.net/blog/2014/06/23/facebook-und-testing-3.html
+RedirectMatch ^/blog/2014/04/06/Blog-Twitter-Anbindung.html$ http://bremen.freifunk.net/blog/2014/04/06/blog-twitter-anbindung.html
+
+RedirectMatch ^/map/nodes.json$ http://downloads.bremen.freifunk.net/data/nodes.json

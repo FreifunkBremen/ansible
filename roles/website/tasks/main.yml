@@ -144,6 +144,9 @@
     creates: /etc/apache2/sites-enabled/{{ website_user }}.{{ website_domain }}-https.conf
   notify: restart apache
 
+- name: Copy htaccess file
+  template: src=htaccess dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess mode=0644 owner={{ website_user }} group={{ website_group }}
+
 - name: Run Jekyll
   command: /home/{{ website_user }}/.local/bin/update-jekyll.sh
   become: yes
