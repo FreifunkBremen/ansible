@@ -34,7 +34,7 @@ Scenario: access some blog post using old URL
 Scenario: access nodes.json
     When I access http://bremen.freifunk.net/map/nodes.json
     Then the status code will be 200
-    And the page will contain '{"timestamp": "201'
+    And the page will contain '"timestamp": "201'
 
 
 # download site
