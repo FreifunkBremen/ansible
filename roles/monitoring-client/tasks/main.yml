@@ -1,0 +1,106 @@
+---
+- name: Install virt-what
+  apt: name=virt-what
+
+- name: Detect running in LXC
+  shell: virt-what | grep -q lxc
+  ignore_errors: yes
+  register: lxc_detect
+
+- name: Detect running in OpenVZ
+  shell: virt-what | grep -q openvz
+  ignore_errors: yes
+  register: openvz_detect
+
+- name: Detect if we have swap
+  shell: test -n "$(cat /proc/swaps | tail -n +2)"
+  ignore_errors: yes
+  register: swap_detect
+
+- name: Add user for nagios
+  user: name=rnagios uid=996 home=/var/lib/rnagios shell=/bin/bash system=yes
+
+- name: Create .ssh directory
+  file: path=/var/lib/rnagios/.ssh state=directory mode=0700 owner=rnagios group=rnagios
+
+- name: Copy authorized keys
+  copy: src=authorized_keys dest=/var/lib/rnagios/.ssh/authorized_keys mode=0600 owner=rnagios group=rnagios
+
+- name: Install dependencies
+  apt: name={{ item }}
+  with_items:
+    - ca-certificates
+    - libyaml-syck-perl
+    - lsb-release
+    - nagios-plugins-contrib
+
+- name: Install Nagios checks
+  apt: name={{ item }}
+  with_items:
+    - nagios-plugins-basic
+    - nagios-plugins-standard
+  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version != '8') or
+        (ansible_distribution == 'Ubuntu')
+
+- name: Install Nagios checks for debian jessie
+  apt: name={{ item }}
+  with_items:
+    - monitoring-plugins-basic
+    - monitoring-plugins-standard
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '8'
+
+- name: Create directory for additional checks
+  file: path=/usr/local/lib/nagios/plugins state=directory
+
+- name: Install wrapper script
+  copy: src=ssh-forcecommand dest=/usr/local/lib/nagios/ssh-forcecommand mode=0755 owner=root group=root
+
+- name: Install additional monitoring checks
+  get_url: >
+    url=https://raw.githubusercontent.com/planetcyborg/nagios/master/check_{{ item }}
+    dest="/usr/local/lib/nagios/plugins/check_{{ item }}"
+    mode=0755
+    force=yes
+  with_items:
+    - git_status
+    - rkhunter
+    - lts_release
+    - checkrestart
+
+- name: Creates nagios configuration directory
+  file: path=/etc/nagios state=directory
+
+- name: Copy checkrestart configuration file
+  copy: src=checkrestart.cfg dest=/etc/nagios/checkrestart.cfg
+
+- name: Add files to checkrestart exception file
+  lineinfile: dest=/etc/nagios/checkrestart.cfg line={{ item }}
+  with_items:
+    - /usr/sbin/xnbd-client
+    - /dev/console
+    - /initrd.log
+
+- name: Copy default nagios configuration file
+  copy: src=ssh-forcecommand.default.cfg dest=/etc/nagios/ssh-forcecommand.default.cfg
+
+- name: Copy kernel nagios configuration file
+  copy: src=ssh-forcecommand.kernel.cfg dest=/etc/nagios/ssh-forcecommand.kernel.cfg
+  when: lxc_detect.rc != 0 and openvz_detect.rc != 0
+
+- name: Remove kernel nagios configuration file
+  file: dest=/etc/nagios/ssh-forcecommand.kernel.cfg state=absent
+  when: lxc_detect.rc == 0 or openvz_detect.rc == 0
+
+- name: Copy swap nagios configuration file
+  copy: src=ssh-forcecommand.swap.cfg dest=/etc/nagios/ssh-forcecommand.swap.cfg
+  when: swap_detect.rc == 0
+
+- name: Remove swap nagios configuration file
+  file: dest=/etc/nagios/ssh-forcecommand.swap.cfg state=absent
+  when: swap_detect.rc != 0
+
+- name: Concat forcecommand files
+  shell: cat /etc/nagios/ssh-forcecommand.*.cfg > /etc/nagios/ssh-forcecommand.cfg
+
+- name: Create sudo config
+  copy: src=sudoers-rnagios dest=/etc/sudoers.d/rnagios mode=0440 owner=root group=root
