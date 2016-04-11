@@ -1,0 +1,7 @@
+---
+etherpad_email: 'info@bremen.freifunk.net'
+etherpad_user: 'ffhb-pads'
+etherpad_group: 'ffhb-pads'
+etherpad_subdomain: 'pads'
+etherpad_domain: '{{ etherpad_subdomain }}.{{ main_domain }}'
+etherpad_title: 'Freifunk Bremen Pads'
