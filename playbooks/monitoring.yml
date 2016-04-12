@@ -1,0 +1,8 @@
+---
+- hosts: monitoring
+  remote_user: ffhb-monitoring
+  vars:
+    main_domain: bremen.freifunk.net
+    alt_domain: ffhb.de
+  roles:
+  - monitoring
