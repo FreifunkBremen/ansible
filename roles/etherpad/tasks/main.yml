@@ -5,6 +5,12 @@
     - "{{ etherpad_subdomain }}.{{ main_domain }}"
     - "{{ etherpad_subdomain }}.{{ alt_domain }}"
 
+- name: Remove directory for alternative domain
+  file: path=/var/www/{{ etherpad_user }}/domains/{{ etherpad_subdomain }}.{{ alt_domain }} state=absent
+
+- name: Symlink domain directories
+  file: src=/var/www/{{ etherpad_user }}/domains/{{ etherpad_subdomain }}.{{ main_domain }} dest=/var/www/{{ etherpad_user }}/domains/{{ etherpad_subdomain }}.{{ alt_domain }} owner={{ etherpad_user }} group={{ etherpad_group }} state=link
+
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ etherpad_user }} group={{ etherpad_group }} mode=0755
   with_items:
