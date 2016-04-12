@@ -1,37 +1,19 @@
 {
-    "services": [
-        "service.example.com"
-    ],
-    "vpnservers": [
-        "vpn01.bremen.freifunk.net"
-    ],
+    "services": {
+        "hosts": [
+            "service.example.com"
+        ],
+        "children": []
+    },
+    "vpnservers": {
+        "hosts": [
+            "vpn01.bremen.freifunk.net"
+        ],
+        "children": []
+    },
     "_meta": {
         "hostvars": {
             "vpn01.bremen.freifunk.net": {
-                "icvpn_ipv4": {
-                    "netmask": "255.255.255.255",
-                    "size": 32,
-                    "address": "10.207.1.196"
-                },
-                "exit": "gre",
-                "vpn_id": 1,
-                "batman_gateway": true,
-                "batman_ipv6_local": {
-                    "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
-                    "size": 64,
-                    "address": "fd2f:5119:f2c::1"
-                },
-                "dhcp": {
-                    "range_end": "10.196.19.255",
-                    "netmask": "255.255.0.0",
-                    "range_begin": "10.196.10.0"
-                },
-                "icvpn_ipv6": {
-                    "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:0000:0000",
-                    "size": 96,
-                    "address": "fec0::a:cf:1:c4"
-                },
-                "ansible_ssh_port": 60023,
                 "batman_ipv4": {
                     "netmask": "255.255.0.0",
                     "size": 16,
@@ -42,6 +24,11 @@
                     "size": 64,
                     "address": "2a06:8782:ffbb:1337::1"
                 },
+                "batman_ipv6_local": {
+                    "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
+                    "size": 64,
+                    "address": "fd2f:5119:f2c::1"
+                },
                 "ipv6_uplink_own_gateway": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
@@ -51,34 +38,53 @@
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
                     "address": "2a06:8782:ffbb:1::2"
+                },
+                "ansible_ssh_port": 60023,
+                "batman_gateway": true,
+                "vpn_id": 1,
+                "exit": "gre",
+                "icvpn_ipv4": {
+                    "netmask": "255.255.255.255",
+                    "size": 32,
+                    "address": "10.207.1.196"
+                },
+                "dhcp": {
+                    "range_end": "10.196.19.255",
+                    "netmask": "255.255.0.0",
+                    "range_begin": "10.196.10.0"
+                },
+                "icvpn_ipv6": {
+                    "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:0000:0000",
+                    "size": 96,
+                    "address": "fec0::a:cf:1:c4"
                 }
             },
             "service.example.com": {
-                "batman_ipv6_local": {
+                "vpn_id": 10,
+                "batman_ipv4": {
+                    "netmask": "255.255.0.0",
+                    "size": 16,
+                    "address": "10.196.0.10"
+                },
+                "batman_ipv6_global": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
-                    "address": "fd2f:5119:f2c::a"
+                    "address": "2a06:8782:ffbb:1337::a"
                 },
                 "ipv6_uplink_own_gateway": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
                     "address": "2a06:8782:ffbb:a::1"
                 },
+                "batman_ipv6_local": {
+                    "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
+                    "size": 64,
+                    "address": "fd2f:5119:f2c::a"
+                },
                 "ipv6_uplink_own_vpnserver": {
                     "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
                     "size": 64,
                     "address": "2a06:8782:ffbb:a::2"
-                },
-                "batman_ipv4": {
-                    "netmask": "255.255.0.0",
-                    "size": 16,
-                    "address": "10.196.0.10"
-                },
-                "vpn_id": 10,
-                "batman_ipv6_global": {
-                    "netmask": "ffff:ffff:ffff:ffff:0000:0000:0000:0000",
-                    "size": 64,
-                    "address": "2a06:8782:ffbb:1337::a"
                 }
             }
         }
@@ -87,15 +93,15 @@
         "vars": {
             "ipv6_local_network": "fd2f:5119:0f2c:0000:0000:0000:0000:0000/64",
             "site_code": "ffhb",
-            "ipv6_global_network": "2a06:8782:ffbb:1337:0000:0000:0000:0000/64",
-            "ipv6_uplink_network": "2a06:8782:ffbb:0000:0000:0000:0000:0000/64",
             "site": {
                 "site_code": "ffhb",
                 "site_name": "Freifunk Bremen",
                 "prefix6": "2a06:8782:ffbb:1337::/64",
                 "prefix4": "10.196.0.0/16"
             },
-            "ipv4_network": "10.196.0.0/16"
+            "ipv6_global_network": "2a06:8782:ffbb:1337:0000:0000:0000:0000/64",
+            "ipv4_network": "10.196.0.0/16",
+            "ipv6_uplink_network": "2a06:8782:ffbb:0000:0000:0000:0000:0000/64"
         }
     }
 }
