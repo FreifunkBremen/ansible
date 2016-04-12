@@ -1,5 +1,5 @@
 # Source:   https://github.com/SirAnthony/slpp
-# Revision: 0df9803c97a54c574d77e276b45fdd05cc17908c
+# Revision: 88b4d11a0c91fdcf5337af4b5f7fe2f0a6ea0c7a
 #
 # Copyright (c) 2010, 2011, 2012 SirAnthony <anthony at adsorbtion.org>
 #
@@ -22,6 +22,7 @@
 # THE SOFTWARE.
 
 import re
+import sys
 
 ERRORS = {
     'unexp_end_string': u'Unexpected end of string while parsing Lua string.',
@@ -36,7 +37,7 @@ class ParseError(Exception):
     pass
 
 
-class SLPP:
+class SLPP(object):
 
     def __init__(self):
         self.text = ''
@@ -50,7 +51,7 @@ class SLPP:
         self.tab = '\t'
 
     def decode(self, text):
-        if not text or type(text) is not str:
+        if not text or not isinstance(text, basestring):
             return
         #FIXME: only short comments removed
         reg = re.compile('--.*$', re.M)
@@ -63,8 +64,6 @@ class SLPP:
         return result
 
     def encode(self, obj):
-        if not obj:
-            return
         self.depth = 0
         return self.__encode(obj)
 
@@ -73,27 +72,34 @@ class SLPP:
         tab = self.tab
         newline = self.newline
         tp = type(obj)
-        if tp is str:
+        if isinstance(obj, str):
             s += '"%s"' % obj.replace(r'"', r'\"')
+        if isinstance(obj, unicode):
+            s += '"%s"' % obj.encode('utf-8').replace(r'"', r'\"')
         elif tp in [int, float, long, complex]:
             s += str(obj)
         elif tp is bool:
             s += str(obj).lower()
+        elif obj is None:
+            s += 'nil'
         elif tp in [list, tuple, dict]:
             self.depth += 1
             if len(obj) == 0 or ( tp is not dict and len(filter(
                     lambda x:  type(x) in (int,  float,  long) \
-                    or (type(x) is str and len(x) < 10),  obj
+                    or (isinstance(x, basestring) and len(x) < 10),  obj
                 )) == len(obj) ):
                 newline = tab = ''
             dp = tab * self.depth
             s += "%s{%s" % (tab * (self.depth - 2), newline)
             if tp is dict:
-                s += (',%s' % newline).join(
-                    [self.__encode(v) if type(k) is int \
-                        else dp + '%s = %s' % (k, self.__encode(v)) \
-                        for k, v in obj.iteritems()
-                    ])
+                contents = []
+                for k, v in obj.iteritems():
+                    if type(k) is int:
+                        contents.append(self.__encode(v))
+                    else:
+                        contents.append(dp + '%s = %s' % (k, self.__encode(v)))
+                s += (',%s' % newline).join(contents)
+
             else:
                 s += (',%s' % newline).join(
                     [dp + self.__encode(el) for el in obj])
@@ -172,7 +178,7 @@ class SLPP:
                     self.next_chr()
                     if k is not None:
                        o[idx] = k
-                    if not numeric_keys and len([ key for key in o if type(key) in (str,  float,  bool,  tuple)]) == 0:
+                    if not numeric_keys and len([ key for key in o if isinstance(key, (str, unicode, float,  bool,  tuple))]) == 0:
                         ar = []
                         for key in o:
                            ar.insert(key, o[key])
@@ -200,21 +206,16 @@ class SLPP:
                         k = None
         print ERRORS['unexp_end_table'] #Bad exit here
 
+    words = {'true': True, 'false': False, 'nil': None}
     def word(self):
         s = ''
         if self.ch != '\n':
-          s = self.ch
-        while self.next_chr():
-            if self.alnum.match(self.ch):
-                s += self.ch
-            else:
-                if re.match('^true$', s, re.I):
-                    return True
-                elif re.match('^false$', s, re.I):
-                    return False
-                elif s == 'nil':
-                    return None
-                return str(s)
+            s = self.ch
+        self.next_chr()
+        while self.ch is not None and self.alnum.match(self.ch) and s not in self.words:
+            s += self.ch
+            self.next_chr()
+        return self.words.get(s, s)
 
     def number(self):
         def next_digit(err):
@@ -243,8 +244,9 @@ class SLPP:
                         raise ParseError(ERRORS['mfnumber_sci'])
                     n += next_digit(ERRORS['mfnumber_sci'])
                     n += self.digit()
-        except ParseError as e:
-            print e
+        except ParseError:
+            t, e = sys.exc_info()[:2]
+            print(e)
             return 0
         try:
             return int(n, 0)
