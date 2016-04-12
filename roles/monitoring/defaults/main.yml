@@ -1,0 +1,7 @@
+---
+monitoring_email: 'info@bremen.freifunk.net'
+monitoring_user: 'ffhb-monitoring'
+monitoring_group: 'ffhb-monitoring'
+monitoring_subdomain: 'monitoring'
+monitoring_domain: '{{ monitoring_subdomain }}.{{ main_domain }}'
+monitoring_icinga_version: 1.13.3
