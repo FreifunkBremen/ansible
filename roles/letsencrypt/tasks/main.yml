@@ -1,3 +1,3 @@
 ---
 - name: Install letsencrypt client
-  git: repo=https://github.com/lukas2511/letsencrypt.sh.git dest=/opt/letsencrypt.sh
+  git: repo=https://github.com/lukas2511/letsencrypt.sh.git version=2f7da81f9b27a38734ea2db0b7256881d69739c8 dest=/opt/letsencrypt.sh
