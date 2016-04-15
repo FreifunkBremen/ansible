@@ -50,14 +50,43 @@
       chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
 
   - name: Build and install Icinga
-    command: {{ item }}
+    command: "{{ item }}"
+    args:
+      chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
     with_items:
       - make all
       - make fullinstall
-  when: icinga_version.stdout == monitoring_icinga_version
+
+  - name: Install configs
+    command: make install-config
+    args:
+      chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
+      creates: /home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg
+  when: icinga_version.stdout != monitoring_icinga_version
 
 - name: Disable syslog logging
   command: "sed -e '/use_syslog=1/s/1/0/' -i /home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg"
+
+- name: Create folder structure
+  file: path=/home/{{ monitoring_user }}/.opt/icinga/etc/{{ item }} state=directory recurse=yes owner={{ monitoring_user }} group={{ monitoring_group }} mode=0755
+  with_items:
+    - contacts_available
+    - contacts_enabled
+    - hostgroups_available
+    - hostgroups_enabled
+    - servers_available
+    - servers_enabled
+
+- name: Copy config files
+  template: src=objects_custom/{{ item }} dest=/home/{{ monitoring_user }}/.opt/icinga/etc/objects_custom/{{ item }} owner={{ monitoring_user }} group={{ monitoring_group }} mode=0644
+  with_items:
+    - commands.cfg
+    - servicegroup.cfg
+    - templates.cfg
+    - timeperiods.cfg
+
+- name: Installing hostgroup configs
+  copy: src=sysctl.d/ dest=/home/{{ monitoring_user }}/.opt/icinga/etc/
 
 - name: Create daemontools folder
   shell: /usr/local/bin/space-setup-svscan creates=/home/{{ monitoring_user }}/.config/service
