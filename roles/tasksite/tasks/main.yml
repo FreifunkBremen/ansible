@@ -83,7 +83,7 @@
   become_user: "{{ tasks_user }}"
 
 - name: Store MySQL password in home directory
-  template: src=my.cnf.home dest=/home/{{ tasks_user }}/.my.cnf owner={{ tasks_user }} group={{ tasks_group }} mode=0644
+  template: src=my.cnf.home dest=/home/{{ tasks_user }}/.my.cnf owner={{ tasks_user }} group={{ tasks_group }} mode=0600
 
 
 # Apache
@@ -150,13 +150,13 @@
   file: state=link dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }} src=../opt/phabricator/phabricator/webroot owner={{ tasks_user }} group={{ tasks_group }}
 
 - name: Copy .htaccess file
-  copy: src=htaccess dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }}/.htaccess owner={{ tasks_user }} group={{ tasks_group }}
+  copy: src=htaccess dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }}/.htaccess owner={{ tasks_user }} group={{ tasks_group }} mode=0644
 
 - name: Copy custom PHP config
   template: src=php-extopts.ini dest=/home/{{ tasks_user }}/.config/etc/php/ owner={{ tasks_user }} group={{ tasks_group }}
 
 - name: Copy custom Phabricator config
-  template: src=ffhb.conf.php dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/ owner={{ tasks_user }} group={{ tasks_group }}
+  template: src=ffhb.conf.php dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/ owner={{ tasks_user }} group={{ tasks_group }} mode=0700
 
 - name: Enable custom Phabricator config
   copy: content="ffhb" dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/local/ENVIRONMENT owner={{ tasks_user }} group={{ tasks_group }} mode=0600
