@@ -15,6 +15,7 @@
   - /home/{{ tasks_user }}/.var/lib/mysql
   - /home/{{ tasks_user }}/.var/log
   - /home/{{ tasks_user }}/.var/log/mysql
+  - /home/{{ tasks_user }}/.var/repo
   - /home/{{ tasks_user }}/.var/run
   - /home/{{ tasks_user }}/.cache
   - /var/www/{{ tasks_user }}/domains
