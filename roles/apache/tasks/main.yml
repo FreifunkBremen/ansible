@@ -83,4 +83,4 @@
   file: path=/readonly state=directory mode=0755
 
 - name: Copy logrotate job
-  copy: src=logrotate-apache2-user dest=/etc/logrotate.d/apache2-user user=root group=root mode=0644
+  copy: src=logrotate-apache2-user dest=/etc/logrotate.d/apache2-user owner=root group=root mode=0644
