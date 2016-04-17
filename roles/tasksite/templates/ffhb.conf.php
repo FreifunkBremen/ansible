@@ -8,4 +8,5 @@ return array(
   'mysql.user' => 'root',
   'mysql.pass' => '{{ tasks_mysql_password }}',
   'phabricator.base-uri' => 'http://{{ tasks_domain }}/',
+  'pygments.enabled' => true,
 );

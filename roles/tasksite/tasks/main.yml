@@ -32,6 +32,9 @@
 - name: Install CGI wrapper
   template: src=php-fcgi-starter dest=/var/www/{{ tasks_user }}/fcgi-bin/ mode=700 owner={{ tasks_user }} group={{ tasks_group }}
 
+- name: Install Pygments
+  apt: name=python-pygments
+
 
 # MySQL
 # TODO: use mysql-server role instead?
