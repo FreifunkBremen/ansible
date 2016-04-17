@@ -140,6 +140,9 @@
   notify: restart apache
 
 # Phabricator
+- name: Install php_env.sh script
+  copy: src=php_env.sh dest=/home/{{ tasks_user }}/.local/bin/ owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
 - name: Install Phabricator components
   git: repo=https://github.com/phacility/{{ item }}.git dest=/var/www/{{ tasks_user }}/opt/phabricator/{{ item }} force=yes
   with_items:
@@ -172,3 +175,18 @@
     PHP_INI_SCAN_DIR: "/etc/php5/cgi/conf.d:/home/{{ tasks_user }}/.config/etc/php"
   args:
     chdir: /var/www/{{ tasks_user }}/opt/phabricator/phabricator
+
+- name: Create Phabricator daemontools folders
+  file: path=/home/{{ tasks_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+  with_items:
+    - run-phabricator
+    - run-phabricator/log
+
+- name: Copy start script of Phabricator
+  template: src=run-phabricator dest=/home/{{ tasks_user }}/.config/etc/run-phabricator/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Copy log script of Phabricator
+  copy: src=run-log dest=/home/{{ tasks_user }}/.config/etc/run-phabricator/log/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Create symlink to start Phabricator
+  file: src=/home/{{ tasks_user }}/.config/etc/run-phabricator dest=/home/{{ tasks_user }}/.config/service/phabricator state=link owner={{ tasks_user }} group={{ tasks_group }}

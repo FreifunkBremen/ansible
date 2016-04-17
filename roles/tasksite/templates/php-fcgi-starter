@@ -7,7 +7,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 export USER={{ tasks_user }}
 export HOME=/home/{{ tasks_user }}
 
-export PHP_INI_SCAN_DIR="/etc/php5/cgi/conf.d:${HOME}/.config/etc/php"
+. $HOME/.local/bin/php_env.sh
 
 PHP_FCGI_CHILDREN=0
 export PHP_FCGI_CHILDREN
