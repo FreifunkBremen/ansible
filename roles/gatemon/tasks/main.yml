@@ -32,6 +32,9 @@
   become: yes
   become_user: "{{ gatemon_user }}"
 
+- name: Restrict read access for token/ directory
+  file: path=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/token/ state=directory mode=0700
+
 - name: Install dependencies
   shell: /home/{{ gatemon_user }}/.local/bin/composer install
   args:

@@ -103,3 +103,8 @@ Scenario: access JSON data file
     When I access http://status.bremen.freifunk.net/data/merged.json
     Then the status code will be 200
     And the page will contain '"uuid":"'
+
+Scenario: access to token/ directory is denied
+    When I access http://status.bremen.freifunk.net/token/
+    Then the status code will be 403
+    And the page will contain "Forbidden"
