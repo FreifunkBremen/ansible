@@ -108,3 +108,12 @@ Scenario: access to token/ directory is denied
     When I access http://status.bremen.freifunk.net/token/
     Then the status code will be 403
     And the page will contain "Forbidden"
+
+Scenario: access to .git/ directory is denied
+    When I access http://status.bremen.freifunk.net/.git/
+    Then the status code will be 403
+    And the page will contain "Forbidden"
+
+Scenario: access to .well-known directory is possible
+    When I access http://status.bremen.freifunk.net/.well-known/acme-challenge/
+    Then the status code will be 200
