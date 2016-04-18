@@ -5,8 +5,8 @@
 - name: Create directory for readonly files
   file: path=/readonly/{{ tasks_user }} state=directory owner={{ tasks_user }} group={{ tasks_group }} mode=0750
 
-- name: Create needed folder structure
-  file: path={{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+- name: Create needed private folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0700
   with_items:
   - /home/{{ tasks_user }}/.config/etc/php
   - /home/{{ tasks_user }}/.config/etc/mysql
@@ -19,6 +19,10 @@
   - /home/{{ tasks_user }}/.var/run
   - /home/{{ tasks_user }}/.var/storage
   - /home/{{ tasks_user }}/.cache
+
+- name: Create needed folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+  with_items:
   - /var/www/{{ tasks_user }}/domains
   - /var/www/{{ tasks_user }}/cgi-bin
   - /var/www/{{ tasks_user }}/fcgi-bin
