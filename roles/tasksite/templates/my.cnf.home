@@ -2,5 +2,5 @@
 
 [client]
 user = root
-password = {{ tasks_mysql_password }}
+password = {{ mysql_password_output.stdout }}
 socket=/home/{{ tasks_user }}/.var/run/mysqld.sock

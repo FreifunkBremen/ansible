@@ -46,6 +46,15 @@
 
 
 # MySQL
+- name: Generate MySQL password
+  shell: head /dev/urandom | tr -dc A-Za-z0-9 | head -c 20 > /home/{{ tasks_user }}/.var/mysql-password
+  args:
+    creates: /home/{{ tasks_user }}/.var/mysql-password
+
+- name: Fetch MySQL password
+  command: cat /home/{{ tasks_user }}/.var/mysql-password
+  register: mysql_password_output
+
 - name: Copy MySQL config file
   template: src=my.cnf.main dest=/home/{{ tasks_user }}/.config/etc/mysql/my.cnf
 
@@ -80,7 +89,7 @@
   wait_for: path=/home/{{ tasks_user }}/.var/run/mysqld.sock
 
 - name: Set MySQL root password on first run
-  mysql_user: name=root password={{ tasks_mysql_password }} login_unix_socket=/home/{{ tasks_user }}/.var/run/mysqld.sock
+  mysql_user: name=root password={{ mysql_password_output.stdout }} login_unix_socket=/home/{{ tasks_user }}/.var/run/mysqld.sock
   become: yes
   become_user: "{{ tasks_user }}"
 
