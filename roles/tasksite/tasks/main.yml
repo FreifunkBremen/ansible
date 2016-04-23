@@ -38,21 +38,14 @@
 - name: Install CGI wrapper
   template: src=php-fcgi-starter dest=/var/www/{{ tasks_user }}/fcgi-bin/ mode=700 owner={{ tasks_user }} group={{ tasks_group }}
 
-- name: Install Pygments
-  apt: name=python-pygments
+- name: Install necessary packages
+  apt: name={{ item }}
+  with_items:
+    - python-mysqldb
+    - python-pygments
 
 
 # MySQL
-# TODO: use mysql-server role instead?
-- name: Install MySQL server
-  apt: name={{ item }}
-  with_items:
-    - mysql-server-5.5
-    - python-mysqldb
-
-- name: Disable autostart of MySQL server
-  service: name=mysql enabled=no state=stopped
-
 - name: Copy MySQL config file
   template: src=my.cnf.main dest=/home/{{ tasks_user }}/.config/etc/mysql/my.cnf
 
