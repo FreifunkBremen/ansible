@@ -152,8 +152,8 @@
 - name: Copy .htaccess file
   copy: src=htaccess dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }}/.htaccess owner={{ tasks_user }} group={{ tasks_group }}
 
-- name: Copy custom PHP-MySQL config
-  template: src=php-mysql.ini dest=/home/{{ tasks_user }}/.config/etc/php/ owner={{ tasks_user }} group={{ tasks_group }}
+- name: Copy custom PHP config
+  template: src=php-extopts.ini dest=/home/{{ tasks_user }}/.config/etc/php/ owner={{ tasks_user }} group={{ tasks_group }}
 
 - name: Copy custom Phabricator config
   template: src=ffhb.conf.php dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/ owner={{ tasks_user }} group={{ tasks_group }}

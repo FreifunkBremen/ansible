@@ -51,7 +51,7 @@ skip-networking
 # * Fine Tuning
 #
 key_buffer		= 16M
-max_allowed_packet	= 16M
+max_allowed_packet	= 32M
 thread_stack		= 192K
 thread_cache_size       = 8
 # This replaces the startup script and checks MyISAM tables if needed
@@ -110,12 +110,18 @@ max_binlog_size         = 100M
 # ssl-cert=/etc/mysql/server-cert.pem
 # ssl-key=/etc/mysql/server-key.pem
 
+# recommended by Phabricator:
+sql_mode=STRICT_ALL_TABLES
+innodb_buffer_pool_size=200M
+ft_stopword_file=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/resources/sql/stopwords.txt
+ft_min_word_len=3
+ft_boolean_syntax=' |-><()~*:""&^'
 
 
 [mysqldump]
 quick
 quote-names
-max_allowed_packet	= 16M
+max_allowed_packet	= 32M
 
 [mysql]
 #no-auto-rehash	# faster start of mysql but no tab completition

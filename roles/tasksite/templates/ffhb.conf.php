@@ -7,4 +7,5 @@ return array(
   'mysql.host' => 'localhost',
   'mysql.user' => 'root',
   'mysql.pass' => '{{ tasks_mysql_password }}',
+  'phabricator.base-uri' => 'http://{{ tasks_domain }}/',
 );
