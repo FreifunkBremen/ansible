@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+[client]
+user = root
+password = {{ tasks_mysql_password }}
+socket=/home/{{ tasks_user }}/.var/run/mysqld.sock

@@ -3,6 +3,7 @@ dependencies:
   - apt
   - sudo
   - tools
+  - daemontools
   - apache
   - php
   - git

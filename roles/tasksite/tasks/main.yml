@@ -1,6 +1,6 @@
 ---
 - name: Add user
-  user: name={{ tasks_user }} home=/home/{{ tasks_user }} shell=/bin/zsh
+  user: name={{ tasks_user }} home=/home/{{ tasks_user }} shell=/bin/zsh groups=webusers
 
 - name: Create directory for readonly files
   file: path=/readonly/{{ tasks_user }} state=directory owner={{ tasks_user }} group={{ tasks_group }} mode=0750
@@ -8,14 +8,20 @@
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
   with_items:
+  - /home/{{ tasks_user }}/.config/etc/php
+  - /home/{{ tasks_user }}/.config/etc/mysql
   - /home/{{ tasks_user }}/.config/letsencrypt
   - /home/{{ tasks_user }}/.local/bin
+  - /home/{{ tasks_user }}/.var/lib/mysql
   - /home/{{ tasks_user }}/.var/log
+  - /home/{{ tasks_user }}/.var/log/mysql
+  - /home/{{ tasks_user }}/.var/run
   - /home/{{ tasks_user }}/.cache
-  - /var/www/{{ tasks_user }}/domains/{{ tasks_domain }}
+  - /var/www/{{ tasks_user }}/domains
   - /var/www/{{ tasks_user }}/cgi-bin
   - /var/www/{{ tasks_user }}/fcgi-bin
   - /var/www/{{ tasks_user }}/letsencrypt
+  - /var/www/{{ tasks_user }}/opt/phabricator
 
 - name: Create directories for Apache log files and SSL certificates
   file: path=/readonly/{{ tasks_user }}/{{ item }} state=directory owner=root group=root mode=0755
@@ -25,6 +31,59 @@
 
 - name: Install CGI wrapper
   template: src=php-fcgi-starter dest=/var/www/{{ tasks_user }}/fcgi-bin/ mode=700 owner={{ tasks_user }} group={{ tasks_group }}
+
+
+# MySQL
+# TODO: use mysql-server role instead?
+- name: Install MySQL server
+  apt: name={{ item }}
+  with_items:
+    - mysql-server-5.5
+    - python-mysqldb
+
+- name: Disable autostart of MySQL server
+  service: name=mysql enabled=no state=stopped
+
+- name: Copy MySQL config file
+  template: src=my.cnf.main dest=/home/{{ tasks_user }}/.config/etc/mysql/my.cnf
+
+- name: Initialize MySQL DB
+  command: mysql_install_db --user={{ tasks_user }} --datadir=/home/{{ tasks_user }}/.var/lib/mysql
+  become: yes
+  become_user: "{{ tasks_user }}"
+  args:
+    creates: /home/{{ tasks_user }}/.var/lib/mysql/mysql
+
+- name: Create daemontools folder
+  shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ tasks_user }}/.config/service
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Create MySQL daemontools folders
+  file: path=/home/{{ tasks_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+  with_items:
+    - run-mysql
+    - run-mysql/log
+
+- name: Copy start script of MySQL
+  template: src=run-mysql dest=/home/{{ tasks_user }}/.config/etc/run-mysql/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Copy log script of MySQL
+  copy: src=run-log dest=/home/{{ tasks_user }}/.config/etc/run-mysql/log/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Create symlink to start MySQL
+  file: src=/home/{{ tasks_user }}/.config/etc/run-mysql dest=/home/{{ tasks_user }}/.config/service/mysql state=link owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Wait for MySQL server to start
+  wait_for: path=/home/{{ tasks_user }}/.var/run/mysqld.sock
+
+- name: Set MySQL root password on first run
+  mysql_user: name=root password={{ tasks_mysql_password }} login_unix_socket=/home/{{ tasks_user }}/.var/run/mysqld.sock
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Store MySQL password in home directory
+  template: src=my.cnf.home dest=/home/{{ tasks_user }}/.my.cnf owner={{ tasks_user }} group={{ tasks_group }} mode=0644
 
 
 # Apache
@@ -76,3 +135,37 @@
   args:
     creates: /etc/apache2/sites-enabled/{{ tasks_user }}.{{ tasks_domain }}-https.conf
   notify: restart apache
+
+# Phabricator
+- name: Install Phabricator components
+  git: repo=https://github.com/phacility/{{ item }}.git dest=/var/www/{{ tasks_user }}/opt/phabricator/{{ item }} force=yes
+  with_items:
+    - libphutil
+    - arcanist
+    - phabricator
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Create domain symlink
+  file: state=link dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }} src=../opt/phabricator/phabricator/webroot owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Copy .htaccess file
+  copy: src=htaccess dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }}/.htaccess owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Copy custom PHP-MySQL config
+  template: src=php-mysql.ini dest=/home/{{ tasks_user }}/.config/etc/php/ owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Copy custom Phabricator config
+  template: src=ffhb.conf.php dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/ owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Enable custom Phabricator config
+  copy: content="ffhb" dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/local/ENVIRONMENT owner={{ tasks_user }} group={{ tasks_group }} mode=0600
+
+- name: Setup Phabricator DB
+  command: ./bin/storage upgrade --force
+  become: yes
+  become_user: "{{ tasks_user }}"
+  environment:
+    PHP_INI_SCAN_DIR: "/etc/php5/cgi/conf.d:/home/{{ tasks_user }}/.config/etc/php"
+  args:
+    chdir: /var/www/{{ tasks_user }}/opt/phabricator/phabricator
