@@ -1,6 +1,6 @@
 {
   "DON'T CHANGE!": "{{ ansible_managed }}",
-  "dataPath": "https://downloads.bremen.freifunk.net/data/",
+  "dataPath": "{{ meshviewer_web_path }}",
   "siteName": "Freifunk Bremen",
   "mapSigmaScale": 0.5,
   "showContact": false,
