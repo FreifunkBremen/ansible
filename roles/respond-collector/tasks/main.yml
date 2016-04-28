@@ -6,8 +6,8 @@
   shell: >
        go get -u github.com/FreifunkBremen/respond-collector
   environment:
-        GOPATH:/opt/go
-	PATH:$PATH:/opt/go/bin
+    GOPATH:/opt/go
+    PATH:$PATH:/opt/go/bin
   notify:
     - restart respond-collector
 

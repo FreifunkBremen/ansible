@@ -1,0 +1,6 @@
+---
+- name: restart respond-collector
+  service: name=respond-collector state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
