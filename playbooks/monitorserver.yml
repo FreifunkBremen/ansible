@@ -4,9 +4,9 @@
     batman_gateway: false
     ffhb_routing_table: default
     respond_collector_webserver: true
-    respond_collector_nodes_path: /opt/respond-collector/webroot/data
-    meshviewer_path_bin: /opt/respond-collector/webroot
     meshviewer_git_version: JSONv2
+    meshviewer_path_bin: /opt/www/meshviewer
+    meshviewer_web_path: /data/
   roles:
   - apt
   - openssh
