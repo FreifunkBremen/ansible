@@ -1,6 +1,7 @@
 ---
 respond_collector_webserver: true
-respond_collector_nodes_path: /opt/www
+respond_collector_webroot: /opt/www/
+respond_collector_nodes_path: /opt/www/data
 respond_collector_influxdb: false
 respond_collector_influxdb_database: ffhb
 respond_collector_influxdb_username:

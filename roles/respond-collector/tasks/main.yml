@@ -1,13 +1,17 @@
 ---
-- name: Install golang
-  apt: name=golang
+- name: Download and install go
+  unarchive: src=https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz  dest=/usr/local copy=no
+
+- name: Configure go
+  template: >
+    src=go.sh
+    dest=/etc/profile.d/go.sh
 
 - name: Install respond-collector
   shell: >
-       go get -u github.com/FreifunkBremen/respond-collector
+       /usr/local/go/bin/go get -u github.com/FreifunkBremen/respond-collector
   environment:
-    GOPATH:/opt/go
-    PATH:$PATH:/opt/go/bin
+    GOPATH: /opt/go
   notify:
     - restart respond-collector
 
