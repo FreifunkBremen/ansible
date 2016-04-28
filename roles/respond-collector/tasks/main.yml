@@ -1,3 +1,40 @@
 ---
 - name: Install golang
   apt: name=golang
+
+- name: Install respond-collector
+  shell: >
+       go get -u github.com/FreifunkBremen/respond-collector
+  environment:
+        GOPATH:/opt/go
+	PATH:$PATH:/opt/go/bin
+  notify:
+    - restart respond-collector
+
+- name: Configure respond-collector
+  template: >
+    src=config.yml
+    dest=/etc/respond-collector.conf
+  notify:
+    - restart respond-collector
+
+
+- name: Firewall open http port
+  mf_add: role=respond-collector proto=tcp port=80
+  when: respond_collector_webserver
+
+- name: Create directory
+  file: path={{ respond_collector_nodes_path }}/ state=directory
+
+
+
+- name: Install system unit
+  template: >
+    src=service
+    dest=/lib/systemd/system/respond-collector.service
+  notify:
+    - reload systemd
+    - restart respond-collector
+
+- name: Enable respond-collector
+  service: name=respond-collector enabled=yes

@@ -6,7 +6,7 @@ webserver:
   enable: {{ respond_collector_webserver }}
   port: 80
   address: 0.0.0.0
-  webroot: webroot
+  webroot: {{ respond_collector_nodes_path }}
   websocketnode: false
 nodes:
   enable: true

@@ -1,6 +1,6 @@
 ---
 respond_collector_webserver: true
-respond_collector_nodes_path: /var/www/html/meshviewer/data
+respond_collector_nodes_path: /opt/www
 respond_collector_influxdb: false
 respond_collector_influxdb_database: ffhb
 respond_collector_influxdb_username:
