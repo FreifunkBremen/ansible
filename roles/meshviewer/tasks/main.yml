@@ -26,6 +26,9 @@
 - name: Create destination directory
   file: path={{ meshviewer_path_bin }} state=directory
 
+- name: Install rsync
+  apt: name=rsync
+
 # does not work (https://github.com/ansible/ansible/issues/11873)
 #- name: Copy generated files
 #  delegate_to: "{{ inventory_hostname }}"
