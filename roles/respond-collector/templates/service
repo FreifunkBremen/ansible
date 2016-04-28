@@ -1,0 +1,10 @@
+[Unit]
+Description=respond-collector
+
+[Service]
+ExecStart=/opt/go/bin/respond-collector -config /etc/respond-collector.conf
+Restart=always
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target
