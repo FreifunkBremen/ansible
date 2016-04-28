@@ -21,7 +21,7 @@
 - name: Build meshviewer
   command: nodejs /usr/local/bin/grunt
   args:
-    chdir: {{ meshviewer_path_src }}
+    chdir: "{{ meshviewer_path_src }}"
 
 - name: Create destination directory
   file: path={{ meshviewer_path_bin }} state=directory
