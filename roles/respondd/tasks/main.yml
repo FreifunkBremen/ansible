@@ -3,7 +3,6 @@
   git: >
     repo={{ respondd_announce_git_root }}
     dest=/opt/{{ site_code }}/respondd-announce/
-    version=respondd
   notify:
     - restart respondd
 
