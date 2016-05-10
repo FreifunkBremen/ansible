@@ -123,11 +123,13 @@ Scenario: access to .well-known directory is possible
 Scenario: access tasks login page
     When I access http://tasks.bremen.freifunk.net/
     Then the status code will be 200
+    And the page URL will be "https://tasks.bremen.freifunk.net/"
     And the page will contain "Login to Phabricator</span>"
     And the page will contain "Freifunk Bremen</a>"
 
 Scenario: access tasks login page over HTTPS
     When I access https://tasks.bremen.freifunk.net/
     Then the status code will be 200
+    And the page URL will be "https://tasks.bremen.freifunk.net/"
     And the page will contain "Login to Phabricator</span>"
     And the page will contain "Freifunk Bremen</a>"
