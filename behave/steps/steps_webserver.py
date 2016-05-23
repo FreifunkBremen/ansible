@@ -23,6 +23,7 @@ def step_impl_download(context, url, br=None):
         fp = e
 
     context.http_status_code = fp.code
+    context.current_url = br.geturl()
     context.page_source = fp.read().decode("utf-8")
 
 @then(u'the page will contain "{text}"')
@@ -42,3 +43,7 @@ def step_impl(context, text):
 @then(u'the status code will be {http_status_code}')
 def step_impl(context, http_status_code):
     assert context.http_status_code == int(http_status_code), "HTTP code is '%d' but should be '%s'" % (context.http_status_code, http_status_code)
+
+@then(u'the page URL will be "{url}"')
+def step_impl(context, url):
+    assert context.current_url == url, "current URL is '%s' but should be '%s'" % (context.current_url, url)
