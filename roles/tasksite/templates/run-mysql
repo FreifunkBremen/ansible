@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+# These environment variables are sometimes needed by the running daemons
+export USER={{ tasks_user }}
+export HOME=/home/{{ tasks_user }}
+
+# Include the user-specific profile, it's actually called .profile on Debian.
+. $HOME/.profile
+
+# Now let's go!
+exec /usr/sbin/mysqld --defaults-file=/home/{{ tasks_user }}/.config/etc/mysql/my.cnf --basedir=/usr --datadir=/home/{{ tasks_user }}/.var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --log-error=/home/{{ tasks_user }}/.var/log/mysql/error.log --pid-file=/home/{{ tasks_user }}/.var/run/mysqld.pid --socket=/home/{{ tasks_user }}/.var/run/mysqld.sock 2>&1

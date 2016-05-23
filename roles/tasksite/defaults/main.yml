@@ -1,0 +1,6 @@
+---
+tasks_email: 'info@bremen.freifunk.net'
+tasks_user: 'tasks'
+tasks_group: 'tasks'
+tasks_subdomain: 'tasks'
+tasks_domain: '{{ tasks_subdomain }}.{{ main_domain }}'

@@ -1,0 +1,200 @@
+---
+- name: Add user
+  user: name={{ tasks_user }} home=/home/{{ tasks_user }} shell=/bin/zsh groups=webusers
+
+- name: Create directory for readonly files
+  file: path=/readonly/{{ tasks_user }} state=directory owner={{ tasks_user }} group={{ tasks_group }} mode=0750
+
+- name: Create needed private folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0700
+  with_items:
+  - /home/{{ tasks_user }}/.config/etc/php
+  - /home/{{ tasks_user }}/.config/etc/mysql
+  - /home/{{ tasks_user }}/.config/letsencrypt
+  - /home/{{ tasks_user }}/.local/bin
+  - /home/{{ tasks_user }}/.var/lib/mysql
+  - /home/{{ tasks_user }}/.var/log
+  - /home/{{ tasks_user }}/.var/log/mysql
+  - /home/{{ tasks_user }}/.var/repo
+  - /home/{{ tasks_user }}/.var/run
+  - /home/{{ tasks_user }}/.var/storage
+  - /home/{{ tasks_user }}/.cache
+
+- name: Create needed folder structure
+  file: path={{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+  with_items:
+  - /var/www/{{ tasks_user }}/domains
+  - /var/www/{{ tasks_user }}/cgi-bin
+  - /var/www/{{ tasks_user }}/fcgi-bin
+  - /var/www/{{ tasks_user }}/letsencrypt
+  - /var/www/{{ tasks_user }}/opt/phabricator
+
+- name: Create directories for Apache log files and SSL certificates
+  file: path=/readonly/{{ tasks_user }}/{{ item }} state=directory owner=root group=root mode=0755
+  with_items:
+    - log
+    - ssl
+
+- name: Install CGI wrapper
+  template: src=php-fcgi-starter dest=/var/www/{{ tasks_user }}/fcgi-bin/ mode=700 owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Install necessary packages
+  apt: name={{ item }}
+  with_items:
+    - python-mysqldb
+    - python-pygments
+
+
+# MySQL
+- name: Generate MySQL password
+  shell: head /dev/urandom | tr -dc A-Za-z0-9 | head -c 20 > /home/{{ tasks_user }}/.var/mysql-password
+  args:
+    creates: /home/{{ tasks_user }}/.var/mysql-password
+
+- name: Fetch MySQL password
+  command: cat /home/{{ tasks_user }}/.var/mysql-password
+  register: mysql_password_output
+
+- name: Copy MySQL config file
+  template: src=my.cnf.main dest=/home/{{ tasks_user }}/.config/etc/mysql/my.cnf
+
+- name: Initialize MySQL DB
+  command: mysql_install_db --user={{ tasks_user }} --datadir=/home/{{ tasks_user }}/.var/lib/mysql
+  become: yes
+  become_user: "{{ tasks_user }}"
+  args:
+    creates: /home/{{ tasks_user }}/.var/lib/mysql/mysql
+
+- name: Create daemontools folder
+  shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ tasks_user }}/.config/service
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Create MySQL daemontools folders
+  file: path=/home/{{ tasks_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+  with_items:
+    - run-mysql
+    - run-mysql/log
+
+- name: Copy start script of MySQL
+  template: src=run-mysql dest=/home/{{ tasks_user }}/.config/etc/run-mysql/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Copy log script of MySQL
+  copy: src=run-log dest=/home/{{ tasks_user }}/.config/etc/run-mysql/log/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Create symlink to start MySQL
+  file: src=/home/{{ tasks_user }}/.config/etc/run-mysql dest=/home/{{ tasks_user }}/.config/service/mysql state=link owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Wait for MySQL server to start
+  wait_for: path=/home/{{ tasks_user }}/.var/run/mysqld.sock
+
+- name: Set MySQL root password on first run
+  mysql_user: name=root password={{ mysql_password_output.stdout }} login_unix_socket=/home/{{ tasks_user }}/.var/run/mysqld.sock
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Store MySQL password in home directory
+  template: src=my.cnf.home dest=/home/{{ tasks_user }}/.my.cnf owner={{ tasks_user }} group={{ tasks_group }} mode=0600
+
+
+# Apache
+- name: Install Apache user config
+  template: src=tasks.conf dest=/etc/apache2/sites-available/010-{{ tasks_user }}.conf mode=0644
+  notify: restart apache
+
+- name: Enable Apache user config
+  command: a2ensite 010-{{ tasks_user }}
+  args:
+    creates: /etc/apache2/sites-enabled/010-{{ tasks_user }}.conf
+
+- name: Install Apache site config (common part)
+  template: src=tasks-common.conf dest=/etc/apache2/{{ tasks_user }}.{{ tasks_domain }}-common.conf mode=0644
+  notify: restart apache
+
+- name: Install Apache vHost config (HTTP)
+  template: src=tasks-http.conf dest=/etc/apache2/sites-available/{{ tasks_user }}.{{ tasks_domain }}.conf mode=0644
+  notify: restart apache
+
+- name: Enable Apache vHost config (HTTP)
+  command: a2ensite {{ tasks_user }}.{{ tasks_domain }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ tasks_user }}.{{ tasks_domain }}.conf
+  notify: restart apache
+
+- name: Copy letsencrypt config
+  template: src=letsencrypt.sh.config.sh dest=/home/{{ tasks_user }}/.config/letsencrypt/config.sh owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Get letsencrypt certificates
+  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ tasks_domain }} -d {{ alt_domain }}
+  args:
+    chdir: /home/{{ tasks_user }}/.config/letsencrypt
+    creates: /home/{{ tasks_user }}/.config/letsencrypt/certs/{{ tasks_domain }}/fullchain.pem
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Copy certificate
+  shell: cat /home/{{ tasks_user }}/.config/letsencrypt/certs/{{ tasks_domain }}/privkey.pem /home/{{ tasks_user }}/.config/letsencrypt/certs/{{ tasks_domain }}/fullchain.pem > /readonly/{{ tasks_user }}/ssl/{{ tasks_domain }}.combined.pem
+  args:
+    creates: /readonly/{{ tasks_user }}/ssl/{{ tasks_domain }}.combined.pem
+
+- name: Install Apache vHost config (HTTPS)
+  template: src=tasks-https.conf dest=/etc/apache2/sites-available/{{ tasks_user }}.{{ tasks_domain }}-https.conf mode=0644
+  notify: restart apache
+
+- name: Enable Apache vHost config (HTTPS)
+  command: a2ensite {{ tasks_user }}.{{ tasks_domain }}-https
+  args:
+    creates: /etc/apache2/sites-enabled/{{ tasks_user }}.{{ tasks_domain }}-https.conf
+  notify: restart apache
+
+# Phabricator
+- name: Install php_env.sh script
+  copy: src=php_env.sh dest=/home/{{ tasks_user }}/.local/bin/ owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Install Phabricator components
+  git: repo=https://github.com/phacility/{{ item }}.git dest=/var/www/{{ tasks_user }}/opt/phabricator/{{ item }} force=yes
+  with_items:
+    - libphutil
+    - arcanist
+    - phabricator
+  become: yes
+  become_user: "{{ tasks_user }}"
+
+- name: Create domain symlink
+  file: state=link dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }} src=../opt/phabricator/phabricator/webroot owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Copy .htaccess file
+  copy: src=htaccess dest=/var/www/{{ tasks_user }}/domains/{{ tasks_domain }}/.htaccess owner={{ tasks_user }} group={{ tasks_group }} mode=0644
+
+- name: Copy custom PHP config
+  template: src=php-extopts.ini dest=/home/{{ tasks_user }}/.config/etc/php/ owner={{ tasks_user }} group={{ tasks_group }}
+
+- name: Copy custom Phabricator config
+  template: src=ffhb.conf.php dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/ owner={{ tasks_user }} group={{ tasks_group }} mode=0700
+
+- name: Enable custom Phabricator config
+  copy: content="ffhb" dest=/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/local/ENVIRONMENT owner={{ tasks_user }} group={{ tasks_group }} mode=0600
+
+- name: Setup Phabricator DB
+  command: ./bin/storage upgrade --force
+  become: yes
+  become_user: "{{ tasks_user }}"
+  environment:
+    PHP_INI_SCAN_DIR: "/etc/php5/cgi/conf.d:/home/{{ tasks_user }}/.config/etc/php"
+  args:
+    chdir: /var/www/{{ tasks_user }}/opt/phabricator/phabricator
+
+- name: Create Phabricator daemontools folders
+  file: path=/home/{{ tasks_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+  with_items:
+    - run-phabricator
+    - run-phabricator/log
+
+- name: Copy start script of Phabricator
+  template: src=run-phabricator dest=/home/{{ tasks_user }}/.config/etc/run-phabricator/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Copy log script of Phabricator
+  copy: src=run-log dest=/home/{{ tasks_user }}/.config/etc/run-phabricator/log/run owner={{ tasks_user }} group={{ tasks_group }} mode=0755
+
+- name: Create symlink to start Phabricator
+  file: src=/home/{{ tasks_user }}/.config/etc/run-phabricator dest=/home/{{ tasks_user }}/.config/service/phabricator state=link owner={{ tasks_user }} group={{ tasks_group }}
