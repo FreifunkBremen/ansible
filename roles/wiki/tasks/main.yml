@@ -42,7 +42,7 @@
   become_user: "{{ wiki_user }}"
 
 - name: Clone wiki repository
-  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen force=yes
+  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen force=yes version=wiki
   become: yes
   become_user: "{{ wiki_user }}"
 
@@ -59,7 +59,7 @@
     chdir: /home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
 
 - name: Add cron job for pushing wiki contents to Github
-  cron: name="github-push" user="{{ wiki_user }}" minute="*/5" job="git -C '/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen' push --quiet origin master"
+  cron: name="github-push" user="{{ wiki_user }}" minute="*/5" job="git -C '/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen' push --quiet origin wiki"
 
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ wiki_user }}/.config/service
