@@ -1,2 +1,7 @@
 User-agent: *
-Disallow: /
+Disallow: /Treffen/
+Disallow: /Entwuerfe/
+Disallow: /edit/
+Disallow: /history/
+Disallow: /fileview
+Disallow: /latest_changes
