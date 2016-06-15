@@ -5,7 +5,7 @@ In this repository are playbooks for deploying services on Freifunk Bremen machi
 
 ## Dependencies
 
-    apt-get install python-dnspython
+    apt-get install python-dnspython ca-certificates
 
 ## Playbooks
 

@@ -40,5 +40,9 @@
     - reload systemd
     - restart respond-collector
 
+- name: Firewall open webport
+  mf_add: role=web_respond_collector proto=tcp port="80"
+
+
 - name: Enable respond-collector
   service: name=respond-collector enabled=yes
