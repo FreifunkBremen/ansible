@@ -24,8 +24,8 @@ grp.host(4, "vpn04.bremen.freifunk.net", exit_ipv4="gre")
 grp.host(5, "vpn05.bremen.freifunk.net", exit_ipv4="openvpn-hideme")
 grp.host(6, "vpn06.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0")
 
-grp = inv.group("services")
-grp.host(10, "ffhb.sum7.de")
+grp = inv.group("eventserver",dhcp=True)
+grp.host(10, "ffhb.h.sum7.de")
 
 grp = inv.group("webserver")
 grp.host(0, "webserver.ffhb.de")
