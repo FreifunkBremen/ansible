@@ -1,0 +1,21 @@
+---
+- hosts: eventserver
+  vars:
+  roles:
+  - apt
+  - openssh
+  - batman-adv-14
+  - main-bridge
+  - fastd
+  - alfred-announce
+  - respondd
+  - meshviewer
+  - respond-collector
+  - chrony
+  - unbound
+  - dnsmasq
+  - system
+  - tmpfs
+  - tools
+  - firewall
+  - motd
