@@ -2,6 +2,7 @@
 ---
 respondd:
   enable: {{ respond_collector_respondd }}
+  interface: {{ respond_collector_respondd_interface }}
   collectinterval: {{ respond_collector_respondd_collectinterval }}
 
 webserver:
@@ -16,7 +17,8 @@ webserver:
 
 nodes:
   enable: true
-  nodes_path: {{ respond_collector_nodes_path }}/nodes.json
+  nodes_path: {{ respond_collector_nodes_path }}/nodes_all.json
+  nodesmini_path: {{ respond_collector_nodes_path }}/nodes.json
   graphs_path: {{ respond_collector_nodes_path }}/graph.json
   saveinterval: {{ respond_collector_nodes_saveinterval }}
   aliases_enable: {{ respond_collector_nodes_aliases }}
@@ -28,4 +30,3 @@ influxdb:
   database: {{ respond_collector_influxdb_database }}
   username: {{ respond_collector_influxdb_username }}
   password: {{ respond_collector_influxdb_password }}
-
