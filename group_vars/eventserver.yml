@@ -1,6 +1,7 @@
 ---
 batman_gateway: False
 ffhb_routing_table: default
+micro_web_path: /opt/www/manager
 meshviewer_path_bin: /opt/www/meshviewer
 meshviewer_web_path: /data/
 respond_collector_respondd: true
