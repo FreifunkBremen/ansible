@@ -13,11 +13,58 @@
 
 - name: Install influxdb
   apt: name=influxdb
+  register: new
+
+- name: Upload influxdb configuration
+  template: src=influxdb.conf dest=/etc/influxdb/
+  vars:
+    influxdb_auth_enabled: true
+
+- name: Firewall open influxdb port
+  mf_add: role=influxdb proto={{item.proto}} port={{item.port}}
+  with_items:
+  - proto: tcp
+    port: 8083
+  - proto: tcp
+    port: 8086
 
 - name: Start influxdb
   service: name=influxdb state=started
 
-# TODO Zugriff einschränken
+- name: Create admin user
+  uri:
+    url: "http://localhost:8086/query"
+    method: POST
+    body: "q=CREATE+USER+%22{{ influxdb_admin_user }}%22+WITH+PASSWORD+%27{{ influxdb_admin_password }}%27+WITH+ALL+PRIVILEGES&db=_internal"
+  when: new.changed
 
-#- name: Upload influxdb configuration
-#  template: src=influxdb.conf dest=/etc/influxdb/
+- name: Create user
+  uri:
+    url: "http://localhost:8086/query"
+    user: "{{ influxdb_admin_user }}"
+    password: "{{ influxdb_admin_password }}"
+    method: POST
+    body: "q=CREATE+USER+%22{{ item.user }}%22+WITH+PASSWORD+%27{{ item.pass }}%27+&db=_internal"
+    force_basic_auth: yes
+  with_items: "{{ influxdb_users }}"
+
+- name: Create Database
+  uri:
+    url: "http://localhost:8086/query"
+    user: "{{ influxdb_admin_user }}"
+    password: "{{ influxdb_admin_password }}"
+    method: POST
+    body: "q=CREATE+DATABASE+%22{{ item }}%22&db=_internal"
+    force_basic_auth: yes
+  with_items: "{{ influxdb_databases }}"
+
+
+- name: Grant access
+  uri:
+    url: "http://localhost:8086/query"
+    user: "{{ influxdb_admin_user }}"
+    password: "{{ influxdb_admin_password }}"
+    method: POST
+    body: "q=GRANT+{{ item.access }}+ON+%22{{ item.database }}%22+TO+%22{{ item.user }}%22&db=_internal"
+    force_basic_auth: yes
+  with_items: "{{ influxdb_access }}"

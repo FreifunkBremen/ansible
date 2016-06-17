@@ -1,5 +1,6 @@
 *.swp
 *.orig
 *.retry
+playbooks/credentials/
 # build products...
 *.py[co]
