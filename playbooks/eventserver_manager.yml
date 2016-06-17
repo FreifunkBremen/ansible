@@ -6,7 +6,7 @@
   - meshviewer
   - influxdb
   - respond-collector
-#  - grafana
+  - grafana
 #  - micro-web
   - system
   - tmpfs

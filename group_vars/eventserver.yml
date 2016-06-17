@@ -21,7 +21,7 @@ influxdb_users:
   - user: "{{ respond_collector_influxdb_username }}"
     pass: "{{ respond_collector_influxdb_password }}"
   - user: public
-    pass: ""
+    pass: public
 influxdb_databases:
   - "{{ respond_collector_influxdb_database }}"
 influxdb_access:
