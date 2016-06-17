@@ -9,3 +9,14 @@
 
 - name: Install grafana
   apt: name=grafana
+  notify: restart grafana
+
+- name: Configurate grafana
+  template: src=grafana.ini dest=/etc/grafana/grafana.ini
+  notify: restart grafana
+
+- name: Firewall open grafana port
+  mf_add: role=grafana proto=tcp port={{ grafana_port }}
+
+- name: Enable grafana
+  service: name=grafana-server state=started enabled=yes
