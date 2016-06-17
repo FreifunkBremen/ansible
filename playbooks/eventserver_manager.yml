@@ -4,7 +4,10 @@
   roles:
   - respondd
   - meshviewer
+  - influxdb
   - respond-collector
+#  - grafana
+#  - micro-web
   - system
   - tmpfs
   - tools
