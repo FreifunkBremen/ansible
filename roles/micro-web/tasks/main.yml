@@ -1,0 +1,2 @@
+- name: Clone mirco-web
+  git: repo={{micro_web_repo}} dest={{micro_web_path}} version={{micro_web_version}} force=yes

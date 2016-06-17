@@ -1,0 +1,355 @@
+{
+  "id": 2,
+  "title": "Short",
+  "originalTitle": "Short",
+  "tags": [
+    "nodes"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": true,
+  "sharedCrosshair": false,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "450px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "Breminale",
+          "decimals": null,
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)",
+            "thresholdLine": false
+          },
+          "id": 1,
+          "interval": "[[time_group]]s",
+          "isNew": true,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "[[time_group]]s"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "node",
+              "policy": "default",
+              "query": "SELECT sum(\"clients.total\") *$time_save/$time_group AS \"Clients\", sum(\"clients.wifi\") *$time_save/$time_group AS \"Wifi\", sum(\"clients.wifi5\") *$time_save/$time_group AS \"5Ghz\", count(\"load\") *$time_save/$time_group AS \"Node\" FROM \"node\" WHERE \"nodeid\" =~ /$node$/ AND $timeFilter GROUP BY time([[time_group]]s) fill(null)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "clients.total"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "sum"
+                  },
+                  {
+                    "params": [
+                      "*$time_save/$time_group"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "Clients"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "clients.wifi"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "sum"
+                  },
+                  {
+                    "params": [
+                      "*$time_save/$time_group"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "Wifi"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "clients.wifi5"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "sum"
+                  },
+                  {
+                    "params": [
+                      "*$time_save/$time_group"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "5Ghz"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "load"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "count"
+                  },
+                  {
+                    "params": [
+                      "*$time_save/$time_group"
+                    ],
+                    "type": "math"
+                  },
+                  {
+                    "params": [
+                      "Node"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "nodeid",
+                  "operator": "=~",
+                  "value": "/$node$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "FFHB Clients + Nodes",
+          "tooltip": {
+            "msResolution": true,
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "title": ""
+    }
+  ],
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "regex wildcard",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "Breminale",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "multiFormat": "regex values",
+        "name": "node",
+        "query": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"nodeid\"",
+        "refresh": 1,
+        "tagValuesQuery": "",
+        "tagsQuery": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"nodeid\"",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "60",
+          "value": "60"
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Interval (in s)",
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "time_group",
+        "options": [
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": true,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "360",
+            "value": "360"
+          },
+          {
+            "selected": false,
+            "text": "600",
+            "value": "600"
+          },
+          {
+            "selected": false,
+            "text": "3600",
+            "value": "3600"
+          }
+        ],
+        "query": "10,60,360,600,3600",
+        "refresh": 0,
+        "type": "custom"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "text": "60",
+          "value": "60"
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "multiFormat": "glob",
+        "name": "time_save",
+        "options": [
+          {
+            "selected": true,
+            "text": "60",
+            "value": "60"
+          }
+        ],
+        "query": "60",
+        "refresh": 0,
+        "type": "custom"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "1m",
+  "schemaVersion": 12,
+  "version": 0,
+  "links": []
+}

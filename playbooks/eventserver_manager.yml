@@ -7,7 +7,7 @@
   - influxdb
   - respond-collector
   - grafana
-#  - micro-web
+  - micro-web
   - system
   - tmpfs
   - tools
