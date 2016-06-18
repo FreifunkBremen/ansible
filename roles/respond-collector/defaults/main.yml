@@ -9,6 +9,11 @@ respond_collector_webserver_webroot: /opt/www/
 respond_collector_webserver_api_passphrase: test
 respond_collector_webserver_api_aliases: false
 respond_collector_webserver_api_newnodes: false
+respond_collector_aliases_ansible: false
+respond_collector_aliases_ansible_repo: https://github.com/FreifunkBremen/ansible-breminale.git
+respond_collector_aliases_ansible_path: /opt/ansible-events
+respond_collector_aliases_ansible_hosts: nodes
+respond_collector_aliases_ansible_playbook: playbooks/nodes-infos.yml
 
 respond_collector_nodes: true
 respond_collector_nodes_path: /opt/www/data

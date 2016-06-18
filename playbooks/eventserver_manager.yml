@@ -2,14 +2,14 @@
 - hosts: eventserver
   vars:
   roles:
-#  - respondd
+  - respondd
   - meshviewer
-#  - influxdb
+  - influxdb
   - respond-collector
-#  - grafana
-#  - micro-web
-#  - system
-#  - tmpfs
-#  - tools
-#  - firewall
-#  - motd
+  - grafana
+  - micro-web
+  - system
+  - tmpfs
+  - tools
+  - firewall
+  - motd

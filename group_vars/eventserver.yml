@@ -20,6 +20,7 @@ respond_collector_influxdb: true
 respond_collector_influxdb_database: breminale
 respond_collector_influxdb_username: breminale-respondd-collector
 respond_collector_influxdb_password: "{{ lookup('password', 'credentials/influx_breminale length=15') }}"
+respond_collector_aliases_ansible: true
 influxdb_admin_user: admin
 influxdb_admin_password: "{{ lookup('password', 'credentials/influx_admin length=15') }}"
 influxdb_users:

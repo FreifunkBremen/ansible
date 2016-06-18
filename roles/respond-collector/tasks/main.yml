@@ -46,3 +46,7 @@
 
 - name: Enable respond-collector
   service: name=respond-collector enabled=yes
+
+- name: Install with ansible
+  include: ansible.yml
+  when: respond_collector_aliases_ansible
