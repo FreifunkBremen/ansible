@@ -1,0 +1,9 @@
+---
+- name: Clone repository
+  git: repo={{ meshviewer_geojson_git }} dest=/opt/meshviewer_geojson_git force=yes
+
+- name: Install script to copy valide geojson
+  template: src=geojson-update.sh dest=/usr/local/bin/geojson-update owner=root group=root mode=0755
+
+- name: Install cronjob to copy valide geojson
+  template: src=geojson.cronjob dest=/etc/cron.d/geojson-update owner=root group=root mode=0644

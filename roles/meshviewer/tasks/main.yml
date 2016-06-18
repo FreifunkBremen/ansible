@@ -47,3 +47,7 @@
 
 - name: Upload config
   template: src=config.json dest={{ meshviewer_path_bin }}/
+
+- name: Enable Geojson
+  include: geojson.yml
+  when: meshviewer_geojson
