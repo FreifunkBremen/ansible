@@ -4,6 +4,9 @@
   "siteName": "Freifunk Bremen",
   "mapSigmaScale": 0.5,
   "showContact": false,
+{% if meshviewer_geojson %}
+  "geoJson":true,
+{% endif %}
   "maxAge": 3,
   "globalInfos": [
     {

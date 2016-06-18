@@ -4,6 +4,10 @@ ffhb_routing_table: default
 micro_web_path: /opt/www/manager
 meshviewer_path_bin: /opt/www/meshviewer
 meshviewer_web_path: /data/
+meshviewer_geojson: true
+meshviewer_git_version: geojson
+meshviewer_geojson_file: breminale.geojson
+meshviewer_geojson_file_path: /opt/www/data
 respond_collector_respondd: true
 respond_collector_respondd_interface: br-ffhb
 respond_collector_respondd_collectinterval: 15
