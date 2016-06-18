@@ -1,0 +1,9 @@
+---
+- name: Install ansible
+  apt: name=ansible
+
+- name: Clone ansible repository
+  git: repo={{ respond_collector_aliases_ansible_repo }} dest={{respond_collector_aliases_ansible_path}} force=yes
+
+- name: Install cronjob for ansible
+  template: src=ansible.cronjob dest=/etc/cron.d/respond-collector-ansible owner=root group=root mode=0644
