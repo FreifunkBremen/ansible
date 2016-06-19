@@ -13,7 +13,7 @@ respond_collector_aliases_ansible: false
 respond_collector_aliases_ansible_repo: https://github.com/FreifunkBremen/ansible-breminale.git
 respond_collector_aliases_ansible_path: /opt/ansible-events
 respond_collector_aliases_ansible_hosts: nodes
-respond_collector_aliases_ansible_playbook: playbooks/nodes-infos.yml
+respond_collector_aliases_ansible_playbook: playbooks/respond-collector.yml
 
 respond_collector_nodes: true
 respond_collector_nodes_path: /opt/www/data
