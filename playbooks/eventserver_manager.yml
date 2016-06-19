@@ -8,8 +8,3 @@
   - respond-collector
   - grafana
   - micro-web
-  - system
-  - tmpfs
-  - tools
-  - firewall
-  - motd
