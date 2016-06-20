@@ -1,6 +1,12 @@
 ---
+- name: Install dependencies
+  apt: name={{item}}
+  with_items:
+  - python-pip
+  - python-dev
+
 - name: Install ansible
-  apt: name=ansible
+  pip: name=ansible
 
 - name: Clone ansible repository
   git: repo={{ respond_collector_aliases_ansible_repo }} dest={{respond_collector_aliases_ansible_path}} force=yes
