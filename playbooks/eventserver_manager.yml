@@ -7,4 +7,4 @@
   - influxdb
   - respond-collector
   - grafana
-  - micro-web
+  - eventmanager
