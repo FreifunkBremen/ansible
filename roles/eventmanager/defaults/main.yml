@@ -1,0 +1,4 @@
+---
+micro_web_repo: https://github.com/FreifunkBremen/eventmanager.git
+micro_web_path: /opt/www/manager
+micro_web_version: gh-pages
