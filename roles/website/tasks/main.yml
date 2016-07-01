@@ -57,7 +57,7 @@
   apt: name=ruby-sass
 
 - name: Clone Meshviewer repository
-  git: repo=https://github.com/FreifunkBremen/meshviewer.git version=v4 dest=/home/{{ website_user }}/.var/meshviewer force=yes
+  git: repo=https://github.com/FreifunkBremen/meshviewer.git dest=/home/{{ website_user }}/.var/meshviewer force=yes
   become: yes
   become_user: "{{ website_user }}"
   register: meshviewer_checkout
@@ -81,7 +81,7 @@
     creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
-  command: cp -r /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
+  command: rsync /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
   when: meshviewer_checkout.changed
   become: yes
   become_user: "{{ website_user }}"
@@ -145,7 +145,7 @@
   notify: restart apache
 
 - name: Copy htaccess file
-  template: src=htaccess dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess mode=0644 owner={{ website_user }} group={{ website_group }}
+  copy: src=htaccess dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess mode=0644 owner={{ website_user }} group={{ website_group }}
 
 - name: Run Jekyll
   command: /home/{{ website_user }}/.local/bin/update-jekyll.sh
