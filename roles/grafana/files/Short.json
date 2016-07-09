@@ -270,8 +270,8 @@
         "name": "node",
         "query": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"nodeid\"",
         "refresh": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"nodeid\"",
+        "tagValuesQuery": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"nodeid\" WHERE \"owner\" = $key",
+        "tagsQuery": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"owner\"",
         "type": "query",
         "useTags": false
       },
