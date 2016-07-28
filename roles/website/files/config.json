@@ -1,7 +1,7 @@
 {
   "dataPath": "https://downloads.bremen.freifunk.net/data/",
   "siteName": "Freifunk Bremen",
-  "mapSigmaScale": 0.5,
+  "mapSigmaScale": 0.25,
   "showContact": false,
   "maxAge": 3,
   "globalInfos": [
@@ -13,17 +13,16 @@
     }
   ],
   "mapLayers": [
-    { "name": "MapQuest",
-      "url": "https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg",
+    {
+      "name": "Freifunk Bremen",
+      "url": "//tiles.bremen.freifunk.net/{z}/{x}/{y}.png",
       "config": {
-        "subdomains": "1234",
         "type": "osm",
-        "attribution": "Tiles &copy; <a href=\"https://www.mapquest.com/\" target=\"_blank\">MapQuest</a>, Data CC-BY-SA OpenStreetMap",
-        "maxZoom": 18
+        "attribution": "<a href=\"https://github.com/mapbox/mapbox-studio-osm-bright.tm2\">Design</a> © <a href=\"https://www.mapbox.com/\">Mapbox</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC-BY 3.0</a> — Daten © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+        "maxZoom": 20
       }
     },
-    {
-      "name": "Stamen.TonerLite"
-    }
+    { "name": "OpenStreetMap.Mapnik" },
+    { "name": "Stamen.TonerLite" }
   ]
 }
