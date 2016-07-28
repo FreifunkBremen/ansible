@@ -1,0 +1,2 @@
+#! /usr/bin/env sh
+exec multilog t '-* [0mGET * [32m200 *' '-* [0mGET * [36m304 *' ./main
