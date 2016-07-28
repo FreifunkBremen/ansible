@@ -1,0 +1,15 @@
+---
+dependencies:
+  - apache
+  - apt
+  - daemontools
+  - git
+  - nodejs
+  - ruby
+  - sudo
+  - tools
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - jessie

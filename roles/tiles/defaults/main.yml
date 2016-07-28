@@ -1,0 +1,7 @@
+---
+tiles_email: 'info@bremen.freifunk.net'
+tiles_user: tiles
+tiles_group: tiles
+tiles_subdomain: tiles
+tiles_domain: '{{ tiles_subdomain }}.{{ main_domain }}'
+tiles_tessera_port: 63114
