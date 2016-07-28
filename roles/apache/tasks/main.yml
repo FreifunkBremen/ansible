@@ -31,6 +31,8 @@
 
 - name: Enable configurations
   command: a2enconf {{ item }}
+  args:
+    creates: /etc/apache2/conf-enabled/{{ item }}
   with_items:
     - anon-logs.conf
     - default-dir-options.conf
