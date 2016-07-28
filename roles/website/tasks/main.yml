@@ -90,7 +90,6 @@
 
 - name: Install Meshviewer config
   copy: src=config.json dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/ mode=0644 owner={{ website_user }} group={{ website_user }}
-  when: meshviewer_checkout.changed
 
 
 # Apache
