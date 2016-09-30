@@ -2,5 +2,7 @@
 *.orig
 *.retry
 playbooks/credentials/
+host_vars/*
+!host_vars/*.gpg
 # build products...
 *.py[co]
