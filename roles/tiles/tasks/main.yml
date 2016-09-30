@@ -11,22 +11,17 @@
 - name: Create directory for readonly files
   file: path=/readonly/{{ tiles_user }} state=directory owner={{ tiles_user }} group={{ tiles_group }} mode=0750
 
-- name: Create directories for Apache log files and SSL certificates
-  file: path=/readonly/{{ tiles_user }}/{{ item }} state=directory owner=root group=root mode=0755
-  with_items:
-    - log
-    - ssl
+- name: Create directories for Apache log files
+  file: path=/readonly/{{ tiles_user }}/log state=directory owner=root group=root mode=0755
 
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ tiles_user }} group={{ tiles_group }} mode=0755
   with_items:
-  - /home/{{ tiles_user }}/.config/letsencrypt
   - /home/{{ tiles_user }}/.opt
   - /home/{{ tiles_user }}/.var/gollum-envs
   - /var/www/{{ tiles_user }}/domains/{{ tiles_domain }}
   - /var/www/{{ tiles_user }}/cgi-bin
   - /var/www/{{ tiles_user }}/fcgi-bin
-  - /var/www/{{ tiles_user }}/letsencrypt
 
 ### Install tessera, style and dependencies
 - name: Install tessera tile server and dependencies
@@ -84,44 +79,18 @@
 - name: Enable Apache cache modules
   apache2_module: state=present name=cache_disk
 
-- name: Install Apache site config (common part)
-  template: src=tiles-common.conf dest=/etc/apache2/{{ tiles_user }}.{{ tiles_domain }}-common.conf mode=0644
+- name: Get letsencrypt certificates
+  lineinfile: dest=/etc/letsencrypt/domains.txt line="{{ tiles_subdomain }}.{{ main_domain }} {{ tiles_subdomain }}.{{ alt_domain }}"
+  notify: regenerate certificates
+
+- name: Install Apache vHost config
+  template: src=apache2.conf dest=/etc/apache2/sites-available/{{ tiles_user }}.{{ tiles_domain }}.conf mode=0644
   notify: reload apache
 
-- name: Install Apache vHost config (HTTP)
-  template: src=tiles-http.conf dest=/etc/apache2/sites-available/{{ tiles_user }}.{{ tiles_domain }}.conf mode=0644
-  notify: reload apache
-
-- name: Enable Apache vHost config (HTTP)
+- name: Enable Apache vHost config
   command: a2ensite {{ tiles_user }}.{{ tiles_domain }}
   args:
     creates: /etc/apache2/sites-enabled/{{ tiles_user }}.{{ tiles_domain }}.conf
-  notify: reload apache
-
-- name: Copy letsencrypt config
-  template: src=letsencrypt.sh.config.sh dest=/home/{{ tiles_user }}/.config/letsencrypt/config.sh owner={{ tiles_user }} group={{ tiles_group }}
-
-- name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ tiles_subdomain }}.{{ main_domain }} -d {{ tiles_subdomain }}.{{ alt_domain }}
-  args:
-    chdir: /home/{{ tiles_user }}/.config/letsencrypt
-    creates: /home/{{ tiles_user }}/.config/letsencrypt/certs/{{ tiles_domain }}/fullchain.pem
-  become: yes
-  become_user: "{{ tiles_user }}"
-
-- name: Copy certificate
-  shell: cat /home/{{ tiles_user }}/.config/letsencrypt/certs/{{ tiles_domain }}/privkey.pem /home/{{ tiles_user }}/.config/letsencrypt/certs/{{ tiles_domain }}/fullchain.pem > /readonly/{{ tiles_user }}/ssl/{{ tiles_domain }}.combined.pem
-  args:
-    creates: /readonly/{{ tiles_user }}/ssl/{{ tiles_domain }}.combined.pem
-
-- name: Install Apache vHost config (HTTPS)
-  template: src=tiles-https.conf dest=/etc/apache2/sites-available/{{ tiles_user }}.{{ tiles_domain }}-https.conf mode=0644
-  notify: reload apache
-
-- name: Enable Apache vHost config (HTTPS)
-  command: a2ensite {{ tiles_user }}.{{ tiles_domain }}-https
-  args:
-    creates: /etc/apache2/sites-enabled/{{ tiles_user }}.{{ tiles_domain }}-https.conf
   notify: reload apache
 
 ### Wait for download to finish

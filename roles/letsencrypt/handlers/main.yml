@@ -1,0 +1,3 @@
+---
+- name: regenerate certificates
+  command: /opt/dehydrated/dehydrated -f /etc/letsencrypt/config.sh -c
