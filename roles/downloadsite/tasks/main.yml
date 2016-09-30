@@ -8,16 +8,12 @@
 - name: Create directory for readonly files
   file: path=/readonly/{{ downloads_user }} state=directory owner={{ downloads_user }} group={{ downloads_group }} mode=0750
 
-- name: Create directories for Apache log files and SSL certificates
-  file: path=/readonly/{{ downloads_user }}/{{ item }} state=directory owner=root group=root mode=0755
-  with_items:
-    - log
-    - ssl
+- name: Create directories for Apache log files
+  file: path=/readonly/{{ downloads_user }}/log state=directory owner=root group=root mode=0755
 
 - name: Create needed folder structure
   file: path={{ item }} state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
   with_items:
-  - /home/{{ downloads_user }}/.config/letsencrypt
   - /home/{{ downloads_user }}/.local/bin
   - /home/{{ downloads_user }}/.ssh
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}
@@ -27,59 +23,20 @@
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/video
   - /var/www/{{ downloads_user }}/cgi-bin
   - /var/www/{{ downloads_user }}/fcgi-bin
-  - /var/www/{{ downloads_user }}/letsencrypt
 
-- name: Install CGI wrapper
-  template: src=php-fcgi-starter dest=/var/www/{{ downloads_user }}/fcgi-bin/ mode=0700 owner={{ downloads_user }} group={{ downloads_group }}
+- name: Get letsencrypt certificates
+  lineinfile: dest=/etc/letsencrypt/domains.txt line="{{ downloads_subdomain }}.{{ main_domain }} {{ downloads_subdomain }}.{{ alt_domain }}"
+  notify: regenerate certificates
 
-- name: Install Apache user config
-  template: src=downloads.conf dest=/etc/apache2/sites-available/010-{{ downloads_user }}.conf mode=0644
-  notify: restart apache
+- name: Install Apache vHost config
+  template: src=apache2.conf dest=/etc/apache2/sites-available/{{ downloads_user }}.{{ downloads_domain }}.conf mode=0644
+  notify: reload apache
 
-- name: Enable Apache user config
-  command: a2ensite 010-{{ downloads_user }}
-  args:
-    creates: /etc/apache2/sites-enabled/010-{{ downloads_user }}.conf
-
-- name: Install Apache site config (common part)
-  template: src=downloads-common.conf dest=/etc/apache2/{{ downloads_user }}.{{ downloads_domain }}-common.conf mode=0644
-  notify: restart apache
-
-- name: Install Apache vHost config (HTTP)
-  template: src=downloads-http.conf dest=/etc/apache2/sites-available/{{ downloads_user }}.{{ downloads_domain }}.conf mode=0644
-  notify: restart apache
-
-- name: Enable Apache vHost config (HTTP)
+- name: Enable Apache vHost config
   command: a2ensite {{ downloads_user }}.{{ downloads_domain }}
   args:
     creates: /etc/apache2/sites-enabled/{{ downloads_user }}.{{ downloads_domain }}.conf
-  notify: restart apache
-
-- name: Copy letsencrypt config
-  template: src=letsencrypt.sh.config.sh dest=/home/{{ downloads_user }}/.config/letsencrypt/config.sh owner={{ downloads_user }} group={{ downloads_group }}
-
-- name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ downloads_subdomain }}.{{ main_domain }} -d {{ downloads_subdomain }}.{{ alt_domain }}
-  args:
-    chdir: /home/{{ downloads_user }}/.config/letsencrypt
-    creates: /home/{{ downloads_user }}/.config/letsencrypt/certs/{{ downloads_domain }}/fullchain.pem
-  become: yes
-  become_user: "{{ downloads_user }}"
-
-- name: Copy certificate
-  shell: cat /home/{{ downloads_user }}/.config/letsencrypt/certs/{{ downloads_domain }}/privkey.pem /home/{{ downloads_user }}/.config/letsencrypt/certs/{{ downloads_domain }}/fullchain.pem > /readonly/{{ downloads_user }}/ssl/{{ downloads_domain }}.combined.pem
-  args:
-    creates: /readonly/{{ downloads_user }}/ssl/{{ downloads_domain }}.combined.pem
-
-- name: Install Apache vHost config (HTTPS)
-  template: src=downloads-https.conf dest=/etc/apache2/sites-available/{{ downloads_user }}.{{ downloads_domain }}-https.conf mode=0644
-  notify: restart apache
-
-- name: Enable Apache vHost config (HTTPS)
-  command: a2ensite {{ downloads_user }}.{{ downloads_domain }}-https
-  args:
-    creates: /etc/apache2/sites-enabled/{{ downloads_user }}.{{ downloads_domain }}-https.conf
-  notify: restart apache
+  notify: reload apache
 
 - name: Copy htaccess file
   copy: src=htaccess dest=/var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/.htaccess mode=0644 owner={{ downloads_user }} group={{ downloads_group }}
