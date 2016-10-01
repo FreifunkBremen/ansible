@@ -11,11 +11,19 @@
   service: name=apache2 state=started enabled=yes
 
 - name: "Security settings: ServerTokens"
-  replace: dest=/etc/apache2/conf-available/security.conf regexp='ServerTokens\s*(.*)' replace='ServerTokens Prod'
+  lineinfile:
+    dest=/etc/apache2/conf-available/security.conf
+    regexp='^(\s*)ServerTokens\s'
+    line='\1ServerTokens Prod'
+    backrefs=yes
   notify: restart apache
 
 - name: "Security settings: ServerSignature"
-  replace: dest=/etc/apache2/conf-available/security.conf regexp='ServerSignature\s*(.*)' replace='ServerSignature Off'
+  lineinfile:
+    dest=/etc/apache2/conf-available/security.conf
+    regexp='^(\s*)#?ServerSignature\s'
+    line='\1ServerSignature Off'
+    backrefs=yes
   notify: restart apache
 
 - name: Copy configuration files
@@ -87,4 +95,9 @@
   file: path=/readonly state=directory mode=0755
 
 - name: Copy logrotate job
-  copy: src=logrotate-apache2-user dest=/etc/logrotate.d/apache2-user owner=root group=root mode=0644
+  copy:
+    src=logrotate-apache2-user
+    dest=/etc/logrotate.d/apache2-user
+    owner=root
+    group=root
+    mode=0644
