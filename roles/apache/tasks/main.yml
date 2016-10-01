@@ -26,6 +26,22 @@
     backrefs=yes
   notify: restart apache
 
+- name: "Security settings: SSLCipherSuite"
+  lineinfile:
+    dest=/etc/apache2/mods-available/ssl.conf
+    regexp='^(\s*)#?SSLCipherSuite\s'
+    line='\1SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !ADH"'
+    backrefs=yes
+  notify: restart apache
+
+- name: "Security settings: SSLHonorCipherOrder"
+  lineinfile:
+    dest=/etc/apache2/mods-available/ssl.conf
+    regexp='^(\s*)#?SSLHonorCipherOrder\s'
+    line='\1SSLHonorCipherOrder on'
+    backrefs=yes
+  notify: restart apache
+
 - name: Copy configuration files
   copy: src={{ item }} dest=/etc/apache2/conf-available/{{ item }}
   with_items:
