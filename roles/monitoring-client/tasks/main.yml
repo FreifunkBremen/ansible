@@ -16,15 +16,31 @@
   shell: test -n "$(cat /proc/swaps | tail -n +2)"
   ignore_errors: yes
   register: swap_detect
+  changed_when: False
 
 - name: Add user for nagios
-  user: name=rnagios uid=996 home=/var/lib/rnagios shell=/bin/bash system=yes
+  user:
+    name=rnagios
+    uid=996
+    home=/var/lib/rnagios
+    shell=/bin/bash
+    system=yes
 
 - name: Create .ssh directory
-  file: path=/var/lib/rnagios/.ssh state=directory mode=0700 owner=rnagios group=rnagios
+  file:
+    path=/var/lib/rnagios/.ssh
+    state=directory
+    mode=0700
+    owner=rnagios
+    group=rnagios
 
 - name: Copy authorized keys
-  copy: src=authorized_keys dest=/var/lib/rnagios/.ssh/authorized_keys mode=0600 owner=rnagios group=rnagios
+  copy:
+    src=authorized_keys
+    dest=/var/lib/rnagios/.ssh/authorized_keys
+    mode=0600
+    owner=rnagios
+    group=rnagios
 
 - name: Install dependencies
   apt: name={{ item }}
@@ -53,7 +69,12 @@
   file: path=/usr/local/lib/nagios/plugins state=directory
 
 - name: Install wrapper script
-  copy: src=ssh-forcecommand dest=/usr/local/lib/nagios/ssh-forcecommand mode=0755 owner=root group=root
+  copy:
+    src=ssh-forcecommand
+    dest=/usr/local/lib/nagios/ssh-forcecommand
+    mode=0755
+    owner=root
+    group=root
 
 - name: Install additional monitoring checks
   get_url: >
@@ -73,34 +94,46 @@
 - name: Copy checkrestart configuration file
   copy: src=checkrestart.cfg dest=/etc/nagios/checkrestart.cfg
 
-- name: Add files to checkrestart exception file
-  lineinfile: dest=/etc/nagios/checkrestart.cfg line={{ item }}
-  with_items:
-    - /usr/sbin/xnbd-client
-    - /dev/console
-    - /initrd.log
-
 - name: Copy default nagios configuration file
-  copy: src=ssh-forcecommand.default.cfg dest=/etc/nagios/ssh-forcecommand.default.cfg
+  copy:
+    src=ssh-forcecommand.default.cfg
+    dest=/etc/nagios/ssh-forcecommand.default.cfg
+  register: default_nagios_config
 
 - name: Copy kernel nagios configuration file
-  copy: src=ssh-forcecommand.kernel.cfg dest=/etc/nagios/ssh-forcecommand.kernel.cfg
+  copy:
+    src=ssh-forcecommand.kernel.cfg
+    dest=/etc/nagios/ssh-forcecommand.kernel.cfg
+  register: kernel_nagios_config_added
   when: lxc_detect.rc != 0 and openvz_detect.rc != 0
 
 - name: Remove kernel nagios configuration file
-  file: dest=/etc/nagios/ssh-forcecommand.kernel.cfg state=absent
+  file:
+    dest=/etc/nagios/ssh-forcecommand.kernel.cfg
+    state=absent
+  register: kernel_nagios_config_removed
   when: lxc_detect.rc == 0 or openvz_detect.rc == 0
 
 - name: Copy swap nagios configuration file
-  copy: src=ssh-forcecommand.swap.cfg dest=/etc/nagios/ssh-forcecommand.swap.cfg
+  copy:
+    src=ssh-forcecommand.swap.cfg
+    dest=/etc/nagios/ssh-forcecommand.swap.cfg
+  register: swap_nagios_config_added
   when: swap_detect.rc == 0
 
 - name: Remove swap nagios configuration file
   file: dest=/etc/nagios/ssh-forcecommand.swap.cfg state=absent
+  register: swap_nagios_config_removed
   when: swap_detect.rc != 0
 
 - name: Concat forcecommand files
   shell: cat /etc/nagios/ssh-forcecommand.*.cfg > /etc/nagios/ssh-forcecommand.cfg
+  when: default_nagios_config|changed or kernel_nagios_config_added|changed or kernel_nagios_config_removed|changed or swap_nagios_config_added|changed or swap_nagios_config_removed|changed
 
 - name: Create sudo config
-  copy: src=sudoers-rnagios dest=/etc/sudoers.d/rnagios mode=0440 owner=root group=root
+  copy:
+    src=sudoers-rnagios
+    dest=/etc/sudoers.d/rnagios
+    mode=0440
+    owner=root
+    group=root

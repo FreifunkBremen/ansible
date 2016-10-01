@@ -3,19 +3,31 @@
   apt: name=rsync
 
 - name: Add user
-  user: name={{ downloads_user }} home=/home/{{ downloads_user }} groups=webusers shell=/bin/zsh
+  user:
+    name={{ downloads_user }}
+    home=/home/{{ downloads_user }}
+    groups=webusers
+    shell=/bin/zsh
 
-- name: Create directory for readonly files
-  file: path=/readonly/{{ downloads_user }} state=directory owner={{ downloads_user }} group={{ downloads_group }} mode=0750
-
-- name: Create directories for Apache log files
-  file: path=/readonly/{{ downloads_user }}/log state=directory owner=root group=root mode=0755
+- name: Create directory for Apache log files
+  file:
+    path=/readonly/{{ downloads_user }}/log
+    state=directory
+    owner=root
+    group={{ downloads_group }}
+    mode=0750
 
 - name: Create needed folder structure
-  file: path={{ item }} state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  file:
+    path={{ item }}
+    state=directory
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
+    mode=0755
   with_items:
   - /home/{{ downloads_user }}/.local/bin
   - /home/{{ downloads_user }}/.ssh
+  - /home/{{ downloads_user }}/.var/run
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/data/nodes
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/firmware/all
@@ -25,11 +37,17 @@
   - /var/www/{{ downloads_user }}/fcgi-bin
 
 - name: Get letsencrypt certificates
-  lineinfile: dest=/etc/letsencrypt/domains.txt line="{{ downloads_subdomain }}.{{ main_domain }} {{ downloads_subdomain }}.{{ alt_domain }}"
+  lineinfile:
+    dest=/etc/letsencrypt/domains.txt
+    create=yes
+    line="{{ downloads_subdomain }}.{{ main_domain }} {{ downloads_subdomain }}.{{ alt_domain }}"
   notify: regenerate certificates
 
 - name: Install Apache vHost config
-  template: src=apache2.conf dest=/etc/apache2/sites-available/{{ downloads_user }}.{{ downloads_domain }}.conf mode=0644
+  template:
+    src=apache2.conf
+    dest=/etc/apache2/sites-available/{{ downloads_user }}.{{ downloads_domain }}.conf
+    mode=0644
   notify: reload apache
 
 - name: Enable Apache vHost config
@@ -39,38 +57,42 @@
   notify: reload apache
 
 - name: Copy htaccess file
-  copy: src=htaccess dest=/var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/.htaccess mode=0644 owner={{ downloads_user }} group={{ downloads_group }}
-
-- name: Copy rrsync
-  copy: src=/usr/share/doc/rsync/scripts/rrsync.gz dest=/home/{{ downloads_user }}/.local/bin/rrsync.gz owner={{ downloads_user }} group={{ downloads_group }} mode=0644 remote_src=True
+  copy:
+    src=htaccess
+    dest=/var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/.htaccess
+    mode=0644
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
 
 - name: Extract rrsync
-  shell: gunzip rrsync.gz
+  shell: gunzip -c /usr/share/doc/rsync/scripts/rrsync.gz > rrsync
   args:
-    chdir: "/home/{{ downloads_user }}/.local/bin"
+    chdir: "/home/{{ downloads_user }}/.local/bin/"
     creates: "/home/{{ downloads_user }}/.local/bin/rrsync"
-  become: yes
-  become_user: "{{ downloads_user }}"
 
-- name: Set executable bit on rrsync
-  file: path=/home/{{ downloads_user }}/.local/bin/rrsync mode=0755
-
-- name: Create authorized_keys if absent
-  file: path=/home/{{ downloads_user }}/.ssh/authorized_keys state=touch mode=0644
+- name: Set owner and mode on rrsync
+  file:
+    path=/home/{{ downloads_user }}/.local/bin/rrsync
+    mode=0755
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
 
 - name: Add ffmap public key
-  lineinfile: dest=/home/{{ downloads_user }}/.ssh/authorized_keys line='command="/home/{{ downloads_user }}/.local/bin/rrsync /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC0UEJyJk93SwSqyQs7NJfaXqZXYucyLfvx5Yd94ZPOodb9B3NgyDhBwVl+9LlPPUR9+4Hkek7mEKSIdKLS0MwD+MsAvztt8icSfQZ/2LOgIwwrYgrIDi9n97M1/SKqlgyaue/PME7pHiKHT0sxAiEJNYJqIN1U5to+2fvlMUEi44jHPH6xmnKm/yq3mXh8e9nghJN/Mai8aetemw/TrR/c6KE6nXOxY8Ce2MaZrcs4J0pwRgpL0XGvFEe1lWoBVFH3MIXg962xvnj+Q5H9/gSE48Q+/JW7tDAOqldIV8ON7cSuKBN8gkRHMqH652uQS/6tWQDSsltvOiemvTLcIdlBfrpbfFJ043wK226SQfsFvMXEV2zVrA/UFQabXno5E4utKd/lFLm0gFdiVULRkkMGfa7kzOAoNgzzAigeYZZP9Zj2Nlgr/jIccdvYLFB5FZ0AuDqsclp50EPcI6CXzRDUc1905rj7ywpTIvt30hUYHpyaMROXegMavPv1midDXZy1tntr4y10tYWM3x/jFjYo1Eztc8WgK2H8n9uqIAc2F3y3wuJWBaGQZNk06NLOt9AWi2ssSEe0V/prAdTSTvzO3YnPJHTwjGHWOKbEzjhow/mVqT09WYdVM61b5H9Ui1KYPhV2sNCg0+GpOPeZuM8zpzx1QkrCVzUWRFJHM6MD7w== ffmap'
-  args:
-    owner: "{{ downloads_user }}"
-    group: "{{ downloads_group }}"
-    mode: 0644
-
+  lineinfile:
+    dest=/home/{{ downloads_user }}/.ssh/authorized_keys
+    create=yes
+    owner="{{ downloads_user }}"
+    group="{{ downloads_group }}"
+    mode=0644
+    line='command="/home/{{ downloads_user }}/.local/bin/rrsync /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC0UEJyJk93SwSqyQs7NJfaXqZXYucyLfvx5Yd94ZPOodb9B3NgyDhBwVl+9LlPPUR9+4Hkek7mEKSIdKLS0MwD+MsAvztt8icSfQZ/2LOgIwwrYgrIDi9n97M1/SKqlgyaue/PME7pHiKHT0sxAiEJNYJqIN1U5to+2fvlMUEi44jHPH6xmnKm/yq3mXh8e9nghJN/Mai8aetemw/TrR/c6KE6nXOxY8Ce2MaZrcs4J0pwRgpL0XGvFEe1lWoBVFH3MIXg962xvnj+Q5H9/gSE48Q+/JW7tDAOqldIV8ON7cSuKBN8gkRHMqH652uQS/6tWQDSsltvOiemvTLcIdlBfrpbfFJ043wK226SQfsFvMXEV2zVrA/UFQabXno5E4utKd/lFLm0gFdiVULRkkMGfa7kzOAoNgzzAigeYZZP9Zj2Nlgr/jIccdvYLFB5FZ0AuDqsclp50EPcI6CXzRDUc1905rj7ywpTIvt30hUYHpyaMROXegMavPv1midDXZy1tntr4y10tYWM3x/jFjYo1Eztc8WgK2H8n9uqIAc2F3y3wuJWBaGQZNk06NLOt9AWi2ssSEe0V/prAdTSTvzO3YnPJHTwjGHWOKbEzjhow/mVqT09WYdVM61b5H9Ui1KYPhV2sNCg0+GpOPeZuM8zpzx1QkrCVzUWRFJHM6MD7w== ffmap'
 
 - name: Copy rsync daemon config
-  template: src=rsyncd.conf dest=/home/{{ downloads_user }}/.config/etc/rsyncd.conf owner={{ downloads_user }} group={{ downloads_group }} mode=0644
-
-- name: Create rsync run folder
-  file: path=/home/{{ downloads_user }}/.var/run state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  template:
+    src=rsyncd.conf
+    dest=/home/{{ downloads_user }}/.config/etc/rsyncd.conf
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
+    mode=0644
 
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ downloads_user }}/.config/service
@@ -78,16 +100,37 @@
   become_user: "{{ downloads_user }}"
 
 - name: Create rsync daemontools folders
-  file: path=/home/{{ downloads_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  file:
+    path=/home/{{ downloads_user }}/.config/etc/{{ item }}
+    state=directory
+    recurse=yes
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
+    mode=0755
   with_items:
     - run-rsync
     - run-rsync/log
 
 - name: Copy start script of rsync
-  template: src=run dest=/home/{{ downloads_user }}/.config/etc/run-rsync/run owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  template:
+    src=run
+    dest=/home/{{ downloads_user }}/.config/etc/run-rsync/run
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
+    mode=0755
 
 - name: Copy log script of rsync
-  copy: src=run-log dest=/home/{{ downloads_user }}/.config/etc/run-rsync/log/run owner={{ downloads_user }} group={{ downloads_group }} mode=0755
+  copy:
+    src=run-log
+    dest=/home/{{ downloads_user }}/.config/etc/run-rsync/log/run
+    owner={{ downloads_user }}
+    group={{ downloads_group }}
+    mode=0755
 
 - name: Create symlink to start rsync
-  file: src=/home/{{ downloads_user }}/.config/etc/run-rsync dest=/home/{{ downloads_user }}/.config/service/rsync state=link owner={{ downloads_user }} group={{ downloads_group }}
+  file:
+    src=/home/{{ downloads_user }}/.config/etc/run-rsync
+    dest=/home/{{ downloads_user }}/.config/service/rsync
+    state=link
+    owner={{ downloads_user }}
+    group={{ downloads_group }}

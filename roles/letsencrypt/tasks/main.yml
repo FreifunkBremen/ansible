@@ -1,6 +1,10 @@
 ---
 - name: Create directory for letsencrypt challenges
-  file: path=/var/www/acme-challenge state=directory group=www-data mode=0750
+  file:
+    path=/var/www/acme-challenge
+    state=directory
+    group=www-data
+    mode=0750
 
 - name: Install Apache config for letsencrypt challenges
   copy: src=acme-challenge.conf dest=/etc/apache2/conf-available/
@@ -11,7 +15,10 @@
     creates: /etc/apache2/conf-enabled/acme-challenge.conf
 
 - name: Install letsencrypt client
-  git: repo=https://github.com/lukas2511/dehydrated.git version=ec49a4433b48a7bc8f178d06dad3f55cff24bdf3 dest=/opt/dehydrated/
+  git:
+    repo=https://github.com/lukas2511/dehydrated.git
+    version=ec49a4433b48a7bc8f178d06dad3f55cff24bdf3
+    dest=/opt/dehydrated/
 
 - name: Create config directory for letsencrypt client
   file: path=/etc/letsencrypt state=directory
@@ -26,6 +33,3 @@
 
 - name: Copy letsencrypt cronjob
   copy: src=cronjob dest=/etc/cron.d/letsencrypt
-
-- name: Ensure domain list exists
-  file: path=/etc/letsencrypt/domains.txt state=touch
