@@ -23,6 +23,7 @@
   with_items:
     - anon-logs.conf
     - default-dir-options.conf
+    - ocsp-stapling.conf
   notify: restart apache
 
 - name: Copy proxy configuration
@@ -36,6 +37,7 @@
   with_items:
     - anon-logs.conf
     - default-dir-options.conf
+    - ocsp-stapling.conf
   notify: restart apache
 
 - name: Copy user included configuration files
