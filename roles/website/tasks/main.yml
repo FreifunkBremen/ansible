@@ -100,7 +100,6 @@
   become_user: "{{ website_user }}"
   args:
     chdir: /home/{{ website_user }}/.var/meshviewer
-    creates: /home/{{ website_user }}/.var/meshviewer/build/
 
 - name: Copy built Meshviewer to www directory
   command: rsync /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
