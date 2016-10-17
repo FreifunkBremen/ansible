@@ -1,29 +1,39 @@
 ---
 - name: Add user
-  user: name={{ wiki_user }} home=/home/{{ wiki_user }} shell=/bin/zsh groups=webusers generate_ssh_key=yes
+  user:
+    name={{ wiki_user }}
+    home=/home/{{ wiki_user }}
+    shell=/bin/zsh
+    groups=webusers
+    generate_ssh_key=yes
 
-- name: Create directory for readonly files
-  file: path=/readonly/{{ wiki_user }} state=directory owner={{ wiki_user }} group={{ wiki_group }} mode=0750
-
-- name: Create directories for Apache log files and SSL certificates
-  file: path=/readonly/{{ wiki_user }}/{{ item }} state=directory owner=root group=root mode=0755
-  with_items:
-    - log
-    - ssl
+- name: Create directory for Apache log files
+  file:
+    path=/readonly/{{ wiki_user }}/log
+    state=directory
+    owner=root
+    group={{ wiki_group }}
+    mode=0750
 
 - name: Create needed folder structure
-  file: path={{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  file:
+    path={{ item }}
+    state=directory
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
+    mode=0755
   with_items:
-  - /home/{{ wiki_user }}/.config/letsencrypt
   - /home/{{ wiki_user }}/.opt
   - /home/{{ wiki_user }}/.var/gollum-envs
   - /var/www/{{ wiki_user }}/domains/{{ wiki_domain }}
   - /var/www/{{ wiki_user }}/cgi-bin
   - /var/www/{{ wiki_user }}/fcgi-bin
-  - /var/www/{{ wiki_user }}/letsencrypt
 
 - name: Clone gollum repository
-  git: repo=https://github.com/FreifunkBremen/gollum.git dest=/home/{{ wiki_user }}/.opt/gollum force=yes
+  git:
+    repo=https://github.com/FreifunkBremen/gollum.git
+    dest=/home/{{ wiki_user }}/.opt/gollum
+    force=yes
   become: yes
   become_user: "{{ wiki_user }}"
 
@@ -37,17 +47,25 @@
   - python-passlib
 
 - name: Install dependencies via bundler
-  shell: bundle install --path .bundle chdir=/home/{{ wiki_user }}/.opt/gollum
+  bundler:
+    gem_path=.bundle
+    chdir=/home/{{ wiki_user }}/.opt/gollum
   become: yes
   become_user: "{{ wiki_user }}"
 
 - name: Clone wiki repository
-  git: repo=https://github.com/FreifunkBremen/wiki.git dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen force=yes version=wiki
+  git:
+    repo=https://github.com/FreifunkBremen/wiki.git
+    dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
+    force=yes
+    version=wiki
   become: yes
   become_user: "{{ wiki_user }}"
 
 - name: Add Github public SSH key to known_hosts
-  known_hosts: name="github.com" key="github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
+  known_hosts:
+    name="github.com"
+    key="github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
   become: yes
   become_user: "{{ wiki_user }}"
 
@@ -59,7 +77,11 @@
     chdir: /home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
 
 - name: Add cron job for pushing wiki contents to Github
-  cron: name="github-push" user="{{ wiki_user }}" minute="*/5" job="git -C '/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen' push --quiet origin wiki"
+  cron:
+    name="github-push"
+    user="{{ wiki_user }}"
+    minute="*/5"
+    job="git -C '/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen' push --quiet origin wiki"
 
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ wiki_user }}/.config/service
@@ -67,83 +89,94 @@
   become_user: "{{ wiki_user }}"
 
 - name: Create gollum daemontools folders
-  file: path=/home/{{ wiki_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  file:
+    path=/home/{{ wiki_user }}/.config/etc/{{ item }}
+    state=directory
+    recurse=yes
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
+    mode=0755
   with_items:
     - run-gollum
     - run-gollum/log
 
 - name: Copy start script of gollum
-  template: src=run dest=/home/{{ wiki_user }}/.config/etc/run-gollum/run owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  template:
+    src=run
+    dest=/home/{{ wiki_user }}/.config/etc/run-gollum/run
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
+    mode=0755
 
 - name: Copy log script of gollum
-  copy: src=run-log dest=/home/{{ wiki_user }}/.config/etc/run-gollum/log/run owner={{ wiki_user }} group={{ wiki_group }} mode=0755
+  copy:
+    src=run-log
+    dest=/home/{{ wiki_user }}/.config/etc/run-gollum/log/run
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
+    mode=0755
 
 - name: Create symlink to start gollum
-  file: src=/home/{{ wiki_user }}/.config/etc/run-gollum dest=/home/{{ wiki_user }}/.config/service/gollum state=link owner={{ wiki_user }} group={{ wiki_group }}
+  file:
+    src=/home/{{ wiki_user }}/.config/etc/run-gollum
+    dest=/home/{{ wiki_user }}/.config/service/gollum
+    state=link
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
 
 - name: Create .htpasswd file
-  htpasswd: path=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd name={{ wiki_http_username }} password={{ wiki_http_password }} owner={{ wiki_user }} group={{ wiki_group }}
+  htpasswd:
+    path=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd
+    name={{ wiki_http_username }}
+    password={{ wiki_http_password }}
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
 
 - name: Install .gitconfig file
-  copy: src=gitconfig dest=/home/{{ wiki_user }}/.gitconfig owner={{ wiki_user }} group={{ wiki_group }}
+  copy:
+    src=gitconfig
+    dest=/home/{{ wiki_user }}/.gitconfig
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
 
 - name: Install robots.txt file
-  copy: src=robots.txt dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt owner={{ wiki_user }} group={{ wiki_group }}
+  copy:
+    src=robots.txt
+    dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
 
 - name: Install favicon.ico file
-  copy: src=favicon.ico dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico owner={{ wiki_user }} group={{ wiki_group }}
+  copy:
+    src=favicon.ico
+    dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico
+    owner={{ wiki_user }}
+    group={{ wiki_group }}
 
-- name: Install Apache user config
-  template: src=wiki.conf dest=/etc/apache2/sites-available/010-{{ wiki_user }}.conf mode=0644
-  notify: restart apache
+- name: Get letsencrypt certificates
+  lineinfile:
+    dest=/etc/letsencrypt/domains.txt
+    line="{{ wiki_subdomain }}.{{ main_domain }} {{ wiki_subdomain }}.{{ alt_domain }}"
+    create=yes
+  notify: regenerate certificates
 
-- name: Enable Apache user config
-  command: a2ensite 010-{{ wiki_user }}
-  args:
-    creates: /etc/apache2/sites-enabled/010-{{ wiki_user }}.conf
+- name: Install Apache vHost config
+  template:
+    src=apache2.conf
+    dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}.conf
+    mode=0644
+  notify: reload apache
 
-- name: Install Apache site config (common part)
-  template: src=wiki-common.conf dest=/etc/apache2/{{ wiki_user }}.{{ wiki_domain }}-common.conf mode=0644
-  notify: restart apache
-
-- name: Install Apache vHost config (HTTP)
-  template: src=wiki-http.conf dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}.conf mode=0644
-  notify: restart apache
-
-- name: Enable Apache vHost config (HTTP)
+- name: Enable Apache vHost config
   command: a2ensite {{ wiki_user }}.{{ wiki_domain }}
   args:
     creates: /etc/apache2/sites-enabled/{{ wiki_user }}.{{ wiki_domain }}.conf
-  notify: restart apache
-
-- name: Install CGI wrapper
-  template: src=php-fcgi-starter dest=/var/www/{{ wiki_user }}/fcgi-bin/ mode=700 owner={{ wiki_user }} group={{ wiki_group }}
-
-- name: Copy letsencrypt config
-  template: src=letsencrypt.sh.config.sh dest=/home/{{ wiki_user }}/.config/letsencrypt/config.sh owner={{ wiki_user }} group={{ wiki_group }}
-
-- name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ wiki_subdomain }}.{{ main_domain }} -d {{ wiki_subdomain }}.{{ alt_domain }}
-  args:
-    chdir: /home/{{ wiki_user }}/.config/letsencrypt
-    creates: /home/{{ wiki_user }}/.config/letsencrypt/certs/{{ wiki_domain }}/fullchain.pem
-  become: yes
-  become_user: "{{ wiki_user }}"
-
-- name: Copy certificate
-  shell: cat /home/{{ wiki_user }}/.config/letsencrypt/certs/{{ wiki_domain }}/privkey.pem /home/{{ wiki_user }}/.config/letsencrypt/certs/{{ wiki_domain }}/fullchain.pem > /readonly/{{ wiki_user }}/ssl/{{ wiki_domain }}.combined.pem
-  args:
-    creates: /readonly/{{ wiki_user }}/ssl/{{ wiki_domain }}.combined.pem
-
-- name: Install Apache vHost config (HTTPS)
-  template: src=wiki-https.conf dest=/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}-https.conf mode=0644
-  notify: restart apache
-
-- name: Enable Apache vHost config (HTTPS)
-  command: a2ensite {{ wiki_user }}.{{ wiki_domain }}-https
-  args:
-    creates: /etc/apache2/sites-enabled/{{ wiki_user }}.{{ wiki_domain }}-https.conf
-  notify: restart apache
+  notify: reload apache
 
 - name: Copy htaccess file
-  template: src=htaccess dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess mode=0644 owner={{ wiki_user }} group={{ wiki_group }}
+  template:
+    src=htaccess
+    dest=/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htaccess
+    mode=0644
+    owner={{ wiki_user }}
+    group={{ wiki_group }}

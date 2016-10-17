@@ -4,6 +4,7 @@ dependencies:
   - sudo
   - tools
   - apache
+  - letsencrypt
   - php
   - ruby
   - git

@@ -1,92 +1,86 @@
 ---
 - name: Add user
-  user: name={{ gatemon_user }} home=/home/{{ gatemon_user }} shell=/bin/zsh
+  user:
+    name={{ gatemon_user }}
+    home=/home/{{ gatemon_user }}
+    shell=/bin/zsh
 
-- name: Create directory for readonly files
-  file: path=/readonly/{{ gatemon_user }} state=directory owner={{ gatemon_user }} group={{ gatemon_group }} mode=0750
+- name: Create directory for Apache log files
+  file:
+    path=/readonly/{{ gatemon_user }}/log
+    state=directory
+    owner=root
+    group={{ gatemon_group }}
+    mode=0750
 
 - name: Create needed folder structure
-  file: path={{ item }} state=directory recurse=yes owner={{ gatemon_user }} group={{ gatemon_group }} mode=0755
+  file:
+    path={{ item }}
+    state=directory
+    owner={{ gatemon_user }}
+    group={{ gatemon_group }}
+    mode=0755
   with_items:
-  - /home/{{ gatemon_user }}/.config/letsencrypt
   - /home/{{ gatemon_user }}/.local/bin
   - /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
   - /var/www/{{ gatemon_user }}/cgi-bin
   - /var/www/{{ gatemon_user }}/fcgi-bin
-  - /var/www/{{ gatemon_user }}/letsencrypt
-
-- name: Create directories for Apache log files and SSL certificates
-  file: path=/readonly/{{ gatemon_user }}/{{ item }} state=directory owner=root group=root mode=0755
-  with_items:
-    - log
-    - ssl
 
 - name: Install PHP composer
-  get_url: url=https://getcomposer.org/download/1.0.0/composer.phar dest=/home/{{ gatemon_user }}/.local/bin/composer mode=0755 owner={{ gatemon_user }} group={{ gatemon_group }}
+  get_url:
+    url=https://getcomposer.org/download/1.0.0/composer.phar
+    dest=/home/{{ gatemon_user }}/.local/bin/composer
+    mode=0755
+    owner={{ gatemon_user }}
+    group={{ gatemon_group }}
 
 - name: Install CGI wrapper
-  template: src=php-fcgi-starter dest=/var/www/{{ gatemon_user }}/fcgi-bin/ mode=0700 owner={{ gatemon_user }} group={{ gatemon_group }}
+  template:
+    src=php-fcgi-starter
+    dest=/var/www/{{ gatemon_user }}/fcgi-bin/
+    mode=0700
+    owner={{ gatemon_user }}
+    group={{ gatemon_group }}
 
 - name: Clone gatemon git repository
-  git: repo=https://github.com/FreifunkBremen/gatemon-html.git dest=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }} force=yes
+  git:
+    repo=https://github.com/FreifunkBremen/gatemon-html.git
+    dest=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
+    force=yes
+  register: gatemon_checkout
   become: yes
   become_user: "{{ gatemon_user }}"
 
 - name: Restrict read access for token/ directory
-  file: path=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/token/ state=directory mode=0700
+  file:
+    path=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/token/
+    state=directory
+    mode=0700
 
 - name: Install dependencies
   shell: /home/{{ gatemon_user }}/.local/bin/composer install
   args:
     chdir: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
+  when: gatemon_checkout.changed
   become: yes
   become_user: "{{ gatemon_user }}"
 
-- name: Install Apache user config
-  template: src=gatemon.conf dest=/etc/apache2/sites-available/010-{{ gatemon_user }}.conf mode=0644
-  notify: restart apache
+- name: Get letsencrypt certificates
+  lineinfile:
+    dest=/etc/letsencrypt/domains.txt
+    line="{{ gatemon_subdomain }}.{{ main_domain }} {{ gatemon_subdomain }}.{{ alt_domain }}"
+    create=yes
+  notify: regenerate certificates
 
-- name: Enable Apache user config
-  command: a2ensite 010-{{ gatemon_user }}
-  args:
-    creates: /etc/apache2/sites-enabled/010-{{ gatemon_user }}.conf
+- name: Install Apache vHost config
+  template:
+    src=apache2.conf
+    dest=/etc/apache2/sites-available/{{ gatemon_user }}.{{ gatemon_domain }}.conf
+    mode=0644
+  notify: reload apache
 
-- name: Install Apache site config (common part)
-  template: src=gatemon-common.conf dest=/etc/apache2/{{ gatemon_user }}.{{ gatemon_domain }}-common.conf mode=0644
-  notify: restart apache
-
-- name: Install Apache vHost config (HTTP)
-  template: src=gatemon-http.conf dest=/etc/apache2/sites-available/{{ gatemon_user }}.{{ gatemon_domain }}.conf mode=0644
-  notify: restart apache
-
-- name: Enable Apache vHost config (HTTP)
+- name: Enable Apache vHost config
   command: a2ensite {{ gatemon_user }}.{{ gatemon_domain }}
   args:
     creates: /etc/apache2/sites-enabled/{{ gatemon_user }}.{{ gatemon_domain }}.conf
-  notify: restart apache
-
-- name: Copy letsencrypt config
-  template: src=letsencrypt.sh.config.sh dest=/home/{{ gatemon_user }}/.config/letsencrypt/config.sh owner={{ gatemon_user }} group={{ gatemon_group }}
-
-- name: Get letsencrypt certificates
-  command: /opt/letsencrypt.sh/letsencrypt.sh -c -d {{ gatemon_subdomain }}.{{ main_domain }} -d {{ gatemon_subdomain }}.{{ alt_domain }}
-  args:
-    chdir: /home/{{ gatemon_user }}/.config/letsencrypt
-    creates: /home/{{ gatemon_user }}/.config/letsencrypt/certs/{{ gatemon_domain }}/fullchain.pem
-  become: yes
-  become_user: "{{ gatemon_user }}"
-
-- name: Copy certificate
-  shell: cat /home/{{ gatemon_user }}/.config/letsencrypt/certs/{{ gatemon_domain }}/privkey.pem /home/{{ gatemon_user }}/.config/letsencrypt/certs/{{ gatemon_domain }}/fullchain.pem > /readonly/{{ gatemon_user }}/ssl/{{ gatemon_domain }}.combined.pem
-  args:
-    creates: /readonly/{{ gatemon_user }}/ssl/{{ gatemon_domain }}.combined.pem
-
-- name: Install Apache vHost config (HTTPS)
-  template: src=gatemon-https.conf dest=/etc/apache2/sites-available/{{ gatemon_user }}.{{ gatemon_domain }}-https.conf mode=0644
-  notify: restart apache
-
-- name: Enable Apache vHost config (HTTPS)
-  command: a2ensite {{ gatemon_user }}.{{ gatemon_domain }}-https
-  args:
-    creates: /etc/apache2/sites-enabled/{{ gatemon_user }}.{{ gatemon_domain }}-https.conf
-  notify: restart apache
+  notify: reload apache
