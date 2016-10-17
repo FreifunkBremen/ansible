@@ -1,5 +1,7 @@
 #! /usr/bin/env sh
 
+# {{ ansible_managed }}
+
 set -eu
 
 # These environment variables are sometimes needed by the running daemons
@@ -8,4 +10,7 @@ export HOME="/home/{{ tiles_user }}"
 
 export MAPNIK_FONT_PATH="$HOME/.fonts"
 cd $HOME
+
+ulimit -v 2097152
+
 exec node_modules/tessera/bin/tessera.js -p {{ tiles_tessera_port }} -b 127.0.0.1 tmstyle://./mapbox-studio-osm-bright.tm2

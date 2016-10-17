@@ -4,6 +4,7 @@ dependencies:
   - apt
   - daemontools
   - git
+  - letsencrypt
   - nodejs
   - ruby
   - sudo

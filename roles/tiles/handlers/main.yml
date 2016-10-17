@@ -1,7 +1,4 @@
 ---
-- name: reload apache
-  service: name=apache2 state=reloaded
-
 - name: restart tessera
   command: svc -t /home/{{ tiles_user }}/.config/etc/run-tessera
 
