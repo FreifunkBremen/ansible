@@ -1,0 +1,9 @@
+[Unit]
+Description=Publish data of respond-collector on downloads server every minute
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1min
+
+[Install]
+WantedBy=timers.target
