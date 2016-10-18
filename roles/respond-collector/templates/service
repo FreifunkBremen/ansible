@@ -2,6 +2,8 @@
 Description=respond-collector
 
 [Service]
+Type=simple
+User=respond-collector
 ExecStart=/opt/go/bin/respond-collector -config /etc/respond-collector.conf
 Restart=always
 Environment=PATH=/usr/bin:/usr/local/bin

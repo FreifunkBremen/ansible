@@ -16,7 +16,7 @@ webserver:
     newnodes: {{ respond_collector_webserver_api_newnodes }}
 
 nodes:
-  enable: true
+  enable: {{respond_collector_nodes}}
   nodes_path: {{ respond_collector_nodes_path }}/nodes_all.json
   nodesmini_path: {{ respond_collector_nodes_path }}/nodes.json
   graphs_path: {{ respond_collector_nodes_path }}/graph.json

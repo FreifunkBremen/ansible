@@ -1,6 +1,9 @@
 ---
+- name: Create users
+  user: name=respond-collector createhome=no
+
 - name: Download and install go
-  unarchive: src=https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz  dest=/usr/local copy=no
+  unarchive: src=https://storage.googleapis.com/golang/go1.7.1.linux-amd64.tar.gz  dest=/usr/local copy=no
 
 - name: Configure go
   template: >
@@ -23,13 +26,8 @@
     - restart respond-collector
 
 
-- name: Firewall open http port
-  mf_add: role=respond-collector proto=tcp port=80
-  when: respond_collector_webserver
-
 - name: Create directory
-  file: path={{ respond_collector_nodes_path }}/ state=directory
-
+  file: path={{ respond_collector_nodes_path }}/ state=directory owner=respond-collector
 
 
 - name: Install system unit
@@ -40,13 +38,6 @@
     - reload systemd
     - restart respond-collector
 
-- name: Firewall open webport
-  mf_add: role=web_respond_collector proto=tcp port="80"
-
 
 - name: Enable respond-collector
   service: name=respond-collector enabled=yes
-
-- name: Install with ansible
-  include: ansible.yml
-  when: respond_collector_aliases_ansible
