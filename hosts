@@ -39,6 +39,9 @@ grp.host(0, "dns.bremen.freifunk.net");
 grp = inv.group("standardserver")
 grp.host(0, "mail.ffhb.de")
 
+grp = inv.group("ffmapserver")
+grp.host(0, "ffmap.ffhb.de")
+
 grp = inv.group("etherpad")
 grp.host(0, "pads.ffhb.de")
 

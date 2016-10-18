@@ -1,0 +1,25 @@
+---
+- hosts: ffmapserver
+  vars:
+    respond_collector_respondd: true
+    respond_collector_respondd_interface: bat0
+    respond_collector_respondd_collectinterval: 15
+
+    respond_collector_webserver: false
+
+    respond_collector_nodes: true
+    respond_collector_nodes_path: /opt/respond-collector
+    # Change later
+    respond_collector_influxdb: false
+    respond_collector_influxdb_host: webserver.bremen.freifunk.net
+    respond_collector_influxdb_database: ffhb
+    respond_collector_influxdb_username: ffhb-respondd-collector
+    respond_collector_influxdb_password: "{{ lookup('password', 'credentials/influx_ffhb length=15') }}"
+  roles:
+  - apt
+  - openssh
+  - system
+  - tmpfs
+  - tools
+  - motd
+  - respond-collector

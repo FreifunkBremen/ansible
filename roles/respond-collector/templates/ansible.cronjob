@@ -1,2 +1,0 @@
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-* * * * * root cd {{respond_collector_aliases_ansible_path}}; date >> /var/log/ansible-event; ansible-playbook {{respond_collector_aliases_ansible_playbook}} -i {{respond_collector_aliases_ansible_hosts}} >> /var/log/ansible-event
