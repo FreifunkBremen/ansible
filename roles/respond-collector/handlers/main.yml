@@ -2,5 +2,8 @@
 - name: restart respond-collector
   service: name=respond-collector state=restarted
 
+- name: restart respond-collector-publish
+  service: name=respond-collector-publish.timer state=restarted
+
 - name: reload systemd
   command: systemctl daemon-reload
