@@ -20,6 +20,8 @@
   - downloadsite
   - wiki
   - tiles
-  - influxdb
-  - grafana
+  - role: influxdb
+    tags: influxdb
+  - role: grafana
+    tags: grafana
   - monitoring-client
