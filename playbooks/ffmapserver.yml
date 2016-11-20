@@ -11,7 +11,7 @@
     respond_collector_nodes_path: /opt/respond-collector
 
     respond_collector_influxdb: true
-    respond_collector_influxdb_host: webserver.bremen.freifunk.net
+    respond_collector_influxdb_host: http://webserver.bremen.freifunk.net:8086
   roles:
   - apt
   - openssh
@@ -19,4 +19,5 @@
   - tmpfs
   - tools
   - motd
-  - respond-collector
+  - role: respond-collector
+    tags: respond-collector
