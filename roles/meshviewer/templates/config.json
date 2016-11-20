@@ -4,30 +4,110 @@
   "siteName": "Freifunk Bremen",
   "mapSigmaScale": 0.5,
   "showContact": false,
-{% if meshviewer_geojson %}
   "geoJson":true,
-{% endif %}
   "maxAge": 3,
+  "disabledNodeAlert": true,
   "globalInfos": [
     {
       "name": "Wochenstatistik",
-      "href": "https://downloads.bremen.freifunk.net/data/nodes/globalGraph.png",
-      "thumbnail": "https://downloads.bremen.freifunk.net/data/nodes/globalGraph.png",
+      "href": "//downloads.bremen.freifunk.net/data/nodes/globalGraph.png",
+      "thumbnail": "//downloads.bremen.freifunk.net/data/nodes/globalGraph.png",
       "caption": "Entwicklung der Anzahl der Knoten und der Clients innerhalb der letzten 7 Tage"
     }
   ],
   "mapLayers": [
-    { "name": "OpenStreetMap",
-      "url": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      "name": "Freifunk Bremen",
+      "url": "//tiles.bremen.freifunk.net/{z}/{x}/{y}.png",
       "config": {
-        "subdomains": "abc",
         "type": "osm",
-        "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>-Mitwirkende",
-        "maxZoom": 18
+        "attribution": "<a href=\"https://github.com/mapbox/mapbox-studio-osm-bright.tm2\">Design</a> Â© <a href=\"https://www.mapbox.com/\">Mapbox</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC-BY 3.0</a> â€” Daten Â© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+        "maxZoom": 20
       }
     },
-    {
-      "name": "Stamen.TonerLite"
-    }
-  ]
+    { "name": "OpenStreetMap.Mapnik" },
+    { "name": "Stamen.TonerLite" }
+  ],
+	"globalChart": {
+		"name": "Globale Statistiken",
+		"url": "https://grafana.bremen.freifunk.net/api/datasources/proxy/1/query",
+		"influxdb": [
+			"db=ffhb-nodes",
+			"q=SELECT max(\"clients.wifi24\") AS \"client24\", max(\"clients.wifi5\") AS \"client5\", max(\"clients.total\") AS \"clientcount\", max(\"nodes\") AS \"nodes\" FROM \"global\" WHERE ###ZOOM_INTERVAL### GROUP BY time(###GROUP_BY###) fill(null)",
+			"u=public",
+			"p=public"
+		],
+		"zoomlevels": [
+				{"label": "2h",  "interval": "time > now() - 2h   and time < now() - 1m", "groupby":"1m"},
+				{"label": "31d",  "interval": "time > now() - 31d   and time < now() - 1m", "groupby":"1h"},
+				{"label": "260w",  "interval": "time > now() - 260w   and time < now() - 1m", "groupby":"1d"}
+		],
+		"metrics": [
+			{
+        "id": "client24",
+        "color": "#2A91EC",
+        "label": "Clients 2.4 Ghz"
+      },
+			{
+        "id": "client5",
+        "color": "#2A91EC",
+        "label": "Clients 5 Ghz"
+      },
+      {
+        "id": "clientcount",
+        "color": "#2A91EC",
+        "label": "Clients"
+      },
+			{
+				"id": "nodes",
+				"color": "#EB2890",
+				"label": "Node"
+			}
+		],
+		"defaultMetric": "clientcount"
+	},
+  "nodeChart": {
+		"name": "Statistik",
+		"url": "https://grafana.bremen.freifunk.net/api/datasources/proxy/1/query",
+		"influxdb": [
+			"db=ffhb-nodes",
+			"q=SELECT max(\"clients.wifi24\") AS \"client24\", max(\"clients.wifi5\") AS \"client5\", max(\"clients.total\") AS \"clientcount\", max(\"load\") AS \"load\", max(\"uptime\") AS \"uptime\" FROM \"node\" WHERE \"nodeid\" = '###NODE_ID###' AND ###ZOOM_INTERVAL### GROUP BY time(###GROUP_BY###) fill(null)",
+			"u=public",
+			"p=public"
+		],
+		"zoomlevels": [
+				{"label": "1h",  "interval": "time > now() - 1h   and time < now() - 1m", "groupby":"1m"},
+				{"label": "8h",  "interval": "time > now() - 8h   and time < now() - 1m", "groupby":"10m"},
+				{"label": "24h", "interval": "time > now() - 1d   and time < now() - 1m", "groupby":"30m"},
+				{"label": "7d",  "interval": "time > now() - 7d   and time < now() - 1m", "groupby":"3h"}
+		],
+    "metrics": [
+			{
+        "id": "client24",
+        "color": "#2A91EC",
+        "label": "Clients 2.4 Ghz"
+      },
+			{
+        "id": "client5",
+        "color": "#2A91EC",
+        "label": "Clients 5 Ghz"
+      },
+      {
+        "id": "clientcount",
+        "color": "#2A91EC",
+        "label": "Clients"
+      },
+      {
+        "id": "load",
+        "color": "#EB2890",
+        "label": "Load"
+      },
+      {
+        "id": "uptime",
+        "color": "#8EE925",
+        "label": "Uptime"
+      }
+    ],
+    "defaultMetric": "clientcount"
+  }
 }
