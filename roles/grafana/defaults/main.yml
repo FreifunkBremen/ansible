@@ -1,2 +1,6 @@
 ---
+grafana_email: 'info@bremen.freifunk.net'
+grafana_subdomain: grafana
+grafana_domain: '{{ grafana_subdomain }}.{{ main_domain }}'
+grafana_addr: 127.0.0.1
 grafana_port: 8080

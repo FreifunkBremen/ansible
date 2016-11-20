@@ -20,4 +20,6 @@
   - downloadsite
   - wiki
   - tiles
+  - influxdb
+  - grafana
   - monitoring-client
