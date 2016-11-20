@@ -15,10 +15,10 @@
   apt: name=influxdb
   register: new
 
-- name: Upload influxdb configuration
+- name: Upload influxdb without auth configuration
   template: src=influxdb.conf dest=/etc/influxdb/
   vars:
-    influxdb_auth_enabled: true
+    influxdb_auth_enabled: false
 
 - name: Firewall open influxdb port
   mf_add: role=influxdb proto={{item.proto}} port={{item.port}}
@@ -36,7 +36,6 @@
     url: "http://localhost:8086/query"
     method: POST
     body: "q=CREATE+USER+%22{{ influxdb_admin_user }}%22+WITH+PASSWORD+%27{{ influxdb_admin_password }}%27+WITH+ALL+PRIVILEGES&db=_internal"
-  when: new.changed
 
 - name: Create user
   uri:
@@ -68,3 +67,11 @@
     body: "q=GRANT+{{ item.access }}+ON+%22{{ item.database }}%22+TO+%22{{ item.user }}%22&db=_internal"
     force_basic_auth: yes
   with_items: "{{ influxdb_access }}"
+
+- name: Upload influxdb configuration with auth
+  template: src=influxdb.conf dest=/etc/influxdb/
+  vars:
+    influxdb_auth_enabled: true
+
+- name: Restart influxdb
+  service: name=influxdb state=restarted
