@@ -24,4 +24,6 @@
     tags: influxdb
   - role: grafana
     tags: grafana
+  - role: meshviewer
+    tags: meshviewer
   - monitoring-client

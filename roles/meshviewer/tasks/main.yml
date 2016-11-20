@@ -3,7 +3,6 @@
   apt: name={{ item }}
   with_items:
   - git
-  - npm
   - ruby-sass
 
 - name: Install grunt
@@ -19,7 +18,7 @@
   npm: path={{ meshviewer_path_src }}
 
 - name: Build meshviewer
-  command: nodejs /usr/local/bin/grunt
+  command: nodejs /usr/bin/grunt
   args:
     chdir: "{{ meshviewer_path_src }}"
 
@@ -38,6 +37,9 @@
 #    delete: True
 #    rsync_opts:
 #    - "--exclude=config.json"
+- name: Enable Apache
+  include: apache.yml
+  when: meshviewer_apache
 
 - name: Copy files
   command: >
