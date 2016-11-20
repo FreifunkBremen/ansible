@@ -4,3 +4,4 @@
 playbooks/credentials/
 # build products...
 *.py[co]
+.vault_password
