@@ -1,0 +1,17 @@
+---
+- name: Install packages
+  apt: name={{ item }}
+  with_items:
+    - openvpn
+
+- name: Install configuration
+  template: >
+    src=openvpn/offload{{item}}
+    dest=/etc/openvpn/
+  with_items:
+    - '.conf'
+    - '-up.sh'
+  notify: restart openvpn
+
+- name: Firewall open openvpn-port
+  mf_add: role=ntp proto=udp port={{offload_port}}
