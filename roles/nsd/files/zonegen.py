@@ -68,8 +68,8 @@ def get_zone(
     for node in data['nodes'].values():
         try:
             label = str_to_domainlabel(node['nodeinfo']['hostname'])
-            addresses = node['nodeinfo']['network']['addresses']
-        except (RuntimeError, KeyError):
+            addresses = iter(node['nodeinfo']['network']['addresses'])
+        except (RuntimeError, KeyError, TypeError):
             continue
 
         for address in addresses:
