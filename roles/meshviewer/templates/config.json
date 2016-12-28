@@ -21,7 +21,7 @@
       "url": "//tiles.bremen.freifunk.net/{z}/{x}/{y}.png",
       "config": {
         "type": "osm",
-        "attribution": "<a href=\"https://github.com/mapbox/mapbox-studio-osm-bright.tm2\">Design</a> Â© <a href=\"https://www.mapbox.com/\">Mapbox</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC-BY 3.0</a> â€” Daten Â© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+        "attribution": "<a href=\"https://github.com/mapbox/mapbox-studio-osm-bright.tm2\">Design</a> © <a href=\"https://www.mapbox.com/\">Mapbox</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC-BY 3.0</a> — Daten © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
         "maxZoom": 20
       }
     },
