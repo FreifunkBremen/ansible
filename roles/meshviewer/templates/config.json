@@ -38,9 +38,9 @@
 			"p=public"
 		],
 		"zoomlevels": [
-				{"label": "2h",  "interval": "time > now() - 2h   and time < now() - 1m", "groupby":"1m"},
-				{"label": "31d",  "interval": "time > now() - 31d   and time < now() - 1m", "groupby":"1h"},
-				{"label": "260w",  "interval": "time > now() - 260w   and time < now() - 1m", "groupby":"1d"}
+				{"label": "2h",  "interval": "time > now() - 2h   and time < now() - 1m", "groupby":"10m"},
+				{"label": "31d",  "interval": "time > now() - 31d   and time < now() - 1m", "groupby":"24h"},
+				{"label": "260w",  "interval": "time > now() - 260w   and time < now() - 1m", "groupby":"31d"}
 		],
 		"metrics": [
 			{
