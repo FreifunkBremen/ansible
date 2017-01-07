@@ -17,6 +17,9 @@
 - name: Install node dependencies
   npm: path={{ meshviewer_path_src }}
 
+- name: Upload config
+  template: src=config.json dest={{ meshviewer_path_src }}/
+
 - name: Build meshviewer
   command: nodejs /usr/bin/grunt
   args:
@@ -43,12 +46,9 @@
 
 - name: Copy files
   command: >
-    rsync -a --delete --exclude config.json
+    rsync -a --delete
     {{ meshviewer_path_src }}/build/
     {{ meshviewer_path_bin }}/
-
-- name: Upload config
-  template: src=config.json dest={{ meshviewer_path_bin }}/
 
 - name: Enable Geojson
   include: geojson.yml
