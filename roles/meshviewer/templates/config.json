@@ -21,6 +21,12 @@
       "href": "https://grafana.bremen.freifunk.net/dashboard/db/global-selectable?var-node={NODE_ID}",
       "thumbnail": "https://grafana.bremen.freifunk.net/render/dashboard-solo/db/global-selectable?panelId=1&var-node={NODE_ID}&from=now-7d&width=650&height=350&theme=light",
       "caption": "Entwicklung der Anzahl der Clients innerhalb der letzten 7 Tage"
+    },
+    {
+      "name": "Trafficstatistik",
+      "href": "https://grafana.bremen.freifunk.net/dashboard/db/global-selectable?var-node={NODE_ID}",
+      "thumbnail": "https://grafana.bremen.freifunk.net/render/dashboard-solo/db/global-selectable?panelId=2&var-node={NODE_ID}&from=now-7d&width=650&height=350&theme=light",
+      "caption": "Entwicklung des Traffic innerhalb der letzten 7 Tage"
     }
   ],
   "fixedCenter": {
