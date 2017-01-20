@@ -6,7 +6,7 @@ case "$1" in
     clean_challenge)
         ;;
     deploy_cert)
-        service apache2 reload
+        systemctl reload apache2
         if [ -d /etc/.git ]; then
             cd "$(dirname "$3")"
             git add .
