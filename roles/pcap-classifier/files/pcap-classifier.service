@@ -1,0 +1,10 @@
+[Unit]
+Description=pcap-classifier
+
+[Service]
+ExecStart=/opt/go/bin/pcap-classifier /etc/pcap-classifier.conf
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
