@@ -1,0 +1,11 @@
+---
+- name: Install system unit
+  copy:
+    src: pcap-classifier.service
+    dest: /lib/systemd/system/
+  notify:
+    - reload systemd
+    - restart pcap-classifier
+
+- name: Enable pcap-classifier
+  service: name=pcap-classifier enabled=yes
