@@ -1,0 +1,15 @@
+---
+- hosts: downlinks
+  vars:
+    batman_gateway: false
+  roles:
+  - apt
+  - openssh
+  - batman-adv-14
+  - main-bridge
+  - backbone-gre
+  - chrony
+  - system
+  - tmpfs
+  - tools
+  - motd
