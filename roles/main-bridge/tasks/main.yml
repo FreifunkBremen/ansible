@@ -21,3 +21,6 @@
 - name: Copy sysctl file to disable bridge firewall filtering
   copy: src=bridge-filter.conf dest=/etc/sysctl.d/bridge-filter.conf mode=0644 owner=root group=root
   notify: reload sysctl
+
+- name: Copy sysctl file tuning neighbor discovery
+  copy: src=bridge-filter.conf dest=/etc/sysctl.d/main-bridge-ip-neigh-tuning.conf mode=0644 owner=root group=root

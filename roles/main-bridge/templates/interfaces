@@ -17,6 +17,8 @@ iface br-{{ site_code }} inet static
 	pre-down ip -4 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
 	post-up  ip -6 rule add iif $IFACE table {{ ffhb_routing_table }} priority 16385
 	pre-down ip -6 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
+	# tune ARP and IPv6 neighbor soolicitation
+	post-up sysctl -p /etc/sysctl.d/main-bridge-ip-neigh-tuning.conf
 
 iface br-{{ site_code }} inet6 static
 	address {{ batman_ipv6_local.address }}
