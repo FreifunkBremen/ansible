@@ -9,12 +9,9 @@
 
     respond_collector_nodes: true
     respond_collector_nodes_path: /opt/respond-collector
-    # Change later
-    respond_collector_influxdb: false
-    respond_collector_influxdb_host: webserver.bremen.freifunk.net
-    respond_collector_influxdb_database: ffhb
-    respond_collector_influxdb_username: ffhb-respondd-collector
-    respond_collector_influxdb_password: "{{ lookup('password', 'credentials/influx_ffhb length=15') }}"
+
+    respond_collector_influxdb: true
+    respond_collector_influxdb_host: http://webserver.bremen.freifunk.net:8086
   roles:
   - apt
   - openssh
@@ -22,4 +19,5 @@
   - tmpfs
   - tools
   - motd
-  - respond-collector
+  - role: respond-collector
+    tags: respond-collector
