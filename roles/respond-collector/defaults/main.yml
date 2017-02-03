@@ -25,3 +25,6 @@ respond_collector_influxdb_host: http://localhost:8086
 respond_collector_influxdb_database: ffhb
 respond_collector_influxdb_username:
 respond_collector_influxdb_password:
+respond_collector_influxdb_saveinterval: 15
+respond_collector_influxdb_deleteinterval: 60
+respond_collector_influxdb_deletetill: 10080

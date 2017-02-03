@@ -30,3 +30,6 @@ influxdb:
   database: {{ respond_collector_influxdb_database }}
   username: {{ respond_collector_influxdb_username }}
   password: {{ respond_collector_influxdb_password }}
+  saveinterval: {{ respond_collector_influxdb_saveinterval }}
+  deleteinterval: {{ respond_collector_influxdb_deleteinterval }}
+  deletetill: {{ respond_collector_influxdb_deletetill }}

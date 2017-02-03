@@ -1,0 +1,12 @@
+---
+main_domain: bremen.freifunk.net
+alt_domain: ffhb.de
+
+website_user: website
+meshviewer_subdomain: map
+meshviewer_domain: '{{ meshviewer_subdomain }}.{{ main_domain }}'
+meshviewer_web_path: //downloads.bremen.freifunk.net/data/respond-collector/
+meshviewer_git_root: https://github.com/genofire/meshviewer.git
+meshviewer_git_version: patch-1
+meshviewer_path_bin: /var/www/{{ website_user }}/domains/{{ meshviewer_domain }}
+meshviewer_email: info@bremen.freifunk.net

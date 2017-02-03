@@ -15,9 +15,6 @@
   template: src=grafana.ini dest=/etc/grafana/grafana.ini
   notify: restart grafana
 
-- name: Firewall open grafana port
-  mf_add: role=grafana proto=tcp port={{ grafana_port }}
-
 - name: Create dashboard folders
   file: path=/var/lib/grafana/dashboards state=directory mode=0750 owner=grafana group=grafana
 
@@ -25,6 +22,26 @@
   copy: src={{item}} dest=/var/lib/grafana/dashboards/{{item}} mode=0750 owner=grafana group=grafana
   with_items:
   - Short.json
+
+- name: Get letsencrypt certificates
+  lineinfile:
+    dest=/etc/letsencrypt/domains.txt
+    line="{{ grafana_subdomain }}.{{ main_domain }} {{ grafana_subdomain }}.{{ alt_domain }}"
+    create=yes
+  notify: regenerate certificates
+
+- name: Install Apache vHost config
+  template:
+    src=apache2.conf
+    dest=/etc/apache2/sites-available/{{ grafana_domain }}.conf
+    mode=0644
+  notify: reload apache
+
+- name: Enable Apache vHost config
+  command: a2ensite {{ grafana_domain }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ grafana_domain }}.conf
+  notify: reload apache
 
 - name: Enable grafana
   service: name=grafana-server state=started enabled=yes
