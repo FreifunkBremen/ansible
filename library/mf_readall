@@ -2,7 +2,7 @@
 
 EXAMPLES = '''
 # Micro Firewall, saves json-rules for convertion to iptables
-- mf_add: proto=tcp port=22 interface=eth0 onlyipv6=yes 
+- mf_add: proto=tcp port=22 interface=eth0 onlyipv6=yes
 '''
 from json import dumps,load
 import io
@@ -10,7 +10,7 @@ from os import listdir,makedirs
 from os.path import join,isfile,exists
 
 PATH = '/etc/microfirewall.d/'
-	
+
 def main():
 
 	if not exists(PATH):
@@ -21,10 +21,11 @@ def main():
 	for file in listdir(PATH):
 		filename = join(PATH,file)
 		if isfile(filename) and '.json' in file:
-			with open(filename) as data_file:    
+			with open(filename) as data_file:
 				data = load(data_file)
 				for rule in data:
+					rule['role'] = file[:-5]
 					rules.append(rule)
-	print dumps({"output":rules})
+	print dumps({'output':rules})
 
 main()

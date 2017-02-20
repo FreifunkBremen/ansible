@@ -23,6 +23,13 @@
 -A FORWARD -i {{ main_bridge }} -o {{ exit_ipv6_interface }} -j ACCEPT
 -A FORWARD -o {{ main_bridge }} -i {{ exit_ipv6_interface }} -j ACCEPT
 
+# Reject 6to4-VPN-Connection
+{% for item in firewall.output %}
+{% if "fastd_" in item.role %}
+-I INPUT -s 2002::/16 -p udp --dport {{ item.port }} -j REJECT
+{% endif %}
+{% endfor %}
+
 # Reject all other forwarding traffic
 -A FORWARD -j REJECT --reject-with icmp6-adm-prohibited
 
