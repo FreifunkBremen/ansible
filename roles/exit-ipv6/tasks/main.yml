@@ -9,3 +9,8 @@
 - name: Install radv protocol for bird
   template: src=bird-radv.conf dest=/etc/bird/bird6.conf.d/radv.conf
   notify: reload bird6
+
+- name: Configure firewall for IPv6 exit
+  template: src=firewall.sh dest={{ firewall_path }}/20-exit-ipv6
+  when: firewall_enabled
+  notify: reload firewall

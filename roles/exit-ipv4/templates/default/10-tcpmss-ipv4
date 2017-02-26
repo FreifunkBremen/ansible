@@ -1,0 +1,2 @@
+ipt4 -A FORWARD -i {{ main_bridge }} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1354
+ipt4 -A FORWARD -o {{ main_bridge }} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1354

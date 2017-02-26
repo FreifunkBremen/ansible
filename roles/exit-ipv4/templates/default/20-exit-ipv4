@@ -1,0 +1,14 @@
+{% if ipp2p_drop is defined and ipp2p_drop %}
+{% for protocol in ipp2p_protocols %}
+ipt4 -A FORWARD -i {{ main_bridge }} -o {{ exit_ipv4_interface }} -m ipp2p --{{protocol}} -j DROP
+ipt4 -A FORWARD -i {{ exit_ipv4_interface }} -o {{ main_bridge }} -m ipp2p --{{protocol}} -j DROP
+{% endfor %}
+{% endif %}
+
+# Traffic from our network to the Internet
+ipt4 -A FORWARD -i {{ main_bridge }} -o {{ exit_ipv4_interface }} -j ACCEPT
+ipt4 -A FORWARD -o {{ main_bridge }} -i {{ exit_ipv4_interface }} -j ACCEPT
+
+{% if exit_masquerade %}
+ipt4 -t nat -A POSTROUTING -s {{ ipv4_network }} -o {{ exit_ipv4_interface }} -j MASQUERADE
+{% endif %}
