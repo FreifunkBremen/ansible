@@ -15,8 +15,10 @@
 - name: Add network configuration
   template: src=interfaces dest=/etc/network/interfaces.d/{{ fastd_interface }}
 
-- name: Firewall open fastd-port
-  mf_add: role="fastd_{{fastd_instance}}" proto=udp port="{{fastd_port}}"
+- name: Open firewall for fastd
+  template: src=firewall.sh dest={{ firewall_path }}/30-fastd-{{ fastd_instance }}
+  when: firewall_enabled
+  notify: reload firewall
 
 - name: Enable fastd instance
   service: name=fastd@{{ fastd_instance }} enabled=yes

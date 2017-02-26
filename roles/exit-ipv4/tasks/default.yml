@@ -1,4 +1,12 @@
 ---
+- name: Configure firewall for IPv4 exit
+  template: src=default/{{ item }} dest={{ firewall_path }}/
+  with_items:
+    - 10-tcpmss-ipv4
+    - 20-exit-ipv4
+  when: firewall_enabled
+  notify: reload firewall
+
 - name: Install hook
   template: >
     src=default/up.sh

@@ -1,0 +1,1 @@
+ipt -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT

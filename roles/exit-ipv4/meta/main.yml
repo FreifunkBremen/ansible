@@ -1,4 +1,6 @@
 ---
+dependencies:
+- firewall
 galaxy_info:
   platforms:
     - name: Debian

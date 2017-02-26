@@ -17,6 +17,7 @@
   notify:
   - reload ssh
 
-- name: Firewall open ssh-port
-  mf_add: role=ssh proto=tcp port=22
-
+- name: Open firewall for SSH
+  copy: src=firewall.sh dest={{ firewall_path }}/10-ssh
+  when: firewall_enabled
+  notify: reload firewall

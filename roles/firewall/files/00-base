@@ -1,0 +1,13 @@
+# clear all tables, not only filter
+for table in $(grep -oP '(?<=^iptable_)\S*' /proc/modules); do
+    ipt -t $table -F
+    ipt -t $table -X
+done
+
+ipt -P INPUT ACCEPT
+ipt -P OUTPUT ACCEPT
+ipt -P FORWARD ACCEPT
+
+ipt -A INPUT -i lo -j ACCEPT
+ipt4 -A INPUT -p icmp -j ACCEPT
+ipt6 -A INPUT -p ipv6-icmp -j ACCEPT

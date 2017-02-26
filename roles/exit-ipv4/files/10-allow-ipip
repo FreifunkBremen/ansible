@@ -1,0 +1,1 @@
+ipt -A INPUT -p ipip -j ACCEPT

@@ -1,6 +1,7 @@
 ---
 dependencies:
   - batman-adv-interface
+  - firewall
   - git
 galaxy_info:
   platforms:
