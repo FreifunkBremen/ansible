@@ -1,0 +1,24 @@
+---
+- name: Install systemd with compat layer
+  apt: name={{item}} force=yes
+  with_items:
+  - systemd
+  - systemd-sysv
+
+- name: Remove syslog daemons
+  apt: name={{item}} state=absent
+  with_items:
+    - busybox-syslogd
+    - dsyslog
+    - inetutils-syslogd
+    - rsyslog
+    - syslog-ng
+
+- name: Disable persistent storage
+  replace: >
+    dest=/etc/systemd/journald.conf
+    regexp="^\#?Storage=.*$"
+    replace="Storage=volatile"
+    backup=yes
+  notify:
+  - restart journald
