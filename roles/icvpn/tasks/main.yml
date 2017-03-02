@@ -66,6 +66,7 @@
   command: .git/hooks/post-merge
   args:
     chdir: /etc/tinc/icvpn
+    creates: /etc/tinc/icvpn/conf.d/connects.conf
   notify: restart tinc
 
 - name: Autostart tinc
