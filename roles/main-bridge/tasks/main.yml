@@ -24,3 +24,4 @@
 
 - name: Copy sysctl file tuning neighbor discovery
   template: src=main-bridge-ip-neigh-tuning.conf dest=/etc/sysctl.d/main-bridge-ip-neigh-tuning.conf mode=0644 owner=root group=root
+  notify: reload sysctl
