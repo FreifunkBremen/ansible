@@ -47,6 +47,8 @@
     fastd_port:      "{{ fastd_legacy_port }}"
     fastd_mtu:       "{{ fastd_legacy_mtu }}"
     fastd_anonymous: true
+    fastd:
+      peers: {}
 
 - name: Disable deprecated backbone instance
   service: name=fastd@{{ site_code }}_backbone enabled=no state=stopped
