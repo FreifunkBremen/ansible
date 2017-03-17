@@ -6,8 +6,10 @@
   template: src=dnsmasq.conf dest=/etc/
   notify: restart dnsmasq
 
-- name: Firewall open dhcp-port
-  mf_add: role=dhcp proto=udp port="67:68" interface="{{ main_bridge }}" onlyipv4=yes
+- name: Open firewall for DHCP
+  template: src=firewall.sh dest={{ firewall_path }}/30-dnsmasq
+  when: firewall_enabled
+  notify: reload firewall
 
 - name: Enable dnsmasq
   service: name=dnsmasq enabled=yes

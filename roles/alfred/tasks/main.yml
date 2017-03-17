@@ -43,8 +43,7 @@
     mode=0644
   notify: restart batadv-vis
 
-- name: Firewall open alfred-port (batman_dummy_interface)
-  mf_add: role=alfred proto=udp port=16962 interface="{{ item }}" onlyipv6=yes
-  with_items:
-  - "{{ main_bridge }}"
-  - "{{ batman_dummy_interface }}"
+- name: Open firewall for alfred
+  template: src=firewall.sh dest={{ firewall_path }}/20-alfred
+  when: firewall_enabled
+  notify: reload firewall

@@ -20,13 +20,10 @@
   vars:
     influxdb_auth_enabled: false
 
-- name: Firewall open influxdb port
-  mf_add: role=influxdb proto={{item.proto}} port={{item.port}}
-  with_items:
-  - proto: tcp
-    port: 8083
-  - proto: tcp
-    port: 8086
+- name: Open firewall for InfluxDB
+  copy: src=firewall.sh dest={{ firewall_path }}/30-influxdb
+  when: firewall_enabled
+  notify: reload firewall
 
 - name: Start influxdb
   service: name=influxdb state=started
