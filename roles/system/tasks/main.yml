@@ -12,4 +12,4 @@
 
 - name: Reboot host
   command: reboot
-  when: reboot-flag
+  when: reboot_flag
