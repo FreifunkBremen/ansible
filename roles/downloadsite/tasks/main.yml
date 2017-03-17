@@ -77,6 +77,9 @@
     owner={{ downloads_user }}
     group={{ downloads_group }}
 
+- name: Ensure that authorized_keys file exists
+  copy: dest=/home/{{ downloads_user }}/.ssh/authorized_keys content="" force=no owner={{ downloads_user }} group={{ downloads_group }} mode=0644
+
 - name: Add ffmap public key
   lineinfile:
     dest=/home/{{ downloads_user }}/.ssh/authorized_keys
