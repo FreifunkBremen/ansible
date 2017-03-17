@@ -1,2 +1,2 @@
 hostname: defaulthost
-reboot-flag: false
+reboot_flag: false
