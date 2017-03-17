@@ -1,9 +1,6 @@
 ---
-- name: reload iptables-v4
-  shell: iptables-restore < /etc/iptables/rules.v4
-
-- name: reload iptables-v6
-  shell: ip6tables-restore < /etc/iptables/rules.v6
+- name: reload firewall
+  service: name=firewall state=restarted
 
 - name: reload sysctl
   command: /sbin/sysctl --system

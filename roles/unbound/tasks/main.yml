@@ -38,8 +38,7 @@
   get_url: url='{{ dns_root_hints }}' dest='/var/lib/unbound/root.hints'
   notify: restart unbound
 
-- name: Firewall open dns-port
-  mf_add: role=dns proto={{item}} port=53
-  with_items:
-  - udp
-  - tcp
+- name: Open firewall for DNS
+  copy: src=firewall.sh dest={{ firewall_path }}/30-unbound
+  when: firewall_enabled
+  notify: reload firewall

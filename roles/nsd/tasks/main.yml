@@ -36,11 +36,10 @@
   command: /etc/cron.hourly/zonegen
   when: "'dnsserver' in group_names"
 
-- name: Firewall open dns-port
-  mf_add: role=dns proto={{item}} port=53
-  with_items:
-  - udp
-  - tcp
+- name: Open firewall for DNS
+  copy: src=firewall.sh dest={{ firewall_path }}/30-nsd
+  when: firewall_enabled
+  notify: reload firewall
 
 - name: Autostart nsd
   service: name=nsd enabled=yes

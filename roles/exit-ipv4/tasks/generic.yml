@@ -1,4 +1,9 @@
 ---
+- name: Open firewall for GRE
+  copy: src=10-allow-{{ exit_ipv4.lower() }} dest={{ firewall_path }}/
+  when: firewall_enabled
+  notify: reload firewall
+
 - name: Install interfaces file
   template: >
     src=generic/interface

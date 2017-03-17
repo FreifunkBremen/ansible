@@ -16,3 +16,8 @@
 
 - name: Enable respondd
   service: name=respondd enabled=yes
+
+- name: Open firewall for respondd
+  template: src=firewall.sh dest={{ firewall_path }}/30-respondd
+  when: firewall_enabled
+  notify: reload firewall

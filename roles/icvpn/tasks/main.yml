@@ -52,11 +52,10 @@
 - name: Setup routing with bird
   include: bird.yml
 
-- name: Firewall open tinc-port
-  mf_add: role=icvpn proto={{item}} port={{icvpn_port}}
-  with_items:
-  - tcp
-  - udp
+- name: Open firewall for Tinc and ICVPN routing
+  template: src=firewall.sh dest={{ firewall_path }}/15-icvpn
+  when: firewall_enabled
+  notify: reload firewall
 
 - name: Add ICVPN to Tinc start
   lineinfile: dest=/etc/tinc/nets.boot line="icvpn"
