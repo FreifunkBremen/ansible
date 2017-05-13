@@ -70,52 +70,6 @@
     group={{ website_user }}
 
 
-# Meshviewer
-- name: Install ruby-sass
-  apt: name=ruby-sass
-
-- name: Clone Meshviewer repository
-  git:
-    repo=https://github.com/FreifunkBremen/meshviewer.git
-    dest=/home/{{ website_user }}/.var/meshviewer
-    force=yes
-  become: yes
-  become_user: "{{ website_user }}"
-  register: meshviewer_checkout
-
-- name: Install Meshviewer dependencies
-  npm: path=/home/{{ website_user }}/.var/meshviewer
-  become: yes
-  become_user: "{{ website_user }}"
-
-- name: Install grunt-cli for Meshviewer
-  npm: name=grunt-cli path=/home/{{ website_user }}/.var/meshviewer
-  become: yes
-  become_user: "{{ website_user }}"
-
-- name: Build Meshviewer
-  command: ./node_modules/.bin/grunt
-  when: meshviewer_checkout.changed
-  become: yes
-  become_user: "{{ website_user }}"
-  args:
-    chdir: /home/{{ website_user }}/.var/meshviewer
-
-- name: Copy built Meshviewer to www directory
-  command: rsync -r --del /home/{{ website_user }}/.var/meshviewer/build/ /var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
-  when: meshviewer_checkout.changed
-  become: yes
-  become_user: "{{ website_user }}"
-
-- name: Install Meshviewer config
-  copy:
-    src=config.json
-    dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/meshviewer/
-    mode=0644
-    owner={{ website_user }}
-    group={{ website_user }}
-
-
 # Apache
 
 - name: Get letsencrypt certificates

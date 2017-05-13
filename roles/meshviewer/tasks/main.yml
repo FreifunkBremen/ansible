@@ -1,12 +1,6 @@
 ---
-- name: Install packages
-  apt: name={{ item }}
-  with_items:
-  - git
-  - ruby-sass
-
-- name: Install grunt
-  npm: name=grunt-cli global=yes
+- name: Install yarn
+  npm: name=yarn global=yes
 
 - name: Clone repository
   git: repo={{ meshviewer_git_root }}
@@ -15,13 +9,12 @@
        force=yes
 
 - name: Install node dependencies
-  npm: path={{ meshviewer_path_src }}
-
-- name: Upload config
-  template: src=config.json dest={{ meshviewer_path_src }}/
+  command: nodejs /usr/bin/yarn install
+  args:
+    chdir: "{{ meshviewer_path_src }}"
 
 - name: Build meshviewer
-  command: nodejs /usr/bin/grunt
+  command: node_modules/.bin/gulp
   args:
     chdir: "{{ meshviewer_path_src }}"
 
@@ -40,15 +33,16 @@
 #    delete: True
 #    rsync_opts:
 #    - "--exclude=config.json"
-- name: Enable Apache
-  include: apache.yml
-  when: meshviewer_apache
 
 - name: Copy files
   command: >
     rsync -a --delete
     {{ meshviewer_path_src }}/build/
     {{ meshviewer_path_bin }}/
+
+- name: Enable Apache
+  include: apache.yml
+  when: meshviewer_apache
 
 - name: Enable Geojson
   include: geojson.yml

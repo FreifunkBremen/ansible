@@ -4,6 +4,7 @@
     dest=/etc/letsencrypt/domains.txt
     line="{{ meshviewer_subdomain }}.{{ main_domain }} {{ meshviewer_subdomain }}.{{ alt_domain }}"
     create=yes
+  when: meshviewer_subdomain is defined
   notify: regenerate certificates
 
 - name: Install Apache vHost config
