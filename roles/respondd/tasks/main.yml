@@ -1,4 +1,7 @@
 ---
+- name: Install needed tools
+  apt: name=ethtool
+
 - name: Clone respondd announce repository
   git: >
     repo={{ respondd_announce_git_root }}
@@ -6,13 +9,23 @@
   notify:
     - restart respondd
 
-- name: Install system unit
+- name: Install system unit for vpn
+  template: >
+    src=service-vpn
+    dest=/lib/systemd/system/respondd.service
+  notify:
+    - reload systemd
+    - restart respondd
+  when: respondd_vpn
+
+- name: Install system unit for default interface
   template: >
     src=service
     dest=/lib/systemd/system/respondd.service
   notify:
     - reload systemd
     - restart respondd
+  when: not respondd_vpn
 
 - name: Enable respondd
   service: name=respondd enabled=yes
