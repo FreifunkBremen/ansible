@@ -3,10 +3,10 @@ meshviewer_git_root: "{{ site_git_root }}/meshviewer.git"
 meshviewer_git_version: master
 meshviewer_path_bin: /var/www/html/meshviewer
 meshviewer_path_src: /usr/src/meshviewer
-meshviewer_web_path: https://downloads.bremen.freifunk.net/data/
-meshviewer_apache: true
-meshviewer_geojson: false
 
+meshviewer_apache: true
+
+meshviewer_geojson: false
 meshviewer_geojson_git: https://github.com/FreifunkBremen/internal-maps.git
 meshviewer_geojson_file: meshviewer.geojson
 meshviewer_geojson_file_path: /var/www/html/data

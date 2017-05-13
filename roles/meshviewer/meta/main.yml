@@ -1,0 +1,10 @@
+---
+dependencies:
+  - apt
+  - git
+  - nodejs
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
