@@ -1,0 +1,51 @@
+---
+- name: Create users
+  user: name=yanic generate_ssh_key=yes ssh_key_type=rsa  ssh_key_file=.ssh/id_rsa ssh_key_comment="yanic@{{inventory_hostname}}"
+
+- name: Install yanic
+  shell: >
+       /usr/local/go/bin/go get -u github.com/FreifunkBremen/yanic/cmd/yanic
+  environment:
+    GOPATH: /opt/go
+  notify:
+    - restart yanic
+
+- name: Configure yanic
+  template: >
+    src=config.toml
+    dest=/etc/yanic.conf
+  notify:
+    - restart yanic
+
+
+- name: Create directory
+  file: path={{ yanic_meshviewer_path }}/ state=directory owner=yanic
+
+
+- name: Install system unit
+  template: >
+    src=yanic.service
+    dest=/lib/systemd/system/yanic.service
+  notify:
+    - reload systemd
+    - restart yanic
+
+
+- name: Enable yanic
+  service: name=yanic enabled=yes
+
+- name: Install system publish unit
+  template: >
+    src={{item}}
+    dest=/lib/systemd/system/{{item}}
+  when: yanic_publisher
+  with_items:
+    - yanic-publish.service
+    - yanic-publish.timer
+  notify:
+    - reload systemd
+    - restart yanic-publish
+
+- name: Enable yanic-publish
+  service: name=yanic-publish.timer enabled=yes
+  when: yanic_publisher

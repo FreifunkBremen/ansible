@@ -1,0 +1,8 @@
+---
+dependencies:
+  - go
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - jessie

@@ -1,5 +1,5 @@
 [Unit]
-Description=Publish data of respond-collector on downloads server every minute
+Description=Publish data of yanic on downloads server every minute
 
 [Timer]
 OnBootSec=15min

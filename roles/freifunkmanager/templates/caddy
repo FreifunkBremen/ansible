@@ -1,0 +1,43 @@
+http://{{freifunkmanager_domain}} {
+	redir https://{{freifunkmanager_domain}}{uri}
+}
+https://{{freifunkmanager_domain}} {
+	tls {{freifunkmanager_email}}
+	gzip
+	basicauth / ffhb {{freifunkmanager_password}}
+	index index.html
+	minify
+
+	push / /img/logo.png
+	push / /css/images/layers.png
+	push / /css/leaflet.css
+	push / /css/main.css
+	push / /css/map.css
+	push / /js/moment.js
+	push / /js/navigo.js
+	push / /js/leaflet.js
+	push / /js/leaflet.ajax.min.js
+	push / /js/webgl-heatmap.js
+	push / /js/leaflet-webgl-heatmap.min.js
+	push / /js/config.js
+	push / /js/domlib.js
+	push / /js/store.js
+	push / /js/notify.js
+	push / /js/gui_list.js
+	push / /js/gui_map.js
+	push / /js/gui_node.js
+	push / /js/gui_stats.js
+	push / /js/gui.js
+	push / /js/socket.js
+	push / /js/app.js
+
+
+	root /opt/go/src/github.com/FreifunkBremen/freifunkmanager/webroot
+	proxy /websocket {{freifunkmanager_webserver_bind}}
+		header_upstream Host {host}
+		header_upstream X-Real-IP {remote}
+		header_upstream X-Forwarded-For {remote}
+		header_upstream X-Forwarded-Proto {scheme}
+		websocket
+	}
+}

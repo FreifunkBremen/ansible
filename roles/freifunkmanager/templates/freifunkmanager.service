@@ -1,0 +1,11 @@
+[Unit]
+Description=freifunkmanager
+
+[Service]
+Type=simple
+ExecStart=/opt/go/bin/freifunkmanager -config /etc/freifunkmanager.conf
+Restart=always
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target

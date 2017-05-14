@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+webserver_bind = "{{freifunkmanager_webserver_bind}}"
+webroot = "{{freifunkmanager_webroot}}"
+
+state_path = "{{freifunkmanager_state_path}}"
+
+ssh_key = "{{freifunkmanager_ssh_key}}"
+ssh_interface = "{{freifunkmanager_ssh_interface}}"
+
+[yanic]
+enable   = {{freifunkmanager_yanic | ternary('true','false') }}
+type     = "{{freifunkmanager_yanic_type}}"
+address  = "{{freifunkmanager_yanic_address}}"

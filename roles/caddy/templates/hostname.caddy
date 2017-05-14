@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+http://{{main_domain}}, http://{{alt_domain}} {
+	redir https://{{main_domain}}{uri}
+}
+
+https://{{main_domain}}, https://{{alt_domain}} {
+	tls {{caddy_email}}
+	gzip
+	index index.html
+	root /var/www/html
+	header / {
+		Access-Control-Allow-Origin  *
+		Access-Control-Allow-Methods "GET, POST, OPTIONS"
+		-Server
+	}
+}
