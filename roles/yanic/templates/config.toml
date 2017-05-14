@@ -1,0 +1,43 @@
+# {{ ansible_managed }}
+[respondd]
+enable           = {{ yanic_respondd | ternary('true','false') }}
+collect_interval = "{{ yanic_respondd_collect_interval }}"
+interface        = "{{ yanic_respondd_interface }}"
+
+[webserver]
+enable  = {{ yanic_webserver | ternary('true','false') }}
+bind    = "{{ yanic_webserver_bind }}"
+webroot = "{{ yanic_webserver_webroot }}"
+
+[nodes]
+enable         = {{yanic_nodes | ternary('true','false') }}
+state_path     = "{{yanic_nodes_state_path}}"
+save_interval  = "{{yanic_nodes_save_interval}}"
+offline_after  = "{{yanic_nodes_offline_after}}"
+prune_after    = "{{yanic_nodes_prune_after}}"
+
+
+[meshviewer]
+version        = {{yanic_meshviewer_version}}
+nodes_path     = "{{yanic_meshviewer_nodes}}"
+graph_path     = "{{yanic_meshviewer_graph}}"
+
+[database]
+delete_after = "{{ yanic_database_delete_after }}"
+delete_interval = "{{ yanic_database_delete_interval }}"
+
+{% for db in yanic_influxdb %}
+[[database.connection.influxdb]]
+enable   = {{ db.enable | ternary('true','false') }}
+address  = "{{ db.host }}"
+database = "{{ db.database }}"
+username = "{{ db.username }}"
+password = "{{ db.password }}"
+{% endfor %}
+
+{% for db in yanic_socket %}
+[[database.connection.socket]]
+enable   = {{ db.enable | ternary('true','false') }}
+type     = "{{ db.type }}"
+address = "{{ db.address }}"
+{% endfor %}

@@ -1,0 +1,10 @@
+[Unit]
+Description=Publish data of yanic on downloads server
+
+[Service]
+ExecStart=/usr/bin/rsync --del -rt {{ yanic_nodes_path }}/ downloads@webserver.bremen.freifunk.net:data/yanic
+User=yanic
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,23 @@
+---
+- hosts: eventsserver
+  roles:
+  - apt
+  - openssh
+  - system
+  - tmpfs
+  - tools
+  - motd
+
+  - respondd
+  - role: caddy
+    tags: caddy
+  - role: meshviewer
+    tags: meshviewer
+  - role: influxdb
+    tags: influxdb
+  - role: yanic
+    tags: yanic
+  - role: grafana
+    tags: grafana
+  - role: freifunkmanager
+    tags: freifunkmanager

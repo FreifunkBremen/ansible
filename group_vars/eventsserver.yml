@@ -1,0 +1,43 @@
+---
+main_domain: events.bremen.freifunk.net
+alt_domain: events.ffhb.de
+
+respondd_vpn: false
+caddy: true
+caddy_email: "geno+ffhb@fireorbit.de"
+
+meshviewer_domain: '{{ main_domain }}'
+meshviewer_git_root: https://github.com/FreifunkBremen/meshviewer-ffrgb.git
+meshviewer_git_version: ffhb-events-config
+meshviewer_email: info@bremen.freifunk.net
+meshviewer_apache: false
+meshviewer_geojson: true
+
+yanic_nodes_state_path: /var/www/html/data/nodes.json
+yanic_meshviewer_path: /var/www/html/data
+yanic_meshviewer_nodes: /var/www/html/data/nodes_v2.json
+yanic_socket:
+- enable: true
+  type: unix
+  address: "/tmp/yanic-database.socket"
+
+freifunkmanager_domain: mgmt.ffhb.de
+freifunkmanager_email: "{{caddy_email}}"
+freifunkmanager_yanic_address: "/tmp/yanic-database.socket"
+
+influxdb_admin_user: admin
+influxdb_admin_password: "{{ lookup('password', 'credentials/influx_admin length=15') }}"
+influxdb_users:
+  - user: "{{ yanic_influxdb_username }}"
+    pass: "{{ yanic_influxdb_password }}"
+  - user: public
+    pass: public
+influxdb_databases:
+  - "{{ yanic_influxdb_database }}"
+influxdb_access:
+  - user: "{{ yanic_influxdb_username }}"
+    database: "{{ yanic_influxdb_database }}"
+    access: ALL
+  - user: public
+    database: "{{ yanic_influxdb_database }}"
+    access: READ

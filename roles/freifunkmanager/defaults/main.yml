@@ -1,0 +1,12 @@
+---
+freifunkmanager_caddy: true
+freifunkmanager_webserver_bind: "127.0.0.1:8080"
+freifunkmanager_webroot: "/opt/go/src/github.com/FreifunkBremen/freifunkmanager/webroot"
+
+freifunkmanager_state_path: "freifunkmanager.json"
+freifunkmanager_ssh_interface: "eth0"
+freifunkmanager_ssh_key: .ssh/id_rsa
+
+freifunkmanager_yanic: true
+freifunkmanager_yanic_type: unix
+freifunkmanager_yanic_address: "/var/lib/yanic-database.socket"

@@ -1,0 +1,23 @@
+--- caddy.service	2016-09-28 21:07:57.000000000 +0200
++++ caddy	2016-12-07 12:42:54.304716833 +0100
+@@ -17,7 +17,7 @@ Group=www-data
+ Environment=CADDYPATH=/etc/ssl/caddy
+
+ ; Always set "-root" to something safe in case it gets forgotten in the Caddyfile.
+-ExecStart=/usr/local/bin/caddy -log stdout -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
++ExecStart=/opt/go/bin/caddy -log stdout -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
+ ExecReload=/bin/kill -USR1 $MAINPID
+
+ ; Limit the number of file descriptors; see `man systemd.exec` for more limit settings.
+ @@ -38,9 +38,9 @@ ReadWriteDirectories=/etc/ssl/caddy
+  ; The following additional security directives only work with systemd v229 or later.
+  ; They further retrict privileges that can be gained by caddy. Uncomment if you like.
+  ; Note that you may have to add capabilities required by any plugins in use.
+ -;CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+ -;AmbientCapabilities=CAP_NET_BIND_SERVICE
+ +CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+ +AmbientCapabilities=CAP_NET_BIND_SERVICE
+  ;NoNewPrivileges=true
+
+  [Install]
+  WantedBy=multi-user.target
