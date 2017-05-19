@@ -19,9 +19,10 @@
   file: path=/var/lib/grafana/dashboards state=directory mode=0750 owner=grafana group=grafana
 
 - name: Install dashboards
-  copy: src={{item}} dest=/var/lib/grafana/dashboards/{{item}} mode=0750 owner=grafana group=grafana
+  copy: src=json/{{item}} dest=/var/lib/grafana/dashboards/{{item}} mode=0750 owner=grafana group=grafana
   with_items:
-  - Short.json
+  - global.json
+  - node.json
 
 - name: Get letsencrypt certificates
   lineinfile:
