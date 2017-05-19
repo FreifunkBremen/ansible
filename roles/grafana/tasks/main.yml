@@ -28,6 +28,7 @@
     dest=/etc/letsencrypt/domains.txt
     line="{{ grafana_subdomain }}.{{ main_domain }} {{ grafana_subdomain }}.{{ alt_domain }}"
     create=yes
+  when: not grafana_caddy
   notify: regenerate certificates
 
 - name: Install Apache vHost config
@@ -35,13 +36,23 @@
     src=apache2.conf
     dest=/etc/apache2/sites-available/{{ grafana_domain }}.conf
     mode=0644
+  when: not grafana_caddy
   notify: reload apache
 
 - name: Enable Apache vHost config
   command: a2ensite {{ grafana_domain }}
   args:
     creates: /etc/apache2/sites-enabled/{{ grafana_domain }}.conf
+  when: not grafana_caddy
   notify: reload apache
+
+- name: Configure caddy
+  template: >
+    src=caddy
+    dest=/etc/caddy/hosts/10-grafana.act
+  when: grafana_caddy
+  notify:
+    - reload caddy
 
 - name: Enable grafana
   service: name=grafana-server state=started enabled=yes

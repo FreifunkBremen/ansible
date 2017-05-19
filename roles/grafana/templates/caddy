@@ -1,0 +1,5 @@
+https://{{grafana_domain}}{{grafana_location}} {
+	tls {{grafana_email}}
+	gzip
+	proxy / {{ grafana_addr }}:{{ grafana_port }}
+}
