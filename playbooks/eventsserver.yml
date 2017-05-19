@@ -11,13 +11,21 @@
   - respondd
   - role: caddy
     tags: caddy
+
+  - role: eventswebsite
+    tags: eventswebsite
+
   - role: meshviewer
     tags: meshviewer
+
   - role: influxdb
     tags: influxdb
+
   - role: yanic
     tags: yanic
+
   - role: grafana
     tags: grafana
+
   - role: freifunkmanager
     tags: freifunkmanager

@@ -1,0 +1,7 @@
+<h1>Freifunk Bremen Events</h1>
+<p>This is a public accessable server for services during a events managed by Freifunk Bremen.</p>
+The list of public services:
+<ul>
+	{% if grafana_caddy is defined %}<li><a href="https://{{grafana_domain}}{{grafana_location}}">Grafana</a></li>{% endif %}
+	{% if meshviewer_apache is defined %}<li><a href="https://{{meshviewer_domain}}/meshviewer">Meshviewer</a></li>{% endif %}
+</ul>
