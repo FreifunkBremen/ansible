@@ -4,3 +4,7 @@ grafana_subdomain: grafana
 grafana_domain: '{{ grafana_subdomain }}.{{ main_domain }}'
 grafana_addr: 127.0.0.1
 grafana_port: 8080
+grafana_caddy: false
+
+# caddy support only
+grafana_location: ""
