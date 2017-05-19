@@ -6,7 +6,6 @@ https://{{freifunkmanager_domain}} {
 	gzip
 	basicauth / ffhb {{freifunkmanager_password}}
 	index index.html
-	minify
 
 	push / /img/logo.png
 	push / /css/images/layers.png
@@ -33,7 +32,7 @@ https://{{freifunkmanager_domain}} {
 
 
 	root /opt/go/src/github.com/FreifunkBremen/freifunkmanager/webroot
-	proxy /websocket {{freifunkmanager_webserver_bind}}
+	proxy /websocket {{freifunkmanager_webserver_bind}} {
 		header_upstream Host {host}
 		header_upstream X-Real-IP {remote}
 		header_upstream X-Forwarded-For {remote}
