@@ -3,7 +3,6 @@ main_domain: events.bremen.freifunk.net
 alt_domain: events.ffhb.de
 
 respondd_vpn: false
-caddy: true
 caddy_email: "geno+ffhb@fireorbit.de"
 
 meshviewer_domain: '{{ main_domain }}'
@@ -21,23 +20,39 @@ yanic_socket:
   type: unix
   address: "/tmp/yanic-database.socket"
 
-freifunkmanager_domain: mgmt.ffhb.de
-freifunkmanager_email: "{{caddy_email}}"
-freifunkmanager_yanic_address: "/tmp/yanic-database.socket"
+influxdb_username: yanic
+influxdb_database: yanic
+influxdb_password: "{{ lookup('password', 'credentials/influx_yanic length=15') }}"
+
+yanic_influxdb:
+- enable: true
+  host: http://localhost:8086
+  database: "{{ influxdb_database }}"
+  username: "{{ influxdb_username }}"
+  password: "{{ influxdb_password }}"
 
 influxdb_admin_user: admin
 influxdb_admin_password: "{{ lookup('password', 'credentials/influx_admin length=15') }}"
 influxdb_users:
-  - user: "{{ yanic_influxdb_username }}"
-    pass: "{{ yanic_influxdb_password }}"
+  - user: "{{ influxdb_username }}"
+    pass: "{{ influxdb_password }}"
   - user: public
     pass: public
 influxdb_databases:
-  - "{{ yanic_influxdb_database }}"
+  - "{{ influxdb_database }}"
 influxdb_access:
-  - user: "{{ yanic_influxdb_username }}"
-    database: "{{ yanic_influxdb_database }}"
+  - user: "{{ influxdb_username }}"
+    database: "{{ influxdb_database }}"
     access: ALL
   - user: public
-    database: "{{ yanic_influxdb_database }}"
+    database: "{{ influxdb_database }}"
     access: READ
+
+grafana_caddy: true
+grafana_location: /grafana
+grafana_domain: "{{ main_domain }}"
+grafana_port: 8081
+
+freifunkmanager_domain: mgmt.ffhb.de
+freifunkmanager_email: "{{caddy_email}}"
+freifunkmanager_yanic_address: "/tmp/yanic-database.socket"
