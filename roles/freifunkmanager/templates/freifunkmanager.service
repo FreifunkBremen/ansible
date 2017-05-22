@@ -5,6 +5,7 @@ Description=freifunkmanager
 Type=simple
 ExecStart=/opt/go/bin/freifunkmanager -config /etc/freifunkmanager.conf
 Restart=always
+RestartSec=5s
 Environment=PATH=/usr/bin:/usr/local/bin
 
 [Install]
