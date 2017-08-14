@@ -1,0 +1,19 @@
+---
+- name: Remove folder of alfred-announce and respondd
+  file: path=/opt/{{ site_code}}/{{item}}' state=absent
+  with_items:
+  - alfred-announce
+  - respondd-announce
+
+- name: Remove  alfred-announces cronjob
+  file: path=/etc/cron.d/alfred-announce' state=absent
+
+- name: Stop respondd service
+  service name=respondd state=stopped
+
+- name: Remove  respondds service
+  file: path=/lib/systemd/system/respondd.service state=absent
+
+- name: Remove respondds firewall
+  file: path={{ firewall_path }}/30-respondd state=absent
+  notify: reload firewall
