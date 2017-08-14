@@ -4,11 +4,9 @@ batman_interface: 'bat-{{ site_code }}'
 main_bridge: 'br-{{ site_code }}'
 
 ; - alfred -
-mesh_announce_alfred: true
 alfred_master: False
 alfred_mtu_interface: 'br-{{ site_code }}-mtu'
 
 
 ; - respondd -
-mesh_announce_respondd: true
 respondd_vpn: true
