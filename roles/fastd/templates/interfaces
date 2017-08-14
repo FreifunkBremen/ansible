@@ -3,6 +3,18 @@
 allow-hotplug {{ fastd_interface }}
 iface {{ fastd_interface }} inet manual
 	up ip link set up $IFACE
-	up batctl -m {{ batman_interface }} if add $IFACE
-	down batctl -m {{ batman_interface }} if del $IFACE
 	down ip link set down $IFACE
+	{%if fastd_bind_batman %}
+	{%if fastd_bind_interface is defined %}
+	up batctl -m {{ fastd_bind_interface }} if add $IFACE
+	down batctl -m {{ fastd_bind_interface }} if del $IFACE
+	{% endif %}
+	{% else %}
+	{%if fastd_bind_interface is defined %}
+	up brctl addif {{ fastd_bind_interface }} $IFACE
+	down brctl delif {{ fastd_bind_interface }} $IFACE
+	{% else %}
+	post-up  ip -6 rule add iif $IFACE table default-freifunk priority 16385
+	pre-down ip -6 rule del iif $IFACE table default-freifunk priority 16385
+	{% endif %}
+	{% endif %}

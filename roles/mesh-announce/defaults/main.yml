@@ -1,5 +1,6 @@
 ---
-mesh_announce_git_root: 'https://github.com/ffnord/mesh-announce/'
+mesh_announce_git_root: 'https://github.com/genofire/mesh-announce/'
+mesh_announce_git_version: 'babel'
 batman_interface: 'bat-{{ site_code }}'
 main_bridge: 'br-{{ site_code }}'
 

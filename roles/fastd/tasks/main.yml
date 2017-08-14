@@ -30,6 +30,15 @@
 - name: Stop and disable fastd via System V init script
   service: name=fastd enabled=no
 
+- name: Include fastd instance for babel
+  import_tasks: instance.yml
+  vars:
+    fastd_instance:  "{{ site_code }}_babel"
+    fastd_interface: "{{ fastd_babel_interface }}"
+    fastd_port:      "{{ fastd_babel_port }}"
+    fastd_bind:      any
+    fastd_anonymous: true
+
 - name: Include fastd instance
   import_tasks: instance.yml
   vars:
@@ -37,6 +46,8 @@
     fastd_interface: "vpn-{{ site_code }}"
     fastd_bind:      any
     fastd_anonymous: true
+    fastd_bind_batman: true
+    fastd_bind_interface: bat-{{ site_code }}
 
 - name: Include legacy fastd instance
   import_tasks: instance.yml
@@ -47,6 +58,8 @@
     fastd_port:      "{{ fastd_legacy_port }}"
     fastd_mtu:       "{{ fastd_legacy_mtu }}"
     fastd_anonymous: true
+    fastd_bind_batman: true
+    fastd_bind_interface: bat-{{ site_code }}
 
 - name: Disable deprecated backbone instance
   service: name=fastd@{{ site_code }}_backbone enabled=no state=stopped
@@ -63,6 +76,12 @@
   file:
     src: /etc/fastd/{{ site_code }}/secret.conf
     dest: /etc/fastd/{{ site_code }}_legacy/secret.conf
+    state: link
+
+- name: Symlink fastd secrets for babel
+  file:
+    src: /etc/fastd/{{ site_code }}/secret.conf
+    dest: /etc/fastd/{{ site_code }}_babel/secret.conf
     state: link
 
 - name: Install fastd blacklist

@@ -6,11 +6,13 @@ iface vpn-uplink6 inet6 static
 	pre-up ip tunnel add $IFACE mode sit remote {{ exit_ipv6_remote }} local {{ ansible_default_ipv4.address }} ttl 255
 	post-down ip tunnel del $IFACE mode sit remote {{ exit_ipv6_remote }} local {{ ansible_default_ipv4.address }} ttl 255
 	# add default route
-	post-up ip -6 route add default via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
-	pre-down ip -6 route del default via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
+	post-up ip -6 route add default via {{ ipv6_uplink_own_gateway.address }} dev $IFACE proto 159 table default-freifunk
+	pre-down ip -6 route del default via {{ ipv6_uplink_own_gateway.address }} dev $IFACE proto 159 table default-freifunk
 	# add route to services hosts
-	post-up ip -6 route add 2a06:8782:ff00::/64 via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
-	pre-down ip -6 route del 2a06:8782:ff00::/64 via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
+	post-up ip -6 route add 2a06:8782:ff00::/64 via {{ ipv6_uplink_own_gateway.address }} dev $IFACE proto 159 table default-freifunk
+	pre-down ip -6 route del 2a06:8782:ff00::/64 via {{ ipv6_uplink_own_gateway.address }} dev $IFACE proto 159 table default-freifunk
 	# choose the correct default route
-	post-up ip -6 rule add from {{ batman_ipv6_global.address }} table default-freifunk priority 16385
-	post-down ip -6 rule del from {{ batman_ipv6_global.address }} table default-freifunk priority 16385
+	post-up  ip -6 rule add iif $IFACE table default-freifunk priority 16385
+	pre-down ip -6 rule del iif $IFACE table default-freifunk priority 16385
+	post-up ip -6 rule add from {{ ipv6_batman_global.address }} table default-freifunk priority 16385
+	post-down ip -6 rule del from {{ ipv6_batman_global.address }} table default-freifunk priority 16385

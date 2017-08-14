@@ -2,12 +2,14 @@
 # Interface-Namen dürfen maximal 15 Zeichen lang sein
 # http://lxr.free-electrons.com/source/include/uapi/linux/if.h?v=3.19#L26
 
-batman_interface: bat-{{ site_code }}
-
 fastd_repository_key: '6664E7BDA6B669881EC52E7516EF3F64CB201D9C'
 fastd_repository_url: 'https://repo.universe-factory.net/debian/ sid main'
 fastd_peers_limit: -1
 fastd_anonymous: true
+fastd_bind_batman: false
+
+fastd_babel_interface: vpn-{{ site_code }}-babel
+fastd_babel_port: 50001
 
 fastd_interface: vpn-{{ site_code }}
 fastd_port: 50000

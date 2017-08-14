@@ -6,3 +6,8 @@ site_domain:          'bremen.freifunk.net'
 site_vpn_prefix:      'vpn'
 icvpn_as:             65196
 fastd_peers_limit:    150
+babel_interfaces_vpn:
+ - 'vpn-{{ site_code }}-babel'
+babel_interfaces_ethernet: []
+babel_bridge: 'babel-{{ site_code }}'
+babel_interfaces: "{{ [babel_bridge] + babel_interfaces_ethernet + babel_interfaces_vpn }}"

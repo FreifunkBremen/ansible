@@ -1,0 +1,27 @@
+- name: Install unzip
+  apt: name=unzip state=present
+
+- name: Create directory for sources
+  file: path=/opt/jool state=directory
+
+- name: Download and unzip
+  unarchive:
+    src: "{{jool_url}}"
+    dest: /opt/jool/
+    remote_src: yes
+
+- name: intall with dkms
+  shell: dkms install "Jool-{{jool_version}}"
+  args:
+    chdir: "/opt/jool/"
+    creates: /lib/modules/{{ansible_kernel}}/updates/dkms/jool.ko
+
+
+- name: Enable during boot
+  lineinfile: dest=/etc/modules regexp='^jool' line="jool pool6=fd2f:5119:f2c:624::/64 pool4={{ipv4.address}}"
+
+- name: load modprobe
+  modprobe:
+    name: jool
+    state: present
+    params: "pool6=fd2f:5119:f2c:624::/64 pool4={{ipv4.address}}"

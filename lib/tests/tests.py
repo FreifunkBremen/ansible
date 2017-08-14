@@ -19,10 +19,11 @@ class TestHosts(unittest2.TestCase):
     def test_starttls_true(self):
 
         inv = hosts.Inventory('site.conf',
-          ipv6_global_network = "2a06:8782:ffbb:1337::/64",
+          ipv6_batman_global_network = "2a06:8782:ffbb:1337::/64",
           ipv6_uplink_network = "2a06:8782:ffbb::/64",
-          icvpn_ipv4_network = "10.207.0.196",
-          icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
+          ipv6_batman_local_network = "fd2f:5119:f2c::/64",
+          ipv4_icvpn_network  = "10.207.0.196",
+          ipv6_icvpn_network  = "fec0::a:cf:0:c4/96",
         )
 
         grp = inv.group("vpnservers",

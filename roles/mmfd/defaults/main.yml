@@ -1,0 +1,5 @@
+---
+mmfd_repository: "https://dl.ffm.freifunk.net/debian-packages/ sid main"
+mmfd_repository_key: 390BF305
+
+babel_bridge: babel-{{ site_code }}
