@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Respondd
+
+[Service]
+ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -b {{ ansible_default_ipv4.interface }} -i {{ ansible_default_ipv4.interface }} -d /opt/{{ site_code }}/mesh-announce/
+
+[Install]
+WantedBy=multi-user.target

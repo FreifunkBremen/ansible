@@ -4,8 +4,8 @@
 
 - name: Clone respondd announce repository
   git: >
-    repo={{ respondd_announce_git_root }}
-    dest=/opt/{{ site_code }}/respondd-announce/
+    repo={{ mesh_announce_git_root }}
+    dest=/opt/{{ site_code }/mesh-announce/
   notify:
     - restart respondd
 
@@ -29,6 +29,11 @@
 
 - name: Enable respondd
   service: name=respondd enabled=yes
+
+- name: Install cronjob to automatically update alfred announce
+  template: >
+    src=cronjob
+    dest=/etc/cron.d/mesh-announce-alfred
 
 - name: Open firewall for respondd
   template: src=firewall.sh dest={{ firewall_path }}/30-respondd
