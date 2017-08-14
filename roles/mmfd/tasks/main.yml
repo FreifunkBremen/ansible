@@ -1,0 +1,24 @@
+- name: Add repository key for babeld and utils
+  apt_key: keyserver="{{ pgp_keyserver }}" id="{{mmfd_repository_key}}"
+
+- name: Add repository for babeld and utils
+  apt_repository: repo="deb {{mmfd_repository}}"
+
+- name: Install mmfd (babel utils)
+  apt: name="mmfd"
+
+- name: Install interfaces file
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/babel-{{site_code}}-mmfd
+
+- name: Configure firewall
+  template: src=firewall.sh dest={{ firewall_path }}/35-babel-{{site_code}}-mmfd
+  when: firewall_enabled
+  notify: reload firewall
+
+- name: Install mmfd service
+  template: src=mmfd.service dest=/etc/systemd/system/mmfd.service
+  notify:
+  - reload systemd
+  - restart mmfd

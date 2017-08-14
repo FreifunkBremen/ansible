@@ -4,8 +4,8 @@ auto br-{{ site_code }}
 iface br-{{ site_code }} inet static
 	bridge-ports {{ batman_interface }}
 	bridge-maxwait 0
-	address {{ batman_ipv4.address }}
-	netmask {{ batman_ipv4.netmask }}
+	address {{ ipv4.address }}
+	netmask {{ ipv4.netmask }}
 	# unreachable route in {{ ffhb_routing_table }}
 	# prevents leak of data
 	post-up  ip -4 route add unreachable default metric 2048 table {{ ffhb_routing_table }}
@@ -17,15 +17,17 @@ iface br-{{ site_code }} inet static
 	pre-down ip -4 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
 	post-up  ip -6 rule add iif $IFACE table {{ ffhb_routing_table }} priority 16385
 	pre-down ip -6 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add to {{ ipv6_batman_local_network }} table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del to {{ ipv6_batman_local_network }} table {{ ffhb_routing_table }} priority 16385
 	# tune ARP and IPv6 neighbor soolicitation
 	post-up sysctl -p /etc/sysctl.d/main-bridge-ip-neigh-tuning.conf
 
 iface br-{{ site_code }} inet6 static
-	address {{ batman_ipv6_local.address }}
-	netmask 64
-{% if batman_ipv6_global %}
-	up   ip -6 addr add {{ batman_ipv6_global.address }}/64 dev $IFACE
-	down ip -6 addr del {{ batman_ipv6_global.address }}/64 dev $IFACE
+	address {{ ipv6_batman_local.address }}
+	netmask {{ ipv6_batman_local.size }}
+{% if ipv6_batman_global %}
+	up   ip -6 addr add {{ ipv6_batman_global.address }}/{{ ipv6_batman_global.size }} dev $IFACE
+	down ip -6 addr del {{ ipv6_batman_global.address }}/{{ ipv6_batman_global.size }} dev $IFACE
 	post-up  ip -6 route add 2001:bf7:540::/64 dev $IFACE
 	pre-down ip -6 route del 2001:bf7:540::/64 dev $IFACE
 {% endif %}

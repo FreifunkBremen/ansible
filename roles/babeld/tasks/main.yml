@@ -1,0 +1,39 @@
+- name: Add repository key for babeld and utils
+  apt_key: keyserver="{{ pgp_keyserver }}" id="{{babeld_repository_key}}"
+
+- name: Add repository for babeld and utils
+  apt_repository: repo="deb {{babeld_repository}}"
+
+- name: Install babeld
+  apt: name="babeld"
+
+- name: Upload babeld.conf
+  template: src=babeld.conf dest=/etc/babeld.conf
+  notify:
+  - restart babeld
+
+- name: Install interfaces file
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/babel-{{site_code}}
+
+- name: Configure firewall
+  template: src=firewall.sh dest={{ firewall_path }}/30-babel-{{site_code}}
+  when: firewall_enabled
+  notify: reload firewall
+
+- name: Install babeld service
+  template: src=babeld.service dest=/etc/systemd/system/babeld.service
+  notify:
+  - reload systemd
+  - restart babeld
+
+- name: Copy echotobabel
+  copy: src=echotobabel dest=/usr/local/bin/echotobabel
+
+- name: Set interfaces up
+  command: ifup {{ item }}
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'
+  with_items:
+  - "{{ babel_bridge }}"

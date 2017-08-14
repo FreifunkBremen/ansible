@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+
+allow-hotplug l3roam0
+auto l3roam0
+iface l3roam0 inet manual
+	up ip link set $IFACE up
+	post-up ip -6 a add {{ ipv6_babel_client.address }} dev lo
+	post-up  ip -6 ru add iif lo t default-freifunk priority 16385
+	pre-down ip -6 ru del iif lo t default-freifunk priority 16385
+	post-up  ip -6 ru add from {{ ipv6_babel_client.address }} t default-freifunk priority 16385
+	pre-down ip -6 ru del from {{ ipv6_babel_client.address }} t default-freifunk priority 16385
+	post-up ip -6 r add {{ ipv6_babel_client_network }} dev $IFACE t default-freifunk priority 16385
+	post-up ip -6 r add {{ ipv6_babel_node_network }} dev $IFACE t default-freifunk priority 16385

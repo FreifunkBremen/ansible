@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 {% if respondd_vpn %}
-ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -b {{ batman_interface }} -i {{ main_bridge }} -i vpn-{{ site_code }}-legacy -i vpn-{{ site_code }} -d /opt/{{ site_code }}/mesh-announce/
+ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -b {{ batman_interface }} -i {{ main_bridge }} -i vpn-{{ site_code }}-babel -i vpn-{{ site_code }}-legacy -i vpn-{{ site_code }} -d /opt/{{ site_code }}/mesh-announce/
 {% else %}
 ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -b {{ ansible_default_ipv4.interface }} -i {{ ansible_default_ipv4.interface }} -d /opt/{{ site_code }}/mesh-announce/
 {% endif %}

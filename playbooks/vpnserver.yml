@@ -8,7 +8,25 @@
   - batman-adv-14
   - main-bridge
   - role: fastd
-    tags: fastd
+    tags:
+      - fastd
+      - babel
+  - role: babeld
+    tags:
+      - babeld
+      - babel
+  - role: mmfd
+    tags:
+      - mmfd
+      - babel
+  - role: l3roamd
+    tags:
+      - l3roamd
+      - babel
+  - role: jool
+    tags:
+      - jool
+      - babel
   - mesh-announce
   - backbone-gre
   - icvpn

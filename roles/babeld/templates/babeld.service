@@ -1,0 +1,13 @@
+[Unit]
+Description=babeld
+Wants=basic.target
+After=basic.target network.target
+Before=fastd.service
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/babeld -D -c /etc/babeld.conf
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

@@ -6,6 +6,7 @@
   git: >
     repo={{ mesh_announce_git_root }}
     dest=/opt/{{ site_code }}/mesh-announce/
+    version={{mesh_announce_git_version}}
   notify:
     - restart respondd
 

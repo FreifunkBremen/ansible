@@ -1,0 +1,23 @@
+# {{ ansible_managed }}
+
+auto {{ babel_bridge }}
+iface {{ babel_bridge }} inet6 static
+	bridge_ports none
+	bridge-maxwait 0
+	# set interface up
+	up ip link set $IFACE up
+	down ip link set $IFACE down
+	address {{ ipv6_babel_node.address }}
+	post-up  ip -6 rule add from {{ ipv6_babel_node.address }} table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del from {{ ipv6_babel_node.address }} table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add iif $IFACE table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del iif $IFACE table {{ ffhb_routing_table }} priority 16385
+
+	post-up  ip -6 rule add to {{ ipv6_babel_node_network }} table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del to {{ ipv6_babel_node_network }} table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add to {{ ipv6_babel_client_network }} table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del to {{ ipv6_babel_client_network }} table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add from {{ ipv6_babel_node_network }} table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del from {{ ipv6_babel_node_network }} table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add from {{ ipv6_babel_client_network }} table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del from {{ ipv6_babel_client_network }} table {{ ffhb_routing_table }} priority 16385

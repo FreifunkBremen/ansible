@@ -1,0 +1,17 @@
+[Unit]
+Description=l3roamd
+Wants=basic.target
+After=basic.target network.target fastd.service babeld.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/l3roamd -p {{ ipv6_babel_client_network }} -b {{ babel_bridge }} {% for ifname in babel_interfaces %} -m {{ ifname }} {% endfor %} -i lo -t 252 -a {{ ipv6_babel_node.address }} -4 0:0:0:0:0:ffff::/96
+StandardOutput=null
+StandardError=null
+KillMode=process
+ExecStartPost=/sbin/ip link set dev l3roam0 up
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
