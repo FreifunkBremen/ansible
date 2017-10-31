@@ -10,7 +10,11 @@ iface {{ batman_dummy_interface }} inet manual
 auto {{ batman_interface }}
 iface {{ batman_interface }} inet manual
 	batadv-ports {{ batman_dummy_interface }}
+{% if ansible_default_ipv6.macaddress %}
 	batadv-hw {{ ansible_default_ipv6.macaddress | derive_mac_addr(2) }}
+{% else %}
+	batadv-hw {{ ansible_default_ipv4.macaddress | derive_mac_addr(2) }}
+{% endif %}
 	batadv-hop-penalty {{ batman_hop_penalty }}
 {% if batman_gateway %}
 	batadv-gw-mode server
