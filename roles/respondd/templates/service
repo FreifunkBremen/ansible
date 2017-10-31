@@ -1,9 +1,0 @@
-# {{ ansible_managed }}
-[Unit]
-Description=Respondd
-
-[Service]
-ExecStart=/opt/{{ site_code }}/respondd-announce/respondd.py -b {{ ansible_default_ipv4.interface }} -i {{ ansible_default_ipv4.interface }} -d /opt/{{ site_code }}/respondd-announce/
-
-[Install]
-WantedBy=multi-user.target

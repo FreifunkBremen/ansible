@@ -1,13 +1,13 @@
 respondd
 =========================
 
-Install respondd from git repo with systemd unit
+Install respondd from git repo with systemd unit and alfred to announce informations
 
 
 Role Variables
 -------------------------
 
-    respondd_announce_git_root: (default: 'https://github.com/ffnord/ffnord-alfred-announce/')
+   mesh_announce_git_root: (default: 'https://github.com/ffnord/mesh-announce/')
 
 
 Usage
@@ -17,7 +17,7 @@ Usage
       vars:
         site_code: ffhb
       roles:
-         - respondd
+         - mesh-announce
 
 License
 -------------------------
