@@ -9,8 +9,8 @@
   - main-bridge
   - role: fastd
     tags: fastd
-  - alfred-announce
-  - respondd
+  - alfred-announce-cleanup
+  - mesh-announce
   - backbone-gre
   - icvpn
   - exit-ipv4
