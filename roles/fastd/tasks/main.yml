@@ -31,7 +31,7 @@
   service: name=fastd enabled=no
 
 - name: Include fastd instance
-  include: instance.yml
+  import_tasks: instance.yml
   vars:
     fastd_instance:  "{{ site_code }}"
     fastd_interface: "vpn-{{ site_code }}"
@@ -39,7 +39,7 @@
     fastd_anonymous: true
 
 - name: Include legacy fastd instance
-  include: instance.yml
+  import_tasks: instance.yml
   vars:
     fastd_instance:  "{{ site_code }}_legacy"
     fastd_bind:      "0.0.0.0"
@@ -66,4 +66,4 @@
     state: link
 
 - name: Install fastd blacklist
-  include: blacklist.yml
+  import_tasks: blacklist.yml

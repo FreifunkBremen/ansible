@@ -45,5 +45,5 @@
   when: meshviewer_apache
 
 - name: Enable Geojson
-  include: geojson.yml
+  import_tasks: geojson.yml
   when: meshviewer_geojson

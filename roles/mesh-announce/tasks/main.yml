@@ -5,7 +5,7 @@
 - name: Clone respondd announce repository
   git: >
     repo={{ mesh_announce_git_root }}
-    dest=/opt/{{ site_code }/mesh-announce/
+    dest=/opt/{{ site_code }}/mesh-announce/
   notify:
     - restart respondd
 

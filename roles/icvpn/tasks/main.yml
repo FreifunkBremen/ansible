@@ -50,7 +50,7 @@
   notify: restart tinc
 
 - name: Setup routing with bird
-  include: bird.yml
+  import_tasks: bird.yml
 
 - name: Open firewall for Tinc and ICVPN routing
   template: src=firewall.sh dest={{ firewall_path }}/15-icvpn
