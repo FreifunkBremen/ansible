@@ -3,7 +3,7 @@
 - fail: msg="exit_ipv6_remote must be False or set to the IPv6 uplink address"
   when: exit_ipv6_remote is not defined
 
-- include: remote.yml
+- import_tasks: remote.yml
   when: exit_ipv6_remote != False
 
 - name: Install radv protocol for bird

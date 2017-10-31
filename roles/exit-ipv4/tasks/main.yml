@@ -1,12 +1,12 @@
 ---
 - name: Include openvpn
-  include: openvpn.yml
+  import_tasks: openvpn.yml
   when: exit_ipv4.startswith("openvpn-")
   tags: openvpn
 
 - name: Include generic
-  include: generic.yml
+  import_tasks: generic.yml
   when: exit_ipv4.lower() in ["gre", "ipip"]
 
 - name: Include default
-  include: default.yml
+  import_tasks: default.yml
