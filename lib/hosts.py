@@ -18,7 +18,7 @@ class Inventory:
 
   groups = {}
 
-  def __init__(self, site_conf, ipv6_local_network=None, ipv6_uplink_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
+  def __init__(self, site_conf, ipv6_global_network=None, ipv6_local_network=None, ipv6_uplink_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
 
     # read and parse site.conf
     with open(site_conf,'r') as f:
@@ -30,10 +30,12 @@ class Inventory:
     self.icvpn_ipv4_network  = ipcalc.Network(icvpn_ipv4_network)
     self.icvpn_ipv6_network  = ipcalc.Network(icvpn_ipv6_network)
     self.ipv6_uplink_network = ipcalc.Network(ipv6_uplink_network)
-    self.ipv6_local_network  = ipcalc.Network(ipv6_local_network)
+    self.ipv6_global_network  = ipcalc.Network(ipv6_global_network)
 
     if "prefix6" in self.site:
-      self.ipv6_global_network = ipcalc.Network(self.site["prefix6"])
+      self.ipv6_local_network = ipcalc.Network(self.site["prefix6"])
+    else:
+      self.ipv6_local_network  = ipcalc.Network(ipv6_local_network)
 
   def group(self, name, **options):
     group = Group(self, **options)
