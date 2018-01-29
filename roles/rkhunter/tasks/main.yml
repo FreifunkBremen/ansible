@@ -1,3 +1,42 @@
 ---
 - name: Install rkhunter
   apt: name=rkhunter
+
+- name: Configure rkhunter
+  lineinfile:
+    path: /etc/rkhunter.conf
+    line: "{{item.key}}={{item.value}}"
+    regexp: "^#?{{item.key}}="
+  with_items:
+  - key: ALLOW_SSH_PROT_V1
+    value: 2
+
+- name: Configure rkhunter hiddendirs
+  lineinfile:
+    path: /etc/rkhunter.conf
+    line: "ALLOWHIDDENDIR={{item}}"
+    insertafter: "^#?ALLOWHIDDENDIR="
+  with_items:
+  - /etc/.git
+
+- name: Configure rkhunter hiddenfiles
+  lineinfile:
+    path: /etc/rkhunter.conf
+    line: "ALLOWHIDDENFILE={{item}}"
+    insertafter: "^#?ALLOWHIDDENFILE="
+  with_items:
+  - /etc/.gitignore
+  - /etc/.etckeeper
+
+- name: Configure rkhunter cronjob etc
+  lineinfile:
+    path: /etc/default/rkhunter
+    line: '{{item.key}}="{{item.value}}"'
+    regexp: "^#?{{item.key}}="
+  with_items:
+  - key: CRON_DAILY_RUN
+    value: 'true'
+  - key: CRON_DB_UPDATE
+    value: 'true'
+  - key: APT_AUTOGEN
+    value: 'true'
