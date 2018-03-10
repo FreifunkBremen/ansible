@@ -9,23 +9,13 @@
   notify:
     - restart respondd
 
-- name: Install system unit for vpn
-  template: >
-    src=service-vpn
-    dest=/lib/systemd/system/respondd.service
-  notify:
-    - reload systemd
-    - restart respondd
-  when: respondd_vpn
-
-- name: Install system unit for default interface
+- name: Install system unit
   template: >
     src=service
     dest=/lib/systemd/system/respondd.service
   notify:
     - reload systemd
     - restart respondd
-  when: not respondd_vpn
 
 - name: Enable respondd
   service: name=respondd enabled=yes
