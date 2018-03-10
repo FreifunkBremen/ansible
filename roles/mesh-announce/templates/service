@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 [Unit]
 Description=Respondd
+After=network.target
 
 [Service]
 {% if respondd_vpn %}
