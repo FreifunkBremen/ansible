@@ -10,6 +10,8 @@
     - tcpdump
     - tmux
     - zsh
+    - vnstat
+  notify: restart vnstat
 
 - name: Download .zshrc from grml
   get_url: url=https://raw.githubusercontent.com/grml/grml-etc-core/v0.12.5/etc/zsh/zshrc
@@ -19,3 +21,6 @@
 
 - name: Change shell for root
   user: name=root shell=/bin/zsh
+
+- name: Autostart vnstat
+  service: name=vnstat enabled=yes
