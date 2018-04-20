@@ -1,6 +1,5 @@
 ---
 dependencies:
-  - git
   - firewall
 galaxy_info:
   platforms:
