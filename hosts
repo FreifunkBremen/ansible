@@ -36,8 +36,13 @@ grp.host(12, "ipv6-downlink.ffhb.de")
 grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net");
 
+grp = inv.group("vmhosts")
+grp.host(0, "bre-1.bremen.freifunk.net")
+grp.host(0, "bre-2.bremen.freifunk.net")
+
 grp = inv.group("standardserver")
 grp.host(0, "mail.ffhb.de")
+grp.child("vmhosts")
 
 grp = inv.group("ffmapserver")
 grp.host(0, "ffmap.ffhb.de")
