@@ -96,7 +96,7 @@
             "site": {
                 "site_code": "ffhb",
                 "site_name": "Freifunk Bremen",
-                "prefix6": "2a06:8782:ffbb:1337::/64",
+                "prefix6": "fd2f:5119:f2c::/64",
                 "prefix4": "10.196.0.0/16"
             },
             "ipv6_global_network": "2a06:8782:ffbb:1337:0000:0000:0000:0000/64",
