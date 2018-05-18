@@ -50,10 +50,6 @@ Playbook vpnserver sets up a Freifunk Bremen gateway. When executed additional v
 
 Username, host and password can be found by your exit-vpn provider.
 
-The following roles should maybe excluded at first run from playbook vpnserver:
-
-- alfred-announce-cleanup
-
 For detailed information about the roles see README.md inside of the role.
 
 
