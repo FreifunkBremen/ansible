@@ -18,8 +18,6 @@
   - chrony
   - unbound
   - dnsmasq
-  - role: iperf
-    tags: iperf
   - system
   - tmpfs
   - tools
