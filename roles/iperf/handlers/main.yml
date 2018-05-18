@@ -1,6 +1,0 @@
----
-- name: restart iperf3
-  service: name=iperf3 state=restarted
-
-- name: reload systemd
-  command: systemctl daemon-reload
