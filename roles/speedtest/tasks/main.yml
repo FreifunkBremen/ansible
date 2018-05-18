@@ -1,0 +1,22 @@
+---
+- name: Copy nginx config
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/snippets/speedtest.conf
+
+- name: Configure nginx default vHost
+  lineinfile:
+    path: /etc/nginx/sites-available/default
+    line: "	include snippets/speedtest.conf;"
+    insertafter: "server_name _;"
+
+- name: Clone HTML5 speedtest repo
+  git:
+    repo: https://github.com/adolfintel/speedtest.git
+    dest: /var/www/html/speedtest
+
+- name: Create symlink for index.html
+  file:
+    path: /var/www/html/speedtest/index.html
+    state: link
+    src: example-gauges.html
