@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 EXAMPLES = '''
 # Generates a fastd key
@@ -21,7 +21,7 @@ if __name__ == '__main__':
   # file does not exist or is empty?
   if not os.path.isfile(path) or os.stat(path).st_size == 0:
     # create file with restrictive permissions
-    with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT, 0600), 'w') as handle:
+    with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT, 0o600), 'w') as handle:
       # generate fastd secret
       secret = subprocess.check_output(["fastd", "--machine-readable", "--generate-key"]).strip()
       handle.write('secret "%s";\n' % secret)
