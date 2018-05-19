@@ -1,0 +1,17 @@
+- name: Create /opt/restic directory
+  file: path=/opt/restic/ state=directory
+
+- name: Download Restic
+  get_url: url=https://github.com/restic/restic/releases/download/v0.8.3/restic_0.8.3_linux_amd64.bz2 dest=/opt/restic/restic_0.8.3_linux_amd64.bz2 checksum=sha1:27e0d5154ce173f738ff6f0e763c75ddb71b6109
+  become: no
+
+- name: Unpack Restic
+  shell: "bzip2 -dc /opt/restic/restic_0.8.3_linux_amd64.bz2 > /opt/restic/restic_0.8.3_linux_amd64"
+  args:
+    creates: /opt/restic/restic_0.8.3_linux_amd64
+
+- name: Make binary executable
+  file: path=/opt/restic/restic_0.8.3_linux_amd64 mode=0755
+
+- name: Create symlink to binary
+  file: src=/opt/restic/restic_0.8.3_linux_amd64 path=/usr/local/bin/restic state=link
