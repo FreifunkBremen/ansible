@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#
+# Cronjob to call restic_backup.sh once for every target repository.
+# Add invocations of restic_backup.sh below.
+#
+
+# example:
+# /usr/local/bin/restic_backup.sh "sftp:examplehost:/data/ffhb/webserver-backup/" /root/examplehost.password

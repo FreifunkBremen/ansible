@@ -1,0 +1,17 @@
+---
+- name: Create /root/.ssh if necessary
+  file: path=/root/.ssh state=directory mode=0700 owner=root group=root
+
+- name: Generate ssh key for ffhb-backup user
+  command: ssh-keygen -t rsa -b 4096 -C "ffhb-backup@webserver" -N "" -f /root/.ssh/id_rsa.ffhb-backup
+  args:
+    creates: /root/.ssh/id_rsa.ffhb-backup
+
+- name: Restrict permissions of private SSH key
+  file: path=/root/.ssh/id_rsa.ffhb-backup mode=0400 owner=root group=root
+
+- name: Copy backup script
+  copy: src=restic_backup.sh dest=/usr/local/bin/ mode=0755
+
+- name: Install initial cron.daily script
+  copy: src=restic_backup.cron dest=/etc/cron.daily/restic_backup force=no
