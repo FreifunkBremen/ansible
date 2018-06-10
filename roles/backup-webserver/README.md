@@ -26,6 +26,10 @@ Hostname storage.example.org
 User my-backup-user
 IdentityFile /root/.ssh/id_rsa.ffhb-backup
 PasswordAuthentication no
+# Restic does not perform any compression, so compress backup data during transfer:
+Compression yes
+# add this line to avoid frequent SSH warnings if the target host has a dynamic IP:
+CheckHostIP no
 ```
     - add the contents of /root/.ssh/id_rsa.ffhb-backup.pub to the authorized_keys on target storage host
 - set up a new Restic repository on the target storage (example path: /data/ffhb/webserver-backup/), using the generated password:
@@ -36,6 +40,11 @@ restic -r sftp:examplehost:/data/ffhb/webserver-backup/ --password-file=/root/ex
 ```
 /usr/local/bin/restic_backup.sh "sftp:examplehost:/data/ffhb/webserver-backup/" /root/examplehost.password
 ```
+
+You should set up a cronjob on the target storage for periodic maintenance of the backup repository, doing:
+- restic prune
+- restic forget
+- restic check (possibly with --read-data to actually check backup data for corruption)
 
 License
 -------------------------
