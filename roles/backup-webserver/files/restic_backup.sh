@@ -17,6 +17,7 @@ restic \
     --repo "$repository" \
     --password-file "$passwordFile" \
     --one-file-system \
+    --quiet \
     --exclude=/var/www/downloads/domains/downloads.bremen.freifunk.net/ \
     --exclude=/var/log/journal/ \
     --exclude="/home/tiles/*.mbtiles" \
