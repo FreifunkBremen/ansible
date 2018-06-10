@@ -36,12 +36,18 @@ CheckHostIP no
 ```
 restic -r sftp:examplehost:/data/ffhb/webserver-backup/ --password-file=/root/examplehost.password init
 ```
-- append a new line in /etc/cron.daily/restic_backup, like this:
+- add a new executable file in /etc/backup.d/
+    - its name must be compatible with run-parts(8) tool, ie. no suffix or special characters
+    - the file should contain the actual restic_backup.sh call, like this:
 ```
+#!/bin/sh
+
 /usr/local/bin/restic_backup.sh "sftp:examplehost:/data/ffhb/webserver-backup/" /root/examplehost.password
 ```
+In the next night the backup should be sent to the new storage as well.
 
-You should set up a cronjob on the target storage for periodic maintenance of the backup repository, doing:
+
+Also, you should set up a cronjob on the target storage for periodic maintenance of the backup repository, doing:
 - restic prune
 - restic forget
 - restic check (possibly with --read-data to actually check backup data for corruption)

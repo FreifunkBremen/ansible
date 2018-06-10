@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Cronjob to call restic_backup.sh once for every target repository.
+# Cronjob to perform system backup
 #
 
 
@@ -10,10 +10,17 @@ ionice -n 7 -p $$
 renice 3 -p $$ > /dev/null
 
 
-# prepare backup data first:
-/usr/local/bin/prepare_backup.sh
+# create backup of InfluxDB:
+rm -rf /var/backups/influxdb/
+influxd backup -portable /var/backups/influxdb/ >/dev/null
+# unpack backup, for better deduplication by Restic:
+for f in /var/backups/influxdb/*.tar.gz; do
+	gunzip "$f"
+done
 
 
-# Add invocations of restic_backup.sh here.
-# Example:
-# /usr/local/bin/restic_backup.sh "sftp:examplehost:/data/ffhb/webserver-backup/" /root/examplehost.password
+# TODO: also create backup of MySQL data
+
+
+# do the actual restic invocations:
+run-parts /etc/backup.d/

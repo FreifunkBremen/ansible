@@ -10,8 +10,11 @@
 - name: Restrict permissions of private SSH key
   file: path=/root/.ssh/id_rsa.ffhb-backup mode=0400 owner=root group=root
 
-- name: Copy backup script
-  copy: src=restic_backup.sh dest=/usr/local/bin/ mode=0755
+- name: Create directory for config fragments
+  file: path=/etc/backup.d/ state=directory mode=0700 owner=root group=root
 
-- name: Install initial cron.daily script
-  copy: src=restic_backup.cron dest=/etc/cron.daily/restic_backup mode=0755 owner=root group=root force=no
+- name: Copy backup script
+  copy: src=restic_backup.sh dest=/usr/local/bin/ mode=0755 owner=root group=root
+
+- name: Copy cron.daily script
+  copy: src=restic_backup.cron dest=/etc/cron.daily/restic_backup mode=0755 owner=root group=root
