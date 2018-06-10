@@ -2,8 +2,18 @@
 
 #
 # Cronjob to call restic_backup.sh once for every target repository.
-# Add invocations of restic_backup.sh below.
 #
 
-# example:
+
+# run with low priority:
+ionice -n 7 -p $$
+renice 3 -p $$ > /dev/null
+
+
+# prepare backup data first:
+/usr/local/bin/prepare_backup.sh
+
+
+# Add invocations of restic_backup.sh here.
+# Example:
 # /usr/local/bin/restic_backup.sh "sftp:examplehost:/data/ffhb/webserver-backup/" /root/examplehost.password

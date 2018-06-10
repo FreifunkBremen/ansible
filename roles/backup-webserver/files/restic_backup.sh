@@ -23,6 +23,7 @@ restic \
     --exclude="/home/tiles/*.mbtiles" \
     --exclude="/home/tiles/*.mbtiles3" \
     --exclude=/var/lib/grafana/png/ \
+    --exclude=/var/lib/influxdb/ \
     --exclude=/var/cache/ \
     --exclude=/root/.cache/ \
     --exclude="/home/*/.cache" \
