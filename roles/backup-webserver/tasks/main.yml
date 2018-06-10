@@ -14,4 +14,4 @@
   copy: src=restic_backup.sh dest=/usr/local/bin/ mode=0755
 
 - name: Install initial cron.daily script
-  copy: src=restic_backup.cron dest=/etc/cron.daily/restic_backup force=no
+  copy: src=restic_backup.cron dest=/etc/cron.daily/restic_backup mode=0755 owner=root group=root force=no
