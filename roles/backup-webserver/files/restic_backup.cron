@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # Cronjob to perform system backup
@@ -8,6 +8,18 @@
 # run with low priority:
 ionice -n 7 -p $$
 renice 3 -p $$ > /dev/null
+
+
+# open new shell, for lock file:
+(
+
+# ensure there is only one backup running at a time:
+flock -n 200
+if [ "$?" != "0" ]; then
+	echo "error: failed to acquire lock; is another instance running?"
+	ps -ef
+	exit 2
+fi
 
 
 # create backup of InfluxDB:
@@ -24,3 +36,6 @@ done
 
 # do the actual restic invocations:
 run-parts /etc/backup.d/
+
+
+) 200>/var/lock/restic_backup
