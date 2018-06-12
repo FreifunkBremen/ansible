@@ -19,6 +19,7 @@ restic \
     --one-file-system \
     --quiet \
     --exclude=/var/www/downloads/domains/downloads.bremen.freifunk.net/ \
+    --exclude=/var/www/gatemon/domains/status.bremen.freifunk.net/data/ \
     --exclude=/var/log/journal/ \
     --exclude="/home/tiles/*.mbtiles" \
     --exclude="/home/tiles/*.mbtiles3" \
