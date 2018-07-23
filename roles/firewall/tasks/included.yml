@@ -31,7 +31,11 @@
   notify: reload sysctl
 
 - name: Add sysctl call to /etc/rc.local
-  lineinfile: name=/etc/rc.local insertbefore="^exit" line="sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf"
+  lineinfile:
+    name: /etc/rc.local
+    insertbefore: "^exit"
+    line: "sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf"
+    regexp: '^sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max\.conf$'
 
 - name: Uninstall iptables-persistent
   apt: name=netfilter-persistent state=absent
