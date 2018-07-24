@@ -8,9 +8,6 @@ iface vpn-uplink6 inet6 static
 	# add default route
 	post-up ip -6 route add default via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
 	pre-down ip -6 route del default via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
-	# add route to services hosts
-	post-up ip -6 route add 2a06:8782:ff00::/64 via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
-	pre-down ip -6 route del 2a06:8782:ff00::/64 via {{ ipv6_uplink_own_gateway.address }} dev $IFACE table default-freifunk
 	# choose the correct default route
 	post-up ip -6 rule add from {{ batman_ipv6_global.address }} table default-freifunk priority 16385
 	post-down ip -6 rule del from {{ batman_ipv6_global.address }} table default-freifunk priority 16385
