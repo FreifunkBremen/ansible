@@ -42,6 +42,8 @@ grp.host(0, "bre-2.bremen.freifunk.net")
 
 grp = inv.group("standardserver")
 grp.host(0, "mail.ffhb.de")
+grp.host(0, "syslog.bremen.freifunk.net")
+grp.host(0, "jenkins.bremen.freifunk.net")
 grp.child("vmhosts")
 
 grp = inv.group("ffmapserver")
