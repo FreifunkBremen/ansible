@@ -77,16 +77,10 @@
     group=root
 
 - name: Install additional monitoring checks
-  get_url: >
-    url=https://raw.githubusercontent.com/planetcyborg/nagios/master/check_{{ item }}
-    dest="/usr/local/lib/nagios/plugins/check_{{ item }}"
-    mode=0755
-    force=yes
-  with_items:
-    - git_status
-    - rkhunter
-    - lts_release
-    - checkrestart
+  copy:
+    src: plugins/
+    dest: /usr/local/lib/nagios/plugins/
+    mode: 0755
 
 - name: Creates nagios configuration directory
   file: path=/etc/nagios state=directory

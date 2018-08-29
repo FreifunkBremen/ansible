@@ -1,0 +1,179 @@
+#! /usr/bin/env bash
+#
+# ============================== SUMMARY =====================================
+#
+# Program : check_checkrestart.sh
+# Version : 0.1
+# Date    : April 15 2014
+# Author  : Dirk Doerflinger - dirk(at)doerflinger(dot)org
+# Summary : This is a Nagios plugin to check if any processes are still using
+#           old versions of updated libraries. I needs check_restart from
+#           debian-goodies. Debian only!
+#
+# Licence : MIT
+#
+# =========================== PROGRAM LICENSE =================================
+#
+# Copyright (C) 2014 Dirk Doerflinger
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# ===================== INFORMATION ABOUT THIS PLUGIN =========================
+#
+# This nagios plugin uses the checkrestart script from the debian-goodies to
+# check if any processes are still using old version of updated libs.
+#
+# This program is written and maintained by:
+#   Dirk Doerflinger - dirk(at)doerflinger(dot)org
+#
+# ============================= SETUP NOTES ====================================
+#
+# Copy this file to your Nagios plugin folder, e.g. /usr/lib64/nagios/plugins/.
+# Make sure it is executable for the nagios user
+#
+# You need to have debian-goodies installed, which provides
+# /usr/sbin/checkrestart
+#
+# ./check_checkrestart.sh -w <warning> -c <critical>
+#
+# Where <warning> and <critical> is the number of processes found triggering
+#
+# ========================= SETUP EXAMPLES ==================================
+#
+# define command{
+#       command_name    check_checkrestart
+#       command_line    $USER1$/check_checkrestart.sh -w $ARG1$ -c $ARG2$
+#       }
+#
+# define service{
+#       use                     generic-service
+#       host_name               debian-server
+#       service_description     Debian obsolete libraries used
+#       check_command           check_checkrestart!3!1
+#       normal_check_interval   3
+#       retry_check_interval    1
+#       }
+#
+# ================================ REVISION ==================================
+#
+# 0.1 Initial release
+#
+# ============================================================================
+PACKAGE="check_checkrestart"
+
+# Path to racadm binary
+CHECK_RESTART_BIN="/usr/sbin/checkrestart"
+
+# default values for warnings and critical
+declare -i STATE_OK=0
+declare -i STATE_WARNING=1
+declare -i STATE_CRITICAL=2
+declare -i STATE_UNKNOWN=3
+
+# initialize an exit code
+declare -i ERR_CODE=$STATE_OK
+
+if [ "$(id -nu)" != "root" ]; then
+  echo "Check has to be run as root!"
+  exit $STATE_UNKNOWN
+fi
+
+# parse parameters
+while test $# -gt 0; do
+  case "$1" in
+    -h|--help)
+      echo "$PACKAGE - Check obsolete libraries still in use"
+      echo
+      echo "Needs debian-goodies!"
+      echo
+      echo "$PACKAGE [options]"
+      echo
+      echo "options:"
+      echo "-h, --help                show brief help"
+      echo "-w, --warning             Warning number of processes using old libraries. Default: ${STATE_WARNING}"
+      echo "-c, --critical            Crtitical number of processes using old libraries. Default: ${STATE_CRITICAL}"
+      exit $STATE_UNKNOWN
+    ;;
+    -w|--warning)
+      shift
+      if test $# -gt 0; then
+        export STATE_WARNING=$1
+      else
+        echo "no warning level specified, defaulting to ${STATE_WARNING}"
+      fi
+      shift
+    ;;
+    -c|--critical)
+      shift
+      if test $# -gt 0; then
+        export STATE_CRITICAL=$1
+      else
+        echo "no critical level specified, defaulting to ${STATE_CRITICAL}"
+      fi
+      shift
+    ;;
+  esac
+done
+
+if [ -f /etc/nagios/checkrestart.cfg ]; then
+  RESULT=$(${CHECK_RESTART_BIN} -b /etc/nagios/checkrestart.cfg | grep Found | awk '{ print $2 }')
+  RESULT_PROGS="$(${CHECK_RESTART_BIN} -b /etc/nagios/checkrestart.cfg | grep '/' | grep -v '/etc/init.d' | awk '{ print $2 }' | while read line; do [ -z "$line" ] && continue; basename $line; done | sort | sort -u | xargs)"
+else
+  RESULT=$(${CHECK_RESTART_BIN} | grep Found | awk '{ print $2 }')
+  RESULT_PROGS="$(${CHECK_RESTART_BIN} | grep '/' | grep -v '/etc/init.d' | awk '{ print $2 }' | while read line; do [ -z "$line" ] && continue; basename $line; done | sort | sort -u | xargs)"
+fi
+
+# Make sure we have a result. If we don't that usually means that the connection failed, e.g. wrom hostname or credentials
+if [ -z $RESULT ]; then
+  echo "No data, maybe ${CHECK_RESTART_BIN} missing?"
+  exit 3
+fi
+
+if [ $RESULT -ge $STATE_CRITICAL ]; then
+  ERR_CODE=2
+elif [ $RESULT -ge $STATE_WARNING ]; then
+  ERR_CODE=1
+else
+  ERR_CODE=0
+fi
+
+if [ -n "$RESULT_PROGS" ]; then
+  RESULT_PROGS=" - ${RESULT_PROGS}"
+fi
+
+case $ERR_CODE in
+  0)
+    echo "OK${RESULT_PROGS}| $RESULT"
+    exit $STATE_OK
+  ;;
+  1)
+    echo "WARNING${RESULT_PROGS}| $RESULT"
+    exit $STATE_WARNING
+  ;;
+  2)
+    echo "CRITICAL${RESULT_PROGS}| $RESULT"
+    exit $STATE_CRITICAL
+  ;;
+  *)
+    echo "UNKNOWN - Weird data"
+    exit $STATE_UNKOWN
+  ;;
+esac
+
+#EOF

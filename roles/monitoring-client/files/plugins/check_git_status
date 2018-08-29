@@ -1,0 +1,46 @@
+#! /usr/bin/env bash
+
+# Copyright © 2010 by Daniel Friesel <derf@chaosdorf.de>
+# License: WTFPL:
+#   0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+# You probably need to run this check via sudo. For /etc,
+# > nagios  ALL=(root) NOPASSWD: /usr/local/lib/nagios/plugins/check_git_status /etc
+# should do the job.
+
+declare -i STATE_OK=0
+declare -i STATE_WARNING=1
+declare -i STATE_CRITICAL=2
+declare -i STATE_UNKNOWN=3
+
+GIT="/usr/bin/git"
+
+REPO="${1}"
+
+if [ ! -x ${GIT} ]; then
+  echo "Can't execute ${GIT}"
+  exit $STATE_UNKNOWN
+fi
+
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <repo>"
+  exit $STATE_UNKNOWN
+fi
+
+if [ -z "${REPO}/.git" -o ! -d "${REPO}/.git" ]; then
+  echo "No repo specified or ${REPO} is not a git repo"
+  exit $STATE_UNKNOWN
+fi
+
+cd "${REPO}" || exit $STATE_UNKNOWN
+
+if [ -z "$(${GIT} ls-files --modified --deleted --others --exclude-standard)" ]; then
+  echo "No uncommited changes in ${REPO}"
+  exit $STATE_OK
+else
+  echo "Uncommited changes in ${REPO}"
+  exit $STATE_WARNING
+fi
+
+echo "Someting went wrong"
+exit $STATE_UNKNOWN

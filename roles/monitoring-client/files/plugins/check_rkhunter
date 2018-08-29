@@ -1,0 +1,22 @@
+#! /usr/bin/env bash
+
+declare -i STATE_OK=0
+declare -i STATE_WARNING=1
+declare -i STATE_CRITICAL=2
+declare -i STATE_UNKNOWN=3
+
+if [ ! -f /etc/rkhunter.conf ]; then
+  ERR_MSG="rkhunter.conf not found. So probably rkhunter is not installed!"
+  ERR_CODE=$STATE_CRITICAL
+else
+  ERR_MSG="rkhunter.conf found. So rkhunter is installed."
+  ERR_CODE=$STATE_OK
+fi
+
+if [ $ERR_CODE -eq $STATE_OK ]; then
+  echo "OK: $ERR_MSG"
+else
+  echo "ERROR: $ERR_MSG"
+fi
+
+exit $ERR_CODE
