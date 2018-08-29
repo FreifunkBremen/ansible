@@ -7,3 +7,5 @@
   - tmpfs
   - tools
   - motd
+  - rkhunter
+  - monitoring-client
