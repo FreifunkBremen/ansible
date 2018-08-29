@@ -36,6 +36,8 @@
     insertbefore: "^exit"
     line: "sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf"
     regexp: '^sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max\.conf$'
+    create: yes
+    mode: 0755
 
 - name: Uninstall iptables-persistent
   apt: name=netfilter-persistent state=absent
