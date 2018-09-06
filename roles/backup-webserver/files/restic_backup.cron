@@ -25,10 +25,6 @@ fi
 # create backup of InfluxDB:
 rm -rf /var/backups/influxdb/
 influxd backup -portable /var/backups/influxdb/ >/dev/null
-# unpack backup, for better deduplication by Restic:
-for f in /var/backups/influxdb/*.tar.gz; do
-	gunzip "$f"
-done
 
 
 # TODO: also create backup of MySQL data
