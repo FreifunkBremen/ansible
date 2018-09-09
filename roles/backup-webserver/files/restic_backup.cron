@@ -27,7 +27,8 @@ rm -rf /var/backups/influxdb/
 influxd backup -portable /var/backups/influxdb/ >/dev/null
 
 
-# TODO: also create backup of MySQL data
+# create MySQL backup:
+automysqlbackup
 
 
 # do the actual restic invocations:
