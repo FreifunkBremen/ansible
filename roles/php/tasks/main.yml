@@ -7,7 +7,6 @@
     - php5-curl
     - php5-dev
     - php5-gd
-    - php5-imagick
     - php5-mcrypt
     - php5-mysql
     - php5-sqlite
