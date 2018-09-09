@@ -1,3 +1,4 @@
 ---
 dependencies:
   - restic
+  - automysqlbackup

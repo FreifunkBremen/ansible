@@ -10,6 +10,9 @@
 - name: Restrict permissions of private SSH key
   file: path=/root/.ssh/id_rsa.ffhb-backup mode=0400 owner=root group=root
 
+- name: Disable automatically installed automysqlbackup cronjob
+  file: path=/etc/cron.daily/automysqlbackup state=absent
+
 - name: Create directory for config fragments
   file: path=/etc/backup.d/ state=directory mode=0700 owner=root group=root
 
