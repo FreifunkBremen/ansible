@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#
+# Cronjob to perform system backup
+#
+
+
+# run with low priority:
+ionice -n 7 -p $$
+renice 3 -p $$ > /dev/null
+
+
+# open new shell, for lock file:
+(
+
+# ensure there is only one backup running at a time:
+flock -n 200
+if [ "$?" != "0" ]; then
+	echo "error: failed to acquire lock; is another instance running?"
+	ps -ef
+	exit 2
+fi
+
+
+# create backup of InfluxDB:
+rm -rf /var/backups/influxdb/
+influxd backup -portable /var/backups/influxdb/ >/dev/null
+# unpack backup, for better deduplication by Restic:
+for f in /var/backups/influxdb/*.tar.gz; do
+	gunzip "$f"
+done
+
+
+# TODO: also create backup of MySQL data
+
+
+# do the actual restic invocations:
+run-parts /etc/backup.d/
+
+
+) 200>/var/lock/restic_backup
