@@ -5,6 +5,7 @@ dependencies:
   - tools
   - daemontools
   - apache
+  - letsencrypt
   - php
   - git
   - mysql-server
