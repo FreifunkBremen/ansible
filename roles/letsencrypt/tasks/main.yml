@@ -17,7 +17,7 @@
 - name: Install letsencrypt client
   git:
     repo=https://github.com/lukas2511/dehydrated.git
-    version=ec49a4433b48a7bc8f178d06dad3f55cff24bdf3
+    version=ce3d6583779d9fad597012dd116ab2a8c000e9cb
     dest=/opt/dehydrated/
 
 - name: Create config directory for letsencrypt client

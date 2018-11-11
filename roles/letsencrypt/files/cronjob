@@ -1,1 +1,1 @@
-0 */12 * * * root test -x /opt/dehydrated/dehydrated && perl -e 'sleep int(rand(3600))' && /opt/dehydrated/dehydrated -f /etc/letsencrypt/config -c > /dev/null
+0 */12 * * * root test -x /opt/dehydrated/dehydrated && perl -e 'sleep int(rand(3600))' && chronic /opt/dehydrated/dehydrated -f /etc/letsencrypt/config -c -g
