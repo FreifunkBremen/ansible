@@ -5,7 +5,7 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 export USER={{ tasks_user }}
 export HOME=/home/{{ tasks_user }}
 
-. $HOME/.local/bin/php_env.sh
+. "$HOME/.local/bin/php_env.sh"
 
 INSTALL_ROOT="/var/www/{{ tasks_user }}/opt/phabricator"
 PHD_TMP_DIR="$HOME/.var/tmp/phabricator"
@@ -23,18 +23,16 @@ cat > "$DAEMON_FILE" <<EOF
     "daemonize": false,
     "daemons": [
         {
-            "class": "PhabricatorRepositoryPullLocalDaemon"
+            "class": "PhabricatorRepositoryPullLocalDaemon",
+            "label": "PhabricatorRepositoryPullLocalDaemon"
         },
         {
-            "class": "PhabricatorTriggerDaemon"
+            "class": "PhabricatorTriggerDaemon",
+            "label": "PhabricatorTriggerDaemon"
         },
         {
-            "autoscale": {
-                "group": "task",
-                "pool": 4,
-                "reserve": 0
-            },
-            "class": "PhabricatorTaskmasterDaemon"
+            "class": "PhabricatorTaskmasterDaemon",
+            "label": "PhabricatorTaskmasterDaemon"
         }
     ],
     "log": "${PHD_TMP_DIR}/log/daemons.log",
@@ -43,4 +41,4 @@ cat > "$DAEMON_FILE" <<EOF
 EOF
 
 # Now let's go!
-exec $INSTALL_ROOT/phabricator/scripts/daemon/phd-daemon < "$DAEMON_FILE" 2>&1
+exec "$INSTALL_ROOT/phabricator/scripts/daemon/phd-daemon" < "$DAEMON_FILE" 2>&1

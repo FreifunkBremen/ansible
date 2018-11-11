@@ -17,6 +17,8 @@ Usage
       roles:
          - tasksite
 
+Note: after installation with Ansible you need to manually add some config options to /var/www/tasks/opt/phabricator/phabricator/conf/local/local.json. This file contains secrets that are not contained in the Ansible role.
+
 
 Restore Data From Backup
 -------------------------
@@ -54,7 +56,7 @@ Erase any existing database schema, then create new blank database:
 (when asked "Fix these schema issues?", say yes).
 
 Go into the directory where all database dump files are located, and run this command to restore database contents from backup:
-  for f in *.sql.gz; do dbname=$(echo $f | cut -d_ -f 2- | awk -F '_20' '{print $1}'); echo $dbname; zcat $f | mysql -D $dbname; done
+  for f in *.sql.gz; do dbname=$(echo "$f" | cut -d_ -f 2- | awk -F '_20' '{print $1}'); echo "$f=$dbname"; zcat "$f" | mysql -u phabric -p$(cat ~/mysql-password) -D "$dbname"; done
 
 Perform database upgrade (usually there shouldn't be any changes):
   cd /var/www/tasks/opt/phabricator/phabricator
