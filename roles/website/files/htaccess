@@ -18,4 +18,5 @@ RedirectMatch ^/blog/2014/08/08/Neue-Testing.html$ http://bremen.freifunk.net/bl
 RedirectMatch ^/blog/2014/06/23/Facebook-und-Testing-3.html$ http://bremen.freifunk.net/blog/2014/06/23/facebook-und-testing-3.html
 RedirectMatch ^/blog/2014/04/06/Blog-Twitter-Anbindung.html$ http://bremen.freifunk.net/blog/2014/04/06/blog-twitter-anbindung.html
 
-RedirectMatch ^/map/nodes.json$ http://downloads.bremen.freifunk.net/data/nodes.json
+RedirectMatch ^/map/ https://map.bremen.freifunk.net/
+Redirect /meshviewer https://map.bremen.freifunk.net
