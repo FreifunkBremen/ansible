@@ -7,7 +7,7 @@
 
 - name: Create directory for Apache log files
   file:
-    path=/readonly/{{ website_user }}/log
+    path=/var/log/apache2/website/
     state=directory
     owner=root
     group={{ website_group }}
@@ -75,7 +75,7 @@
 - name: Get letsencrypt certificates
   lineinfile:
     dest=/etc/letsencrypt/domains.txt
-    line="{{ website_domain }} {{ alt_domain }}"
+    line="{{ website_domain }} {{ alt_domain }} www.{{ website_domain }} www.{{ alt_domain }}"
     create=yes
   notify: regenerate certificates
 
