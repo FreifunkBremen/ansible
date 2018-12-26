@@ -1,4 +1,7 @@
 ---
+- name: Install old networking tools
+  apt: name=net-tools
+
 - name: Install batctl
   apt: name=batctl
 
