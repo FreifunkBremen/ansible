@@ -1,15 +1,15 @@
 ---
 - name: Install a bunch of helpful tools
-  apt: name={{item}}
-  with_items:
-    - ca-certificates
-    - curl
-    - less
-    - molly-guard
-    - screen
-    - tcpdump
-    - tmux
-    - zsh
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - less
+      - molly-guard
+      - screen
+      - tcpdump
+      - tmux
+      - zsh
 
 - name: Download .zshrc from grml
   get_url: url=https://raw.githubusercontent.com/grml/grml-etc-core/v0.12.5/etc/zsh/zshrc

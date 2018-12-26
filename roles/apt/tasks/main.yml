@@ -6,10 +6,10 @@
   apt: name=apt-transport-https
 
 - name: Install debian-goodies for checkrestart
-  apt: name={{item}}
-  with_items:
-    - debian-goodies
-    - lsof
+  apt:
+    name:
+      - debian-goodies
+      - lsof
 
 - name: Configure periodic APT updates
   copy: src=apt-periodic.conf dest=/etc/apt/apt.conf.d/10periodic

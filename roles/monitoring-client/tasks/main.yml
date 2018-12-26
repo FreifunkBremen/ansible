@@ -43,26 +43,26 @@
     group=rnagios
 
 - name: Install dependencies
-  apt: name={{ item }}
-  with_items:
-    - ca-certificates
-    - libyaml-syck-perl
-    - lsb-release
-    - nagios-plugins-contrib
+  apt:
+    name:
+      - ca-certificates
+      - libyaml-syck-perl
+      - lsb-release
+      - nagios-plugins-contrib
 
 - name: Install Nagios checks
-  apt: name={{ item }}
-  with_items:
-    - nagios-plugins-basic
-    - nagios-plugins-standard
+  apt:
+    name:
+      - nagios-plugins-basic
+      - nagios-plugins-standard
   when: (ansible_distribution == 'Debian' and ansible_distribution_major_version != '8') or
         (ansible_distribution == 'Ubuntu')
 
 - name: Install Nagios checks for debian jessie
-  apt: name={{ item }}
-  with_items:
-    - monitoring-plugins-basic
-    - monitoring-plugins-standard
+  apt:
+    name:
+      - monitoring-plugins-basic
+      - monitoring-plugins-standard
   when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '8'
 
 - name: Create directory for additional checks

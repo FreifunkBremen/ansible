@@ -1,9 +1,9 @@
 ---
 - name: Install etckeeper
-  apt: name={{ item }}
-  with_items:
-    - git
-    - etckeeper
+  apt:
+    name:
+      - git
+      - etckeeper
 
 - name: Comment all VCSs
   replace: dest=/etc/etckeeper/etckeeper.conf regexp='^VCS="(?!git)' replace='#VCS="' backup=yes

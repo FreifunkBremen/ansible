@@ -38,13 +38,13 @@
   become_user: "{{ wiki_user }}"
 
 - name: Install dependencies via apt
-  apt: name={{ item }}
-  with_items:
-  - libicu-dev
-  - zlib1g-dev
-  - cmake
-  - pkg-config
-  - python-passlib
+  apt:
+    name:
+      - libicu-dev
+      - zlib1g-dev
+      - cmake
+      - pkg-config
+      - python-passlib
 
 - name: Install dependencies via bundler
   bundler:

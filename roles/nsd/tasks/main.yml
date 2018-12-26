@@ -1,9 +1,9 @@
 ---
 - name: Install packages
-  apt: name={{item}}
-  with_items:
-    - nsd
-    - python3
+  apt:
+    name:
+      - nsd
+      - python3
 
 - name: Configure nsd
   template: >
