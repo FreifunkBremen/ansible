@@ -2,6 +2,7 @@
 exit_ipv4: ""
 exit_ipv4_mtu: 1400
 exit_ipv4_interface: vpn-uplink
+exit_ipv4_address_global: False
 ffhb_routing_table: default-freifunk
 main_bridge: 'br-{{ site_code }}'
 exit_masquerade: true
