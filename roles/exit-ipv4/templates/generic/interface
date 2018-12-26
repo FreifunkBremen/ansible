@@ -14,14 +14,20 @@ iface {{ exit_ipv4_interface }} inet manual
 	down ip link set mtu {{ exit_ipv4_mtu }} dev $IFACE
 
 	# Set address to interface with scope link
-	up   ip address add {{ exit_ipv4_address }}/32 peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
-	down ip address del {{ exit_ipv4_address }}/32 peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
+{% set exit_ipv4_prefix = exit_ipv4_address | ipaddr('host/prefix') | ipaddr('prefix') %}
+{% if exit_ipv4_prefix == 32 %}
+	up   ip address add {{ exit_ipv4_address }} peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
+	down ip address del {{ exit_ipv4_address }} peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
+{% else %}
+	up   ip address add {{ exit_ipv4_address }} dev $IFACE
+	down ip address del {{ exit_ipv4_address }} dev $IFACE
+{% endif %}
 
-	{% if exit_ipv4_address_global %}
+{% if exit_ipv4_address_global %}
 	# Set address for NAT
 	post-up  ip address add {{ exit_ipv4_address_global }}/32 dev $IFACE
 	pre-down ip address del {{ exit_ipv4_address_global }}/32 dev $IFACE
-	{% endif %}
+{% endif %}
 
 	# Default route
 	post-up  ip route add default via {{ exit_ipv4_address_peer }} dev $IFACE table {{ ffhb_routing_table }}
