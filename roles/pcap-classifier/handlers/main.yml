@@ -1,6 +1,0 @@
----
-- name: reload systemd
-  command: systemctl daemon-reload
-
-- name: restart pcap-classifier
-  service: name=pcap-classifier state=restarted

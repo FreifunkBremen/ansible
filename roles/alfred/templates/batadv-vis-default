@@ -1,7 +1,0 @@
-# {{ansible_managed}}
-#
-# /etc/default/batadv-vis
-#
-
-# Specify the batman-adv interface configured on the system (default: bat0).
-BATMANIF={{ batman_interface }}
