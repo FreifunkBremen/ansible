@@ -17,9 +17,11 @@ iface {{ exit_ipv4_interface }} inet manual
 	up   ip address add {{ exit_ipv4_address }}/32 peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
 	down ip address del {{ exit_ipv4_address }}/32 peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
 
+	{% if exit_ipv4_address_global %}
 	# Set address for NAT
 	post-up  ip address add {{ exit_ipv4_address_global }}/32 dev $IFACE
 	pre-down ip address del {{ exit_ipv4_address_global }}/32 dev $IFACE
+	{% endif %}
 
 	# Default route
 	post-up  ip route add default via {{ exit_ipv4_address_peer }} dev $IFACE table {{ ffhb_routing_table }}
