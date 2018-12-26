@@ -1,10 +1,10 @@
 ---
 - name: Install dependencies
-  apt: name={{ item }}
-  with_items:
-    - bc
-    - daemontools
-    - daemontools-run
+  apt:
+    name:
+      - bc
+      - daemontools
+      - daemontools-run
 
 - name: Install scripts
   copy: src={{ item }} dest=/usr/local/bin/{{ item }} mode=0755 owner=root group=root

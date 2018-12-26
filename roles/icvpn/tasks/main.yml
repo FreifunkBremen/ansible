@@ -1,9 +1,9 @@
 ---
 - name: Install packages
-  apt: name={{ item }}
-  with_items:
-    - tinc
-    - python3-yaml
+  apt:
+    name:
+      - tinc
+      - python3-yaml
 
 - name: Clone ICVPN repository
   git: repo={{ icvpn_git_root }} force=yes

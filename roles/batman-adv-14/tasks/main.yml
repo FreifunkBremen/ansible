@@ -7,11 +7,11 @@
   apt_repository: repo="deb {{ batman_adv_14_repository }}"
 
 - name: Install batman-adv dependencies
-  apt: name="{{ item }}"
-  with_items:
-    - lsof
-    - linux-headers-amd64
-    - batman-adv-dkms
+  apt:
+    name:
+      - lsof
+      - linux-headers-amd64
+      - batman-adv-dkms
 
 - name: Copy kernel postinst downgrade hook
   copy: >

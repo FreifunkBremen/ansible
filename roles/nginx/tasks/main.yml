@@ -1,9 +1,9 @@
 ---
 - name: Install nginx with Lua
-  apt: name={{ item }}
-  with_items:
-  - nginx-light
-  - libnginx-mod-http-lua
+  apt:
+    name:
+      - nginx-light
+      - libnginx-mod-http-lua
 
 - name: Open firewall for nginx
   copy: src=firewall.sh dest={{ firewall_path }}/30-nginx

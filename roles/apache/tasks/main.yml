@@ -1,10 +1,10 @@
 ---
 - name: Install apache2
-  apt: name={{ item }}
-  with_items:
-    - apache2
-    - apache2-suexec-pristine
-    - libapache2-mod-fcgid
+  apt:
+    name:
+      - apache2
+      - apache2-suexec-pristine
+      - libapache2-mod-fcgid
   notify: restart apache
 
 - name: Start apache2
