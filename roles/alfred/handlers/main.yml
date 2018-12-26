@@ -1,6 +1,0 @@
----
-- name: restart alfred
-  service: name=alfred state=restarted enabled=yes
-
-- name: restart batadv-vis
-  service: name=batadv-vis state=restarted enabled=yes
