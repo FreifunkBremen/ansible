@@ -13,11 +13,6 @@
     src=interfaces
     dest=/etc/network/interfaces.d/br-{{ site_code }}
 
-- name: Set interfaces up
-  command: ifup br-{{ site_code }}
-  register: ifup_result
-  changed_when: '"already configured" not in ifup_result.stderr'
-
 - name: Copy sysctl file to disable bridge firewall filtering
   copy: src=bridge-filter.conf dest=/etc/sysctl.d/bridge-filter.conf mode=0644 owner=root group=root
   notify: reload sysctl
@@ -25,3 +20,8 @@
 - name: Copy sysctl file tuning neighbor discovery
   template: src=main-bridge-ip-neigh-tuning.conf dest=/etc/sysctl.d/main-bridge-ip-neigh-tuning.conf mode=0644 owner=root group=root
   notify: reload sysctl
+
+- name: Set interfaces up
+  command: ifup br-{{ site_code }}
+  register: ifup_result
+  changed_when: '"already configured" not in ifup_result.stderr'
