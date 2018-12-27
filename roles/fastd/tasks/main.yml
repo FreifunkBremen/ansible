@@ -1,21 +1,30 @@
 ---
 - name: Add repository-gpg-key for fastd
-  apt_key: keyserver={{ pgp_keyserver }} id={{ fastd_repository_key }}
+  apt_key:
+    keyserver: "{{ pgp_keyserver }}"
+    id: "{{ fastd_repository_key }}"
 
 - name: Add apt repository
-  apt_repository: repo='deb {{ fastd_repository_url }}'
+  apt_repository:
+    repo: 'deb {{ fastd_repository_url }}'
 
 - name: Install fastd
-  apt: name=fastd
+  apt:
+    name: fastd
 
 - name: Install haveged to create entropy
-  apt: name=haveged
+  apt:
+    name: haveged
 
 - name: Copy systemd unit file
-  command: /bin/cp /lib/systemd/system/fastd@.service /etc/systemd/system/fastd@.service creates=/etc/systemd/system/fastd@.service
+  command: /bin/cp /lib/systemd/system/fastd@.service /etc/systemd/system/fastd@.service
+  args:
+    creates: /etc/systemd/system/fastd@.service
 
 - name: Stop fastd via System V init script
-  service: name=fastd state=stopped
+  service:
+    name: fastd
+    state: stopped
 
 - name: Fix systemd unit for fastd
   lineinfile:
@@ -28,41 +37,49 @@
   - restart fastd
 
 - name: Stop and disable fastd via System V init script
-  service: name=fastd enabled=no
+  service:
+    name: fastd
+    enabled: no
 
 - name: Include fastd instance
   import_tasks: instance.yml
   vars:
-    fastd_instance:  "{{ site_code }}"
+    fastd_instance: "{{ site_code }}"
     fastd_interface: "vpn-{{ site_code }}"
-    fastd_bind:      any
+    fastd_bind: any
     fastd_anonymous: true
 
 - name: Include legacy fastd instance
   import_tasks: instance.yml
   vars:
-    fastd_instance:  "{{ site_code }}_legacy"
-    fastd_bind:      "0.0.0.0"
+    fastd_instance: "{{ site_code }}_legacy"
+    fastd_bind: "0.0.0.0"
     fastd_interface: "{{ fastd_legacy_interface }}"
-    fastd_port:      "{{ fastd_legacy_port }}"
-    fastd_mtu:       "{{ fastd_legacy_mtu }}"
+    fastd_port: "{{ fastd_legacy_port }}"
+    fastd_mtu: "{{ fastd_legacy_mtu }}"
     fastd_anonymous: true
 
 - name: Disable deprecated backbone instance
-  service: name=fastd@{{ site_code }}_backbone enabled=no state=stopped
+  service:
+    name: "fastd@{{ site_code }}_backbone"
+    enabled: no
+    state: stopped
 
 - name: Delete deprecated backbone interface
-  file: path=/etc/network/interfaces.d/vpn-{{ site_code }}-backbone state=absent
+  file:
+    path: "/etc/network/interfaces.d/vpn-{{ site_code }}-backbone"
+    state: absent
 
 - name: Generate fastd secret
-  fastd_key: path=/etc/fastd/{{ site_code }}/secret.conf
+  fastd_key:
+    path: "/etc/fastd/{{ site_code }}/secret.conf"
   notify:
   - restart fastd
 
 - name: Symlink fastd secrets
   file:
-    src: /etc/fastd/{{ site_code }}/secret.conf
-    dest: /etc/fastd/{{ site_code }}_legacy/secret.conf
+    src: "/etc/fastd/{{ site_code }}/secret.conf"
+    dest: "/etc/fastd/{{ site_code }}_legacy/secret.conf"
     state: link
 
 - name: Install fastd blacklist
