@@ -5,3 +5,5 @@ tiles_group: tiles
 tiles_subdomain: tiles
 tiles_domain: '{{ tiles_subdomain }}.{{ main_domain }}'
 tiles_tessera_port: 63114
+tiles_git_root: 'https://github.com/FreifunkBremen/mapbox-studio-osm-bright.tm2.git'
+tiles_git_commit: '70864c0ed0890893572a33ae1a4bbbf04c9619aa'

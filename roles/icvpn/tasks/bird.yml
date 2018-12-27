@@ -1,11 +1,15 @@
 ---
 - name: Clone ICVPN meta repository
-  git: repo={{ icvpn_git_meta }}
-       dest=/opt/{{ site_code }}/icvpn-meta/
+  git:
+    repo: "{{ icvpn_meta_git_root }}"
+    dest: "/opt/{{ site_code }}/icvpn-meta/"
+    version: "{{ icvpn_meta_git_commit }}"
 
 - name: Clone ICVPN scripts repository
-  git: repo={{ icvpn_git_scripts }}
-       dest=/opt/{{ site_code }}/icvpn-scripts/
+  git:
+    repo: "{{ icvpn_scripts_git_root }}"
+    dest: "/opt/{{ site_code }}/icvpn-scripts/"
+    version: "{{ icvpn_scripts_git_commit }}"
 
 - name: Install cronjob to automatically update bgp bird configurations
   template: >

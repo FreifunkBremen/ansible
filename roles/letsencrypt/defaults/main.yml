@@ -1,0 +1,3 @@
+---
+letsencrypt_git_root: 'https://github.com/lukas2511/dehydrated.git'
+letsencrypt_git_commit: 'ce3d6583779d9fad597012dd116ab2a8c000e9cb'

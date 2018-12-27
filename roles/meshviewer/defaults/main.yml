@@ -1,12 +1,13 @@
 ---
 meshviewer_git_root: "{{ site_git_root }}/meshviewer.git"
-meshviewer_git_version: master
-meshviewer_path_bin: /var/www/html/meshviewer
-meshviewer_path_src: /usr/src/meshviewer
+meshviewer_git_version: '19bc3e505e6ac265210f20741b1e372ef598ce1e'
+meshviewer_path_bin: '/var/www/html/meshviewer'
+meshviewer_path_src: '/usr/src/meshviewer'
 
 meshviewer_apache: true
 
 meshviewer_geojson: false
-meshviewer_geojson_git: https://github.com/FreifunkBremen/internal-maps.git
-meshviewer_geojson_file: meshviewer.geojson
-meshviewer_geojson_file_path: /var/www/html/data
+meshviewer_geojson_git_root: 'https://github.com/FreifunkBremen/internal-maps.git'
+meshviewer_geojson_git_commit: '69dcaa8a22885549b89038c51d49d2470eec56bf'
+meshviewer_geojson_file: 'meshviewer.geojson'
+meshviewer_geojson_file_path: '/var/www/html/data'

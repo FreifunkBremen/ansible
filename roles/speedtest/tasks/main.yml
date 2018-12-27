@@ -12,8 +12,9 @@
 
 - name: Clone HTML5 speedtest repo
   git:
-    repo: https://github.com/adolfintel/speedtest.git
-    dest: /var/www/html/speedtest
+    repo: "{{ speedtest_git_root }}"
+    dest: '/var/www/html/speedtest'
+    version: "{{ speedtest_git_commit }}"
 
 - name: Create symlink for index.html
   file:

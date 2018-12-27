@@ -3,9 +3,10 @@
   apt: name=ethtool
 
 - name: Clone respondd announce repository
-  git: >
-    repo={{ mesh_announce_git_root }}
-    dest=/opt/{{ site_code }}/mesh-announce/
+  git:
+    repo: "{{ mesh_announce_git_root }}"
+    dest: "/opt/{{ site_code }}/mesh-announce/"
+    version: "{{ mesh_announce_git_commit }}"
   notify:
     - restart respondd
 

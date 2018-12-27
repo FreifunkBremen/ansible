@@ -34,7 +34,11 @@
   register: etherpad_mysql_password
 
 - name: Clone etherpad repository
-  git: repo=https://github.com/ether/etherpad-lite.git dest=/home/{{ etherpad_user }}/.opt/etherpad force=yes
+  git:
+    repo: "{{ etherpad_git_root }}"
+    dest: "/home/{{ etherpad_user }}/.opt/etherpad"
+    force: yes
+    version: "{{ etherpad_git_commit }}"
 
 - name: Copy settings file
   template: src=settings.json dest=/home/{{ etherpad_user }}/.opt/etherpad/settings.json owner={{ etherpad_user }} group={{ etherpad_group }} mode=0644
