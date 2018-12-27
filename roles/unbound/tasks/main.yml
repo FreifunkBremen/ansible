@@ -21,6 +21,12 @@
     - root-hints.conf
   notify: restart unbound
 
+- name: Fix unbound default config
+  replace: >
+    dest=/etc/unbound/unbound.conf.d/qname-minimisation.conf
+    regexp="qname-minimisation: yes"
+    replace="qname-minimisation: no"
+
 - name: Copy network hook
   copy: src=unbound-ip-up.d dest=/etc/network/if-up.d/unbound mode=0755
 
