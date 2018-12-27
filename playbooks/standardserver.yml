@@ -1,12 +1,14 @@
 ---
 - hosts: standardserver
   roles:
-  - apt
-  - openssh
-  - system
-  - tmpfs
-  - tools
-  - motd
-  - rkhunter
-  - etckeeper
-  - monitoring-client
+  - { role: etckeeper-pre, tags: [etckeeper-pre] }
+  - { role: apt, tags: [apt] }
+  - { role: openssh, tags: [openssh] }
+  - { role: system, tags: [system] }
+  - { role: tmpfs, tags: [tmpfs] }
+  - { role: tools, tags: [tools] }
+  - { role: motd, tags: [motd] }
+  - { role: rkhunter, tags: [rkhunter] }
+  - { role: etckeeper, tags: [etckeeper] }
+  - { role: monitoring-client, tags: [monitoring-client] }
+  - { role: etckeeper-post, tags: [etckeeper-post] }

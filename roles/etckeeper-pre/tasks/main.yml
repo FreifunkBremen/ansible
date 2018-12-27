@@ -1,0 +1,12 @@
+---
+- name: Check if etckeeper is installed
+  stat: path=/usr/bin/etckeeper
+  register: etckeeper_binary
+
+- block:
+  - name: Check if etc is committed
+    command: git -C /etc ls-files --modified --deleted --others --exclude-standard
+    register: ansible_etckeeper_committed
+    changed_when: false
+    failed_when: ansible_etckeeper_committed.stdout != ""
+  when: etckeeper_binary.stat.executable is defined and etckeeper_binary.stat.executable

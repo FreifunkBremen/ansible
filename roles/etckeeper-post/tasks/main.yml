@@ -1,0 +1,21 @@
+---
+- name: Check if etckeeper is installed
+  stat: path=/usr/bin/etckeeper
+  register: etckeeper_binary
+
+- block:
+  - name: Run handlers
+    meta: flush_handlers
+
+  - name: Get Git commit id
+    local_action: command git rev-parse HEAD
+    register: ansible_git_commit_id
+    changed_when: false
+
+  - name: Commit etckeeper
+    command: etckeeper commit "ansible run with commit {{ ansible_git_commit_id.stdout }}"
+    register: etckeeper_commit
+    changed_when: "etckeeper_commit.rc == 0"
+    failed_when: "etckeeper_commit.rc > 1"
+    when: not ansible_git_commit_id.skipped is defined
+  when: etckeeper_binary.stat.executable is defined and etckeeper_binary.stat.executable

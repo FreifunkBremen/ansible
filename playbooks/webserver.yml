@@ -4,28 +4,27 @@
     main_domain: bremen.freifunk.net
     alt_domain: ffhb.de
   roles:
-  - apt
-  - openssh
-  - system
-  - sudo
-  - etckeeper
-  - tmpfs
-  - tools
-  - motd
-  - chrony
-  - letsencrypt
-  - apache
-  - gatemon
-  - website
-  - downloadsite
-  - wiki
-  - tiles
-  - role: influxdb
-    tags: influxdb
-  - role: grafana
-    tags: grafana
-  - role: meshviewer
-    tags: meshviewer
-  - monitoring-client
-  - backup-webserver
-  - tasksite
+  - { role: etckeeper-pre, tags: [etckeeper-pre] }
+  - { role: apt, tags: [apt] }
+  - { role: openssh, tags: [openssh] }
+  - { role: system, tags: [system] }
+  - { role: sudo, tags: [sudo] }
+  - { role: etckeeper, tags: [etckeeper] }
+  - { role: tmpfs, tags: [tmpfs] }
+  - { role: tools, tags: [tools] }
+  - { role: motd, tags: [motd] }
+  - { role: chrony, tags: [chrony] }
+  - { role: letsencrypt, tags: [letsencrypt] }
+  - { role: apache, tags: [apache] }
+  - { role: gatemon, tags: [gatemon] }
+  - { role: website, tags: [website] }
+  - { role: downloadsite, tags: [downloadsite] }
+  - { role: wiki, tags: [wiki] }
+  - { role: tiles, tags: [tiles] }
+  - { role: influxdb, tags: [influxdb] }
+  - { role: grafana, tags: [grafana] }
+  - { role: meshviewer, tags: [meshviewer] }
+  - { role: monitoring-client, tags: [monitoring-client] }
+  - { role: backup-webserver, tags: [backup-webserver] }
+  - { role: tasksite, tags: [tasksite] }
+  - { role: etckeeper-post, tags: [etckeeper-post] }

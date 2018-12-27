@@ -1,6 +1,7 @@
 ---
 - hosts: eventsserver
   roles:
+  - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: apt, tags: [apt] }
   - { role: openssh, tags: [openssh] }
   - { role: system, tags: [system] }
@@ -15,3 +16,4 @@
   - { role: yanic, tags: [yanic] }
   - { role: grafana, tags: [grafana] }
   - { role: freifunkmanager, tags: [freifunkmanager] }
+  - { role: etckeeper-post, tags: [etckeeper-post] }
