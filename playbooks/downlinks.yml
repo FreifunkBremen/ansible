@@ -3,13 +3,13 @@
   vars:
     batman_gateway: false
   roles:
-  - apt
-  - openssh
-  - batman-adv-14
-  - main-bridge
-  - backbone-gre
-  - chrony
-  - system
-  - tmpfs
-  - tools
-  - motd
+  - { role: apt, tags: [apt] }
+  - { role: openssh, tags: [openssh] }
+  - { role: batman-adv-14, tags: [batman-adv-14] }
+  - { role: main-bridge, tags: [main-bridge] }
+  - { role: backbone-gre, tags: [backbone-gre] }
+  - { role: chrony, tags: [chrony] }
+  - { role: system, tags: [system] }
+  - { role: tmpfs, tags: [tmpfs] }
+  - { role: tools, tags: [tools] }
+  - { role: motd, tags: [motd] }
