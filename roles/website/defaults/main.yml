@@ -4,3 +4,5 @@ website_user: 'website'
 website_group: 'website'
 website_domain: '{{ main_domain }}'
 #website_webhook_secret: '' # must be provided on command line
+website_git_root: 'https://github.com/FreifunkBremen/bremen.freifunk.net'
+website_git_commit: 'd8f757d21294234aa2b8c8cb2340719f0d3ace0d'

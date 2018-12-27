@@ -16,9 +16,9 @@
 
 - name: Install letsencrypt client
   git:
-    repo=https://github.com/lukas2511/dehydrated.git
-    version=ce3d6583779d9fad597012dd116ab2a8c000e9cb
-    dest=/opt/dehydrated/
+    repo: "{{ letsencrypt_git_root }}"
+    version: "{{ letsencrypt_git_commit }}"
+    dest: '/opt/dehydrated/'
 
 - name: Create config directory for letsencrypt client
   file: path=/etc/letsencrypt state=directory

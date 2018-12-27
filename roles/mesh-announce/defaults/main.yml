@@ -1,5 +1,6 @@
 ---
 mesh_announce_git_root: 'https://github.com/ffnord/mesh-announce/'
+mesh_announce_git_commit: 'c34d9f203aba41d1b68967a69e517eb4c0962851'
 batman_interface: 'bat-{{ site_code }}'
 main_bridge: 'br-{{ site_code }}'
 

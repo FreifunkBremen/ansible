@@ -1,3 +1,4 @@
 ---
 nsd_update_nodes: false
 dns_nsd_git_repo: 'https://github.com/FreifunkBremen/ffhb-dns/'
+dns_nsd_git_commit: '01b065797e13f77fcc02b1c80c11a7a541229f9b'

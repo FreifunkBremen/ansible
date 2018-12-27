@@ -31,9 +31,10 @@
 
 - name: Clone gollum repository
   git:
-    repo=https://github.com/FreifunkBremen/gollum.git
-    dest=/home/{{ wiki_user }}/.opt/gollum
-    force=yes
+    repo: "{{ wiki_gollum_git_root }}"
+    dest: "/home/{{ wiki_user }}/.opt/gollum"
+    force: yes
+    version: "{{ wiki_gollum_git_commit }}"
   become: yes
   become_user: "{{ wiki_user }}"
 
@@ -55,10 +56,10 @@
 
 - name: Clone wiki repository
   git:
-    repo=https://github.com/FreifunkBremen/wiki.git
-    dest=/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen
-    force=yes
-    version=wiki
+    repo: "{{ wiki_content_git_root }}"
+    dest: "/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen"
+    force: yes
+    version: "{{ wiki_content_git_commit }}"
   become: yes
   become_user: "{{ wiki_user }}"
 

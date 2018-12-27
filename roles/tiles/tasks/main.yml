@@ -52,8 +52,9 @@
 
 - name: Install modified OSM Bright style
   git:
-    repo=https://github.com/FreifunkBremen/mapbox-studio-osm-bright.tm2.git
-    dest=/home/{{ tiles_user }}/mapbox-studio-osm-bright.tm2
+    repo: "{{ tiles_git_root }}"
+    dest: "/home/{{ tiles_user }}/mapbox-studio-osm-bright.tm2"
+    version: "{{ tiles_git_commit }}"
   become: yes
   become_user: "{{ tiles_user }}"
 

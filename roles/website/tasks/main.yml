@@ -31,9 +31,10 @@
 
 - name: Clone content repository
   git:
-    repo=https://github.com/FreifunkBremen/bremen.freifunk.net
-    dest=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}
-    force=yes
+    repo: "{{ website_git_root }}"
+    dest: "/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}"
+    force: yes
+    version: "{{ website_git_commit }}"
   register: website_checkout
   become: yes
   become_user: "{{ website_user }}"

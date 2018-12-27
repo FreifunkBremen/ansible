@@ -6,8 +6,10 @@
   apt: name=dnsutils
 
 - name: Clone blacklist repository
-  git: repo={{ site_git_root }}/vpn-blacklist/
-       dest=/opt/{{ site_code }}/vpn-blacklist/
+  git:
+    repo: "{{ site_git_root }}/vpn-blacklist/"
+    dest: "/opt/{{ site_code }}/vpn-blacklist/"
+    version: "{{ fastd_blacklist_git_commit }}"
 
 - name: Copy blacklist script
   command: cp /opt/{{ site_code }}/vpn-blacklist/blacklist.sh /etc/fastd/{{ site_code }}/blacklist.sh creates=/etc/fastd/{{ site_code }}/blacklist.sh

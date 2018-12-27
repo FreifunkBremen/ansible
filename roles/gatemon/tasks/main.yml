@@ -44,9 +44,10 @@
 
 - name: Clone gatemon git repository
   git:
-    repo=https://github.com/FreifunkBremen/gatemon-html.git
-    dest=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
-    force=yes
+    repo: "{{ gatemon_git_root }}"
+    dest: "/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}"
+    force: yes
+    version: "{{ gatemon_git_commit }}"
   register: gatemon_checkout
   become: yes
   become_user: "{{ gatemon_user }}"

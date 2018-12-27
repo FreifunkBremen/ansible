@@ -6,8 +6,11 @@
       - python3-yaml
 
 - name: Clone ICVPN repository
-  git: repo={{ icvpn_git_root }} force=yes
-       dest=/etc/tinc/icvpn/
+  git:
+    repo: "{{ icvpn_git_root }}"
+    dest: "/etc/tinc/icvpn/"
+    forces: yes
+    version: "{{ icvpn_git_commit }}"
 
 - name: Install post-merge script
   command: cp /etc/tinc/icvpn/scripts/post-merge /etc/tinc/icvpn/.git/hooks/post-merge

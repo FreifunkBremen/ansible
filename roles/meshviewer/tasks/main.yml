@@ -3,10 +3,11 @@
   npm: name=yarn global=yes
 
 - name: Clone repository
-  git: repo={{ meshviewer_git_root }}
-       dest={{ meshviewer_path_src }}/
-       version={{meshviewer_git_version}}
-       force=yes
+  git:
+    repo: "{{ meshviewer_git_root }}"
+    dest: "{{ meshviewer_path_src }}/"
+    version: "{{ meshviewer_git_version }}"
+    force: yes
 
 - name: Install node dependencies
   command: nodejs /usr/bin/yarn install
