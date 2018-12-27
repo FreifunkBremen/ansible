@@ -13,7 +13,7 @@
 - name: Open firewall for NTP
   template:
     src: firewall.sh
-    dest: {{ firewall_path }}/30-chrony
+    dest: "{{ firewall_path }}/30-chrony"
   notify: reload firewall
   when: "firewall_enabled and 'vpnservers' in group_names"
 

@@ -8,7 +8,7 @@
   - { role: tmpfs, tags: [tmpfs] }
   - { role: tools, tags: [tools] }
   - { role: motd, tags: [motd] }
-  - { role: respondd, tags: [respondd] }
+  - { role: mesh-announce, tags: [mesh-announce] }
   - { role: caddy, tags: [caddy] }
   - { role: eventswebsite, tags: [eventswebsite] }
   - { role: meshviewer, tags: [meshviewer] }
