@@ -3,6 +3,7 @@
   vars:
     batman_gateway: false
   roles:
+  - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: apt, tags: [apt] }
   - { role: openssh, tags: [openssh] }
   - { role: batman-adv-14, tags: [batman-adv-14] }
@@ -13,3 +14,4 @@
   - { role: tmpfs, tags: [tmpfs] }
   - { role: tools, tags: [tools] }
   - { role: motd, tags: [motd] }
+  - { role: etckeeper-post, tags: [etckeeper-post] }
