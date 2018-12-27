@@ -1,5 +1,15 @@
 #!/bin/sh
 
+### BEGIN INIT INFO
+# Provides:          firewall.sh
+# Required-Start:    mountkernfs $remote_fs
+# Required-Stop:     $remote_fs
+# Default-Start:     S
+# Default-Stop:      0 1 6
+# Short-Description: Load boot-time netfilter configuration
+# Description:       Loads boot-time netfilter configuration
+### END INIT INFO
+
 set -eu
 
 RULEPATH="${RULEPATH:-"{{ firewall_path }}"}"
