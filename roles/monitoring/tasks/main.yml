@@ -20,8 +20,8 @@
     group: "{{ monitoring_group }}"
     state: link
 
-- Get certificates
-  shell: space-run-letsencrypt certonly -d {{ item }}
+- name: Get certificates
+  shell: "space-run-letsencrypt certonly -d {{ item }}"
   args:
     creates: "/home/{{ monitoring_user }}/.tls-certs/{{ monitoring_user }}.{{ item }}.combined.pem"
   with_items:
@@ -29,7 +29,7 @@
     - "{{ monitoring_subdomain }}.{{ alt_domain }}"
 
 - name: Add vHosts (SSL)
-  shell: space-mod-vhost add --domain={{ item }} --ssl
+  shell: "space-mod-vhost add --domain={{ item }} --ssl"
   args:
     creates: "/var/www/{{ monitoring_user }}/domains/{{ item }}"
   with_items:
@@ -67,7 +67,7 @@
     - { src: 'domains/{{ monitoring_subdomain }}.{{ main_domain }}/icinga', dest: '.opt/icinga/share' }
 
 - name: Retrieve Icinga version
-  shell: /home/{{ monitoring_user }}/.opt/icinga/bin/icinga -V 2>&1 | awk 'NR==2{print $2}'
+  shell: "/home/{{ monitoring_user }}/.opt/icinga/bin/icinga -V 2>&1 | awk 'NR==2{print $2}'"
   ignore_errors: yes
   register: icinga_version
 
@@ -81,17 +81,17 @@
   - name: Configure the source
     command: "./configure --prefix=$HOME/.opt/icinga --with-icinga-user={{ monitoring_user }} --with-icinga-group={{ monitoring_user }} --with-command-user={{ monitoring_user }} --with-command-group={{ monitoring_user }} --with-web-user={{ monitoring_user }} --with-web-group={{ monitoring_user }} --with-httpd-conf=/home/{{ monitoring_user }}/.opt/icinga/etc/apache2 --with-init-dir=/home/{{ monitoring_user }}/.opt/icinga/etc/init.d --with-cgiurl=/cgi-bin/icinga --disable-idoutils"
     args:
-      chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
 
   - name: Remove needed root access
     command: "sed -e '/^INIT_OPTS=/s/root/{{ monitoring_user }}/g' -i Makefile"
     args:
-      chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
 
   - name: Build and install Icinga
     command: "{{ item }}"
     args:
-      chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
     with_items:
       - make all
       - make fullinstall
@@ -99,8 +99,8 @@
   - name: Install configs
     command: make install-config
     args:
-      chdir: /home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}
-      creates: /home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
+      creates: "/home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg"
   when: icinga_version.stdout != monitoring_icinga_version
 
 - name: Disable syslog logging
