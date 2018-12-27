@@ -12,7 +12,7 @@
 - name: Install system unit
   template: >
     src=service
-    dest=/lib/systemd/system/respondd.service
+    dest=/etc/systemd/system/respondd.service
   notify:
     - reload systemd
     - restart respondd
