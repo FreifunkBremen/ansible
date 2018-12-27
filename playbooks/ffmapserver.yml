@@ -3,17 +3,11 @@
   vars:
     yanic_publisher: true
     yanic_respondd_interface: "bat0"
-
     yanic_webserver: false
-
-
     yanic_nodes_save_interval: "15s"
     yanic_nodes_state_path: /opt/yanic/nodes_state.json
-
     yanic_meshviewer_path: /opt/yanic
     yanic_meshviewer_nodes: /opt/yanic/nodes_v2.json
-
-
     yanic_influxdb:
       - enable: "true"
         host: http://webserver.bremen.freifunk.net:8086
@@ -21,11 +15,10 @@
         username: "ffhb-respondd-collector"
         password: ""
   roles:
-  - apt
-  - openssh
-  - system
-  - tmpfs
-  - tools
-  - motd
-  - role: yanic
-    tags: yanic
+  - { role: apt, tags: [apt] }
+  - { role: openssh, tags: [openssh] }
+  - { role: system, tags: [system] }
+  - { role: tmpfs, tags: [tmpfs] }
+  - { role: tools, tags: [tools] }
+  - { role: motd, tags: [motd] }
+  - { role: yanic, tags: [yanic] }

@@ -3,23 +3,22 @@
   vars:
     batman_gateway: true
   roles:
-  - apt
-  - openssh
-  - batman-adv-14
-  - main-bridge
-  - role: fastd
-    tags: fastd
-  - mesh-announce
-  - backbone-gre
-  - icvpn
-  - exit-ipv4
-  - exit-ipv6
-  - chrony
-  - unbound
-  - dnsmasq
-  - system
-  - tmpfs
-  - tools
-  - motd
-  - { role: nginx, tags: nginx }
-  - { role: speedtest, tags: speedtest }
+  - { role: apt, tags: [apt] }
+  - { role: openssh, tags: [openssh] }
+  - { role: batman-adv-14, tags: [batman-adv-14] }
+  - { role: main-bridge, tags: [main-bridge] }
+  - { role: fastd, tags: [fastd] }
+  - { role: mesh-announce, tags: [mesh-announce] }
+  - { role: backbone-gre, tags: [backbone-gre] }
+  - { role: icvpn, tags: [icvpn] }
+  - { role: exit-ipv4, tags: [exit-ipv4] }
+  - { role: exit-ipv6, tags: [exit-ipv6] }
+  - { role: chrony, tags: [chrony] }
+  - { role: unbound, tags: [unbound] }
+  - { role: dnsmasq, tags: [dnsmasq] }
+  - { role: system, tags: [system] }
+  - { role: tmpfs, tags: [tmpfs] }
+  - { role: tools, tags: [tools] }
+  - { role: motd, tags: [motd] }
+  - { role: nginx, tags: [nginx] }
+  - { role: speedtest, tags: [speedtest] }
