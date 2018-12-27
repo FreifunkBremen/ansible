@@ -1,18 +1,43 @@
 ---
 - name: Install figlet
-  apt: name=figlet
+  apt:
+    name: figlet
 
 - name: Create /etc/update-motd.d
-  file: path=/etc/update-motd.d state=directory mode=0755 owner=root group=root
+  file:
+    path: /etc/update-motd.d
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Copy script to create hostname banner
-  copy: src=figlet dest=/etc/update-motd.d/10figlet owner=root group=root mode=0755
+  copy:
+    src: figlet
+    dest: /etc/update-motd.d/10figlet
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Copy script to remove /var/run/motd.dynamic
-  copy: src=remove-motd-dynamic dest=/etc/update-motd.d/20remove-motd-dynamic owner=root group=root mode=0755
+  copy:
+    src: remove-motd-dynamic
+    dest: /etc/update-motd.d/20remove-motd-dynamic
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Copy script to add motd.tail to motd
-  copy: src=add-motd-tail dest=/etc/update-motd.d/30add-motd-tail owner=root group=root mode=0755
+  copy:
+    src: add-motd-tail
+    dest: /etc/update-motd.d/30add-motd-tail
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Create symlink
-  file: src=/run/motd dest=/etc/motd state=link force=yes
+  file:
+    src: /run/motd
+    dest: /etc/motd
+    state: link
+    force: yes

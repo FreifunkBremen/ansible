@@ -1,6 +1,7 @@
 ---
 - name: Install rkhunter
-  apt: name=rkhunter
+  apt:
+    name: rkhunter
 
 - name: Configure rkhunter
   lineinfile:

@@ -1,6 +1,7 @@
 ---
 - name: Install virt-what
-  apt: name=virt-what
+  apt:
+    name: virt-what
 
 - name: Detect running in LXC
   shell: virt-what | grep -q lxc
@@ -20,27 +21,27 @@
 
 - name: Add user for nagios
   user:
-    name=rnagios
-    uid=996
-    home=/var/lib/rnagios
-    shell=/bin/bash
-    system=yes
+    name: rnagios
+    uid: 996
+    home: /var/lib/rnagios
+    shell: /bin/bash
+    system: yes
 
 - name: Create .ssh directory
   file:
-    path=/var/lib/rnagios/.ssh
-    state=directory
-    mode=0700
-    owner=rnagios
-    group=rnagios
+    path: /var/lib/rnagios/.ssh
+    state: directory
+    mode: 0700
+    owner: rnagios
+    group: rnagios
 
 - name: Copy authorized keys
   copy:
-    src=authorized_keys
-    dest=/var/lib/rnagios/.ssh/authorized_keys
-    mode=0600
-    owner=rnagios
-    group=rnagios
+    src: authorized_keys
+    dest: /var/lib/rnagios/.ssh/authorized_keys
+    mode: 0600
+    owner: rnagios
+    group: rnagios
 
 - name: Install dependencies
   apt:
@@ -66,15 +67,17 @@
   when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '8'
 
 - name: Create directory for additional checks
-  file: path=/usr/local/lib/nagios/plugins state=directory
+  file:
+    path: /usr/local/lib/nagios/plugins
+    state: directory
 
 - name: Install wrapper script
   copy:
-    src=ssh-forcecommand
-    dest=/usr/local/lib/nagios/ssh-forcecommand
-    mode=0755
-    owner=root
-    group=root
+    src: ssh-forcecommand
+    dest: /usr/local/lib/nagios/ssh-forcecommand
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Install additional monitoring checks
   copy:
@@ -83,40 +86,46 @@
     mode: 0755
 
 - name: Creates nagios configuration directory
-  file: path=/etc/nagios state=directory
+  file:
+    path: /etc/nagios
+    state: directory
 
 - name: Copy checkrestart configuration file
-  copy: src=checkrestart.cfg dest=/etc/nagios/checkrestart.cfg
+  copy:
+    src: checkrestart.cfg
+    dest: /etc/nagios/checkrestart.cfg
 
 - name: Copy default nagios configuration file
   copy:
-    src=ssh-forcecommand.default.cfg
-    dest=/etc/nagios/ssh-forcecommand.default.cfg
+    src: ssh-forcecommand.default.cfg
+    dest: /etc/nagios/ssh-forcecommand.default.cfg
   register: default_nagios_config
 
 - name: Copy kernel nagios configuration file
   copy:
-    src=ssh-forcecommand.kernel.cfg
-    dest=/etc/nagios/ssh-forcecommand.kernel.cfg
+    src: ssh-forcecommand.kernel.cfg
+    dest: /etc/nagios/ssh-forcecommand.kernel.cfg
   register: kernel_nagios_config_added
   when: lxc_detect.rc != 0 and openvz_detect.rc != 0
 
 - name: Remove kernel nagios configuration file
   file:
-    dest=/etc/nagios/ssh-forcecommand.kernel.cfg
-    state=absent
+    dest: /etc/nagios/ssh-forcecommand.kernel.cfg
+    state: absent
   register: kernel_nagios_config_removed
   when: lxc_detect.rc == 0 or openvz_detect.rc == 0
 
 - name: Copy swap nagios configuration file
   copy:
-    src=ssh-forcecommand.swap.cfg
-    dest=/etc/nagios/ssh-forcecommand.swap.cfg
+    src: ssh-forcecommand.swap.cfg
+    dest: /etc/nagios/ssh-forcecommand.swap.cfg
   register: swap_nagios_config_added
   when: swap_detect.rc == 0
 
 - name: Remove swap nagios configuration file
-  file: dest=/etc/nagios/ssh-forcecommand.swap.cfg state=absent
+  file:
+    dest: /etc/nagios/ssh-forcecommand.swap.cfg
+    state: absent
   register: swap_nagios_config_removed
   when: swap_detect.rc != 0
 
@@ -126,8 +135,8 @@
 
 - name: Create sudo config
   copy:
-    src=sudoers-rnagios
-    dest=/etc/sudoers.d/rnagios
-    mode=0440
-    owner=root
-    group=root
+    src: sudoers-rnagios
+    dest: /etc/sudoers.d/rnagios
+    mode: 0440
+    owner: root
+    group: root

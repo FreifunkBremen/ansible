@@ -1,8 +1,10 @@
 ---
-# handlers file for router-bird
-
 - name: reload bird
-  service: name=bird state=reloaded
+  service:
+    name: bird
+    state: reloaded
 
 - name: reload bird6
-  service: name=bird6 state=reloaded
+  service:
+    name: bird6
+    state: reloaded

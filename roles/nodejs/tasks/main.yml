@@ -1,9 +1,13 @@
 ---
 - name: Fetch APT repository key
-  apt_key: url='https://deb.nodesource.com/gpgkey/nodesource.gpg.key' state=present
+  apt_key:
+    url: 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key'
+    state: present
 
 - name: Install the Node.js APT repository
-  apt_repository: repo='deb https://deb.nodesource.com/node_5.x jessie main'
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_5.x jessie main'
 
 - name: Install Node.js
-  apt: name=nodejs
+  apt:
+    name: nodejs

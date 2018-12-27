@@ -1,16 +1,20 @@
+---
 - name: Install bird
-  apt: name=bird
+  apt:
+    name: bird
 
 - name: Create directories for extra config snippets
-  file: dest=/etc/bird/{{ item }} state=directory
+  file:
+    dest: "/etc/bird/{{ item }}"
+    state: directory
   with_items:
   - bird.conf.d
   - bird6.conf.d
 
 - name: Install config templates
-  template: >
-    src={{ item }}
-    dest=/etc/bird/{{ item }}
+  template:
+    src: "{{ item }}"
+    dest: "/etc/bird/{{ item }}"
   with_items:
   - bird.conf
   - bird6.conf
@@ -19,26 +23,31 @@
   - reload bird6
 
 - name: Install internal ipv4 config templates
-  template: >
-    src=internal_ipv4.conf
-    dest=/etc/bird/bird.conf.d/internal.conf
+  template:
+    src: internal_ipv4.conf
+    dest: /etc/bird/bird.conf.d/internal.conf
   notify:
   - reload bird
 
 - name: Install internal ipv6 config templates
-  template: >
-    src=internal_ipv6.conf
-    dest=/etc/bird/bird6.conf.d/internal.conf
+  template:
+    src: internal_ipv6.conf
+    dest: /etc/bird/bird6.conf.d/internal.conf
   notify:
   - reload bird6
 
 - name: Open firewall for BGP
-  template: src=firewall.sh dest={{ firewall_path }}/30-bird
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-bird"
   when: firewall_enabled
   notify: reload firewall
 
 - name: Start bird
-  service: name={{ item }} state=started enabled=yes
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
   with_items:
   - bird
   - bird6

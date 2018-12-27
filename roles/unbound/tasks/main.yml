@@ -1,12 +1,13 @@
 ---
 - name: Install unbound
-  apt: name=unbound
+  apt:
+    name: unbound
 
 - name: Copy Configuration
-  copy: >
-    src={{item}}
-    dest=/etc/unbound/unbound.conf.d/{{item}}
-    mode=0644
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/unbound/unbound.conf.d/{{ item }}"
+    mode: 0644
   with_items:
     - caching-timeouts.conf
     - caching-tweaking.conf
@@ -22,29 +23,36 @@
   notify: restart unbound
 
 - name: Fix unbound default config
-  replace: >
-    dest=/etc/unbound/unbound.conf.d/qname-minimisation.conf
-    regexp="qname-minimisation: yes"
-    replace="qname-minimisation: no"
+  replace:
+    dest: /etc/unbound/unbound.conf.d/qname-minimisation.conf
+    regexp: "qname-minimisation: yes"
+    replace: "qname-minimisation: no"
 
 - name: Copy network hook
-  copy: src=unbound-ip-up.d dest=/etc/network/if-up.d/unbound mode=0755
+  copy:
+    src: unbound-ip-up.d
+    dest: /etc/network/if-up.d/unbound
+    mode: 0755
 
 - name: Generate Configuration
-  template: >
-    src={{item}}
-    dest=/etc/unbound/unbound.conf.d/{{item}}
-    mode=0644
+  template:
+    src: "{{ item }}"
+    dest: "/etc/unbound/unbound.conf.d/{{ item }}"
+    mode: 0644
   with_items:
     - access-control.conf
     - listen-on-all-interfaces.conf
   notify: restart unbound
 
 - name: Get root.hints
-  get_url: url='{{ dns_root_hints }}' dest='/var/lib/unbound/root.hints'
+  get_url:
+    url: '{{ dns_root_hints }}'
+    dest: '/var/lib/unbound/root.hints'
   notify: restart unbound
 
 - name: Open firewall for DNS
-  copy: src=firewall.sh dest={{ firewall_path }}/30-unbound
+  copy:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-unbound"
   when: firewall_enabled
   notify: reload firewall

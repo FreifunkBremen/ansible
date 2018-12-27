@@ -1,8 +1,14 @@
+---
 - name: Create /opt/restic directory
-  file: path=/opt/restic/ state=directory
+  file:
+    path: /opt/restic/
+    state: directory
 
 - name: Download Restic
-  get_url: url=https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_linux_amd64.bz2 dest=/opt/restic/restic_{{ restic_version }}_linux_amd64.bz2 checksum={{ restic_release_checksum }}
+  get_url:
+    url: "https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_linux_amd64.bz2"
+    dest: "/opt/restic/restic_{{ restic_version }}_linux_amd64.bz2"
+    checksum: "{{ restic_release_checksum }}"
   become: no
 
 - name: Unpack Restic
@@ -11,7 +17,12 @@
     creates: /opt/restic/restic_{{ restic_version }}_linux_amd64
 
 - name: Make binary executable
-  file: path=/opt/restic/restic_{{ restic_version }}_linux_amd64 mode=0755
+  file:
+    path: "/opt/restic/restic_{{ restic_version }}_linux_amd64"
+    mode: 0755
 
 - name: Create symlink to binary
-  file: src=/opt/restic/restic_{{ restic_version }}_linux_amd64 path=/usr/local/bin/restic state=link
+  file:
+    src: "/opt/restic/restic_{{ restic_version }}_linux_amd64"
+    path: /usr/local/bin/restic
+    state: link
