@@ -1,17 +1,17 @@
 ---
 - name: Get letsencrypt certificates
   lineinfile:
-    dest=/etc/letsencrypt/domains.txt
-    line="{{ meshviewer_subdomain }}.{{ main_domain }} {{ meshviewer_subdomain }}.{{ alt_domain }}"
-    create=yes
+    dest: /etc/letsencrypt/domains.txt
+    line: "{{ meshviewer_subdomain }}.{{ main_domain }} {{ meshviewer_subdomain }}.{{ alt_domain }}"
+    create: yes
   when: meshviewer_subdomain is defined
   notify: regenerate certificates
 
 - name: Install Apache vHost config
   template:
-    src=apache2.conf
-    dest=/etc/apache2/sites-available/{{ meshviewer_domain }}.conf
-    mode=0644
+    src: apache2.conf
+    dest: "/etc/apache2/sites-available/{{ meshviewer_domain }}.conf"
+    mode: 0644
   notify: reload apache
 
 - name: Enable Apache vHost config

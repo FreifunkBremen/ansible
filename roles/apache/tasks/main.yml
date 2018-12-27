@@ -8,42 +8,47 @@
   notify: restart apache
 
 - name: Start apache2
-  service: name=apache2 state=started enabled=yes
+  service:
+    name: apache2
+    state: started
+    enabled: yes
 
 - name: "Security settings: ServerTokens"
   lineinfile:
-    dest=/etc/apache2/conf-available/security.conf
-    regexp='^(\s*)ServerTokens\s'
-    line='\1ServerTokens Prod'
-    backrefs=yes
+    path: /etc/apache2/conf-available/security.conf
+    regexp: '^(\s*)ServerTokens\s'
+    line: '\1ServerTokens Prod'
+    backrefs: yes
   notify: restart apache
 
 - name: "Security settings: ServerSignature"
   lineinfile:
-    dest=/etc/apache2/conf-available/security.conf
-    regexp='^(\s*)#?ServerSignature\s'
-    line='\1ServerSignature Off'
-    backrefs=yes
+    path: /etc/apache2/conf-available/security.conf
+    regexp: '^(\s*)#?ServerSignature\s'
+    line: '\1ServerSignature Off'
+    backrefs: yes
   notify: restart apache
 
 - name: "Security settings: SSLCipherSuite"
   lineinfile:
-    dest=/etc/apache2/mods-available/ssl.conf
-    regexp='^(\s*)#?SSLCipherSuite\s'
-    line='\1SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !ADH"'
-    backrefs=yes
+    dest: /etc/apache2/mods-available/ssl.conf
+    regexp: '^(\s*)#?SSLCipherSuite\s'
+    line: '\1SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRSA !RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !ADH"'
+    backrefs: yes
   notify: restart apache
 
 - name: "Security settings: SSLHonorCipherOrder"
   lineinfile:
-    dest=/etc/apache2/mods-available/ssl.conf
-    regexp='^(\s*)#?SSLHonorCipherOrder\s'
-    line='\1SSLHonorCipherOrder on'
-    backrefs=yes
+    dest: /etc/apache2/mods-available/ssl.conf
+    regexp: '^(\s*)#?SSLHonorCipherOrder\s'
+    line: '\1SSLHonorCipherOrder on'
+    backrefs: yes
   notify: restart apache
 
 - name: Copy configuration files
-  copy: src={{ item }} dest=/etc/apache2/conf-available/{{ item }}
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/apache2/conf-available/{{ item }}"
   with_items:
     - anon-logs.conf
     - default-dir-options.conf
@@ -51,7 +56,10 @@
   notify: restart apache
 
 - name: Copy proxy configuration
-  copy: src=proxy.conf dest=/etc/apache2/mods-available/proxy.conf force=yes
+  copy:
+    src: proxy.conf
+    dest: /etc/apache2/mods-available/proxy.conf
+    force: yes
   notify: restart apache
 
 - name: Enable configurations
@@ -65,15 +73,21 @@
   notify: restart apache
 
 - name: Copy user included configuration files
-  copy: src=user-php-exec.conf dest=/etc/apache2/user-php-exec.conf
+  copy:
+    src: user-php-exec.conf
+    dest: /etc/apache2/user-php-exec.conf
   notify: restart apache
 
 - name: Copy new default site configuration
-  template: src=000-default.conf dest=/etc/apache2/sites-available/
+  template:
+    src: 000-default.conf
+    dest: /etc/apache2/sites-available/
   notify: restart apache
 
 - name: Enable needed modules
-  apache2_module: state=present name={{ item }}
+  apache2_module:
+    state: present
+    name: "{{ item }}"
   with_items:
     - access_compat
     - actions
@@ -108,12 +122,15 @@
   notify: restart apache
 
 - name: Create directory for log files
-  file: path=/readonly state=directory mode=0755
+  file:
+    path: /readonly
+    state: directory
+    mode: 0755
 
 - name: Copy logrotate job
   copy:
-    src=logrotate-apache2-user
-    dest=/etc/logrotate.d/apache2-user
-    owner=root
-    group=root
-    mode=0644
+    src: logrotate-apache2-user
+    dest: /etc/logrotate.d/apache2-user
+    owner: root
+    group: root
+    mode: 0644

@@ -1,6 +1,7 @@
 ---
 - name: Install needed tools
-  apt: name=ethtool
+  apt:
+    name: ethtool
 
 - name: Clone respondd announce repository
   git:
@@ -11,23 +12,27 @@
     - restart respondd
 
 - name: Install system unit
-  template: >
-    src=service
-    dest=/etc/systemd/system/respondd.service
+  template:
+    src: service
+    dest: /etc/systemd/system/respondd.service
   notify:
     - reload systemd
     - restart respondd
 
 - name: Enable respondd
-  service: name=respondd enabled=yes
+  service:
+    name: respondd
+    enabled: yes
 
 - name: Install cronjob to automatically update alfred announce
-  template: >
-    src=cronjob
-    dest=/etc/cron.d/mesh-announce-alfred
+  template:
+    src: cronjob
+    dest: /etc/cron.d/mesh-announce-alfred
   when: mesh_announce_alfred
 
 - name: Open firewall for respondd
-  template: src=firewall.sh dest={{ firewall_path }}/30-respondd
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-respondd"
   when: firewall_enabled
   notify: reload firewall

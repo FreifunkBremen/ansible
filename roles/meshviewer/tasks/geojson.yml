@@ -7,7 +7,17 @@
     version: "{{ meshviewer_geojson_git_commit }}"
 
 - name: Install script to copy valide geojson
-  template: src=geojson-update.sh dest=/usr/local/bin/geojson-update owner=root group=root mode=0755
+  template:
+    src: geojson-update.sh
+    dest: /usr/local/bin/geojson-update
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Install cronjob to copy valide geojson
-  template: src=geojson.cronjob dest=/etc/cron.d/geojson-update owner=root group=root mode=0644
+  template:
+    src: geojson.cronjob
+    dest: /etc/cron.d/geojson-update
+    owner: root
+    group: root
+    mode: 0644

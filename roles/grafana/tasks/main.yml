@@ -5,38 +5,52 @@
     url: https://packagecloud.io/gpg.key
 
 - name: Add repository
-  apt_repository: repo="deb https://packagecloud.io/grafana/stable/debian/ wheezy main"
+  apt_repository:
+    repo: "deb https://packagecloud.io/grafana/stable/debian/ wheezy main"
 
 - name: Install grafana
-  apt: name=grafana
+  apt:
+    name: grafana
   notify: restart grafana
 
 - name: Configurate grafana
-  template: src=grafana.ini dest=/etc/grafana/grafana.ini
+  template:
+    src: grafana.ini
+    dest: /etc/grafana/grafana.ini
   notify: restart grafana
 
 - name: Create dashboard folders
-  file: path=/var/lib/grafana/dashboards state=directory mode=0750 owner=grafana group=grafana
+  file:
+    path: /var/lib/grafana/dashboards
+    state: directory
+    mode: 0750
+    owner: grafana
+    group: grafana
 
 - name: Install dashboards
-  copy: src=json/{{item}} dest=/var/lib/grafana/dashboards/{{item}} mode=0750 owner=grafana group=grafana
+  copy:
+    src: "json/{{ item }}"
+    dest: "/var/lib/grafana/dashboards/{{ item }}"
+    mode: 0750
+    owner: grafana
+    group: grafana
   with_items:
   - global.json
   - node.json
 
 - name: Get letsencrypt certificates
   lineinfile:
-    dest=/etc/letsencrypt/domains.txt
-    line="{{ grafana_subdomain }}.{{ main_domain }} {{ grafana_subdomain }}.{{ alt_domain }}"
-    create=yes
+    dest: /etc/letsencrypt/domains.txt
+    line: "{{ grafana_subdomain }}.{{ main_domain }} {{ grafana_subdomain }}.{{ alt_domain }}"
+    create: yes
   when: not grafana_caddy
   notify: regenerate certificates
 
 - name: Install Apache vHost config
   template:
-    src=apache2.conf
-    dest=/etc/apache2/sites-available/{{ grafana_domain }}.conf
-    mode=0644
+    src: apache2.conf
+    dest: "/etc/apache2/sites-available/{{ grafana_domain }}.conf"
+    mode: 0644
   when: not grafana_caddy
   notify: reload apache
 
@@ -48,12 +62,15 @@
   notify: reload apache
 
 - name: Configure caddy
-  template: >
-    src=caddy
-    dest=/etc/caddy/hosts/10-grafana.act
+  template:
+    src: caddy
+    dest: /etc/caddy/hosts/10-grafana.act
   when: grafana_caddy
   notify:
     - reload caddy
 
 - name: Enable grafana
-  service: name=grafana-server state=started enabled=yes
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes

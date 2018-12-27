@@ -1,6 +1,8 @@
 ---
 - name: restart fastd
-  service: name=fastd@{{item}} state=restarted
+  service:
+    name: "fastd@{{ item }}"
+    state: restarted
   with_items:
   - "{{ site_code }}"
   - "{{ site_code }}_legacy"

@@ -1,6 +1,8 @@
 ---
 - name: Configure firewall for IPv4 exit
-  template: src=default/{{ item }} dest={{ firewall_path }}/
+  template:
+    src: "default/{{ item }}"
+    dest: "{{ firewall_path }}/"
   with_items:
     - 10-tcpmss-ipv4
     - 20-exit-ipv4
@@ -8,12 +10,14 @@
   notify: reload firewall
 
 - name: Install hook
-  template: >
-    src=default/up.sh
-    dest=/etc/network/if-up.d/{{ ffhb_routing_table }}
-    mode=0755
+  template:
+    src: default/up.sh
+    dest: "/etc/network/if-up.d/{{ ffhb_routing_table }}"
+    mode: 0755
   when: exit_ipv4 == "default"
 
 - name: Remove hook
-  file: path=/etc/network/if-up.d/{{ ffhb_routing_table }} state=absent
+  file:
+    path: "/etc/network/if-up.d/{{ ffhb_routing_table }}"
+    state: absent
   when: exit_ipv4 != "default"

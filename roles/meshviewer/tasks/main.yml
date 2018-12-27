@@ -1,6 +1,8 @@
 ---
 - name: Install yarn
-  npm: name=yarn global=yes
+  npm:
+    name: yarn
+    global: yes
 
 - name: Clone repository
   git:
@@ -20,10 +22,13 @@
     chdir: "{{ meshviewer_path_src }}"
 
 - name: Create destination directory
-  file: path={{ meshviewer_path_bin }} state=directory
+  file:
+    path="{{ meshviewer_path_bin }}"
+    state=directory
 
 - name: Install rsync
-  apt: name=rsync
+  apt:
+    name: rsync
 
 # does not work (https://github.com/ansible/ansible/issues/11873)
 #- name: Copy generated files

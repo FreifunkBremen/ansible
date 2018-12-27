@@ -1,30 +1,49 @@
 ---
 - name: Add vHosts
-  shell: space-mod-vhost add --domain={{ item }} creates=/var/www/{{ monitoring_user }}/domains/{{ item }}
+  shell: space-mod-vhost add --domain={{ item }}
+  args:
+    creates: "/var/www/{{ monitoring_user }}/domains/{{ item }}"
   with_items:
     - "{{ monitoring_subdomain }}.{{ main_domain }}"
     - "{{ monitoring_subdomain }}.{{ alt_domain }}"
 
 - name: Remove directory for alternative domain
-  file: path=/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }} state=absent
+  file:
+    path: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
+    state: absent
 
 - name: Symlink domain directories
-  file: src=/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }} dest=/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }} owner={{ monitoring_user }} group={{ monitoring_group }} state=link
+  file:
+    src: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}"
+    dest: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    state=link
 
 - Get certificates
-  shell: space-run-letsencrypt certonly -d {{ item }} creates=/home/{{ monitoring_user }}/.tls-certs/{{ monitoring_user }}.{{ item }}.combined.pem
+  shell: space-run-letsencrypt certonly -d {{ item }}
+  args:
+    creates: "/home/{{ monitoring_user }}/.tls-certs/{{ monitoring_user }}.{{ item }}.combined.pem"
   with_items:
     - "{{ monitoring_subdomain }}.{{ main_domain }}"
     - "{{ monitoring_subdomain }}.{{ alt_domain }}"
 
 - name: Add vHosts (SSL)
-  shell: space-mod-vhost add --domain={{ item }} --ssl creates=/var/www/{{ monitoring_user }}/domains/{{ item }}
+  shell: space-mod-vhost add --domain={{ item }} --ssl
+  args:
+    creates: "/var/www/{{ monitoring_user }}/domains/{{ item }}"
   with_items:
     - "{{ monitoring_subdomain }}.{{ main_domain }}"
     - "{{ monitoring_subdomain }}.{{ alt_domain }}"
 
 - name: Create needed folder structure
-  file: path={{ item }} state=directory recurse=yes owner={{ monitoring_user }} group={{ monitoring_group }} mode=0755
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0755
   with_items:
     - /home/{{ monitoring_user }}/.local/bin
     - /home/{{ monitoring_user }}/.ssh
@@ -37,7 +56,12 @@
     - /home/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}/icinga
 
 - name: Create some symlinks
-  file: src=/home/{{ monitoring_user }}/{{ item.src }} dest=/home/{{ monitoring_user }}/{{ item.dest }} owner={{ monitoring_user }} group={{ monitoring_group }} state=link
+  file:
+    src: "/home/{{ monitoring_user }}/{{ item.src }}"
+    dest: "/home/{{ monitoring_user }}/{{ item.dest }}"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    state: link
   with_items:
     - { src: 'cgi-bin/icinga', dest: '.opt/icinga/sbin' }
     - { src: 'domains/{{ monitoring_subdomain }}.{{ main_domain }}/icinga', dest: '.opt/icinga/share' }

@@ -1,16 +1,21 @@
 ---
 # Can be set with -e exit_ipv6_remote=$ADDR
-- fail: msg="exit_ipv6_remote must be False or set to the IPv6 uplink address"
+- fail:
+    msg: "exit_ipv6_remote must be False or set to the IPv6 uplink address"
   when: exit_ipv6_remote is not defined
 
 - import_tasks: remote.yml
   when: exit_ipv6_remote != False
 
 - name: Install radv protocol for bird
-  template: src=bird-radv.conf dest=/etc/bird/bird6.conf.d/radv.conf
+  template:
+    src: bird-radv.conf
+    dest: /etc/bird/bird6.conf.d/radv.conf
   notify: reload bird6
 
 - name: Configure firewall for IPv6 exit
-  template: src=firewall.sh dest={{ firewall_path }}/20-exit-ipv6
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/20-exit-ipv6"
   when: firewall_enabled
   notify: reload firewall

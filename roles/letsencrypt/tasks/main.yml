@@ -1,13 +1,15 @@
 ---
 - name: Create directory for letsencrypt challenges
   file:
-    path=/var/www/acme-challenge
-    state=directory
-    group=www-data
-    mode=0750
+    path: /var/www/acme-challenge
+    state: directory
+    group: www-data
+    mode: 0750
 
 - name: Install Apache config for letsencrypt challenges
-  copy: src=acme-challenge.conf dest=/etc/apache2/conf-available/
+  copy:
+    src: acme-challenge.conf
+    dest: /etc/apache2/conf-available/
 
 - name: Enable Apache config for letsencrypt challenges
   command: a2enconf acme-challenge.conf
@@ -21,15 +23,24 @@
     dest: '/opt/dehydrated/'
 
 - name: Create config directory for letsencrypt client
-  file: path=/etc/letsencrypt state=directory
+  file:
+    path: /etc/letsencrypt
+    state: directory
 
 - name: Copy letsencrypt client config
-  copy: src=config dest=/etc/letsencrypt/config
+  copy:
+    src: config
+    dest: /etc/letsencrypt/config
   notify: regenerate certificates
 
 - name: Copy letsencrypt client hook script
-  copy: src=hook.sh dest=/etc/letsencrypt/hook.sh mode=0755
+  copy:
+    src: hook.sh
+    dest: /etc/letsencrypt/hook.sh
+    mode: 0755
   notify: regenerate certificates
 
 - name: Copy letsencrypt cronjob
-  copy: src=cronjob dest=/etc/cron.d/letsencrypt
+  copy:
+    src: cronjob
+    dest: /etc/cron.d/letsencrypt

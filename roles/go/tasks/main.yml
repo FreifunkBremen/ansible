@@ -1,11 +1,19 @@
 ---
 - name: Create users
-  user: name=yanic generate_ssh_key=yes ssh_key_type=rsa  ssh_key_file=.ssh/id_rsa ssh_key_comment="yanic@{{inventory_hostname}}"
+  user:
+    name: yanic
+    generate_ssh_key: yes
+    ssh_key_type: rsa
+    ssh_key_file: .ssh/id_rsa
+    ssh_key_comment: "yanic@{{ inventory_hostname }}"
 
 - name: Download and install go
-  unarchive: src=https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz  dest=/usr/local copy=no
+  unarchive:
+    src: https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz
+    dest: /usr/local
+    copy: no
 
 - name: Configure go
-  template: >
-    src=go.sh
-    dest=/etc/profile.d/go.sh
+  template:
+    src: go.sh
+    dest: /etc/profile.d/go.sh

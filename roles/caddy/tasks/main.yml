@@ -1,41 +1,69 @@
 ---
 - name: Install tools
-  apt: name=patch
+  apt:
+    name: patch
 
 - name: Install caddy
-  shell: >
-       /usr/local/go/bin/go get -u github.com/mholt/caddy/caddy
+  shell: /usr/local/go/bin/go get -u github.com/mholt/caddy/caddy
   environment:
     GOPATH: /opt/go
   notify:
     - restart caddy
 
 - name: Create ssl folder
-  file: path=/etc/ssl/caddy state=directory mode=0750  owner=www-data group=www-data
+  file:
+    path: /etc/ssl/caddy
+    state: directory
+    mode: 0750
+    owner: www-data
+    group: www-data
 
 - name: Apply patch for Service
-  patch: >
-    src=caddy.service.patch
-    dest="/opt/go/src/github.com/mholt/caddy/dist/init/linux-systemd/caddy.service"
+  patch:
+    src: caddy.service.patch
+    dest: "/opt/go/src/github.com/mholt/caddy/dist/init/linux-systemd/caddy.service"
   notify: reload systemd
 
 - name: Install Service
-  copy: remote_src=True src="/opt/go/src/github.com/mholt/caddy/dist/init/linux-systemd/caddy.service" dest="/lib/systemd/system/caddy.service"
+  copy:
+    remote_src: True
+    src: "/opt/go/src/github.com/mholt/caddy/dist/init/linux-systemd/caddy.service"
+    dest: "/lib/systemd/system/caddy.service"
   notify: reload systemd
 
 - name: Create configuration folder
-  file: path=/etc/caddy/hosts state=directory owner=www-data group=www-data mode=0755
+  file:
+    path: /etc/caddy/hosts
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0755
 
 - name: Configurate caddy
-  template: src=Caddyfile dest=/etc/caddy/Caddyfile owner=www-data mode=0644
+  template:
+    src: Caddyfile
+    dest: /etc/caddy/Caddyfile
+    owner: www-data
+    mode: 0644
   notify: restart caddy
 
 - name: Create web folders
-  file: path=/var/www/html state=directory mode=0755 owner=www-data group=www-data
+  file:
+    path: /var/www/html
+    state: directory
+    mode: 0755
+    owner: www-data
+    group: www-data
 
 - name: Configurate caddy for hostname
-  template: src=hostname.caddy dest=/etc/caddy/hosts/00-default.act owner=www-data mode=0644
+  template:
+    src: hostname.caddy
+    dest: /etc/caddy/hosts/00-default.act
+    owner: www-data
+    mode: 0644
   notify: restart caddy
 
 - name: Enable caddy
-  service: name=caddy enabled=yes
+  service:
+    name: caddy
+    enabled: yes
