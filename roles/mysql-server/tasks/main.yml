@@ -1,10 +1,11 @@
 ---
 - name: Install MySQL server
-  apt: name=mysql-server
+  apt:
+    name: mysql-server
 
 - name: Increase max_allowed_packet setting
   lineinfile:
-    dest=/etc/mysql/mariadb.conf.d/50-server.cnf
-    regexp='^\s*max_allowed_packet\s*='
-    line='max_allowed_packet = 32M'
+    dest: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^\s*max_allowed_packet\s*='
+    line: 'max_allowed_packet = 32M'
   notify: restart mysql

@@ -18,7 +18,7 @@
     dest: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
     owner: "{{ monitoring_user }}"
     group: "{{ monitoring_group }}"
-    state=link
+    state: link
 
 - Get certificates
   shell: space-run-letsencrypt certonly -d {{ item }}
@@ -73,7 +73,10 @@
 
 - block:
   - name: Download and extract Icinga source
-    unarchive: src=https://github.com/Icinga/icinga-core/releases/download/v{{ monitoring_icinga_version }}/icinga-{{ monitoring_icinga_version }}.tar.gz dest=/home/{{ monitoring_user }}/.var/tmp/icinga copy=no
+    unarchive:
+      src: "https://github.com/Icinga/icinga-core/releases/download/v{{ monitoring_icinga_version }}/icinga-{{ monitoring_icinga_version }}.tar.gz"
+      dest: "/home/{{ monitoring_user }}/.var/tmp/icinga"
+      copy: no
 
   - name: Configure the source
     command: "./configure --prefix=$HOME/.opt/icinga --with-icinga-user={{ monitoring_user }} --with-icinga-group={{ monitoring_user }} --with-command-user={{ monitoring_user }} --with-command-group={{ monitoring_user }} --with-web-user={{ monitoring_user }} --with-web-group={{ monitoring_user }} --with-httpd-conf=/home/{{ monitoring_user }}/.opt/icinga/etc/apache2 --with-init-dir=/home/{{ monitoring_user }}/.opt/icinga/etc/init.d --with-cgiurl=/cgi-bin/icinga --disable-idoutils"
@@ -104,7 +107,13 @@
   command: "sed -e '/use_syslog=1/s/1/0/' -i /home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg"
 
 - name: Create folder structure
-  file: path=/home/{{ monitoring_user }}/.opt/icinga/etc/{{ item }} state=directory recurse=yes owner={{ monitoring_user }} group={{ monitoring_group }} mode=0755
+  file:
+    path: "/home/{{ monitoring_user }}/.opt/icinga/etc/{{ item }}"
+    state: directory
+    recurse: yes
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0755
   with_items:
     - contacts_available
     - contacts_enabled
@@ -114,7 +123,12 @@
     - servers_enabled
 
 - name: Copy config files
-  template: src=objects_custom/{{ item }} dest=/home/{{ monitoring_user }}/.opt/icinga/etc/objects_custom/{{ item }} owner={{ monitoring_user }} group={{ monitoring_group }} mode=0644
+  template:
+    src: "objects_custom/{{ item }}"
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/objects_custom/{{ item }}"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0644
   with_items:
     - commands.cfg
     - servicegroup.cfg
@@ -122,25 +136,55 @@
     - timeperiods.cfg
 
 - name: Installing hostgroup configs
-  copy: src=sysctl.d/ dest=/home/{{ monitoring_user }}/.opt/icinga/etc/
+  copy:
+    src: hostgroups_available/
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/"
 
 - name: Create daemontools folder
-  shell: /usr/local/bin/space-setup-svscan creates=/home/{{ monitoring_user }}/.config/service
+  shell: /usr/local/bin/space-setup-svscan
+  args:
+    creates: "/home/{{ monitoring_user }}/.config/service"
 
 - name: Create Icinga daemontools folders
-  file: path=/home/{{ monitoring_user }}/.config/etc/{{ item }} state=directory recurse=yes owner={{ monitoring_user }} group={{ monitoring_group }} mode=0755
+  file:
+    path: "/home/{{ monitoring_user }}/.config/etc/{{ item }}"
+    state: directory
+    recurse: yes
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0755
   with_items:
     - run-icinga
     - run-icinga/log
 
 - name: Copy start script of Icinga
-  template: src=run dest=/home/{{ monitoring_user }}/.config/etc/run-icinga/run owner={{ monitoring_user }} group={{ monitoring_group }} mode=0755
+  template:
+    src: run
+    dest: "/home/{{ monitoring_user }}/.config/etc/run-icinga/run"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0755
 
 - name: Copy log script of Icinga
-  copy: src=run-log dest=/home/{{ monitoring_user }}/.config/etc/run-icinga/log/run owner={{ monitoring_user }} group={{ monitoring_group }} mode=0755
+  copy:
+    src: run-log
+    dest: "/home/{{ monitoring_user }}/.config/etc/run-icinga/log/run"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0755
 
 - name: Create symlink to start Icinga
-  file: src=/home/{{ monitoring_user }}/.config/etc/run-icinga dest=/home/{{ monitoring_user }}/.config/service/icinga state=link owner={{ monitoring_user }} group={{ monitoring_group }}
+  file:
+    src: "/home/{{ monitoring_user }}/.config/etc/run-icinga"
+    dest: "/home/{{ monitoring_user }}/.config/service/icinga"
+    state: link
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
 
 - name: Copy htaccess file
-  template: src=htaccess dest=/var/www/{{ monitoring_user }}/domains/{{ monitoring_domain }}/.htaccess mode=0644 owner={{ monitoring_user }} group={{ monitoring_group }}
+  template:
+    src: htaccess
+    dest: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_domain }}/.htaccess"
+    mode: 0644
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"

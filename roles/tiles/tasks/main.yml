@@ -1,36 +1,36 @@
 ---
 - name: Add user
   user:
-    name={{ tiles_user }}
-    home=/home/{{ tiles_user }}
-    shell=/bin/zsh
-    groups=webusers
+    name: "{{ tiles_user }}"
+    home: "/home/{{ tiles_user }}"
+    shell: /bin/zsh
+    groups: webusers
 
 - name: Download map data of Germany
   get_url:
-    url=https://osm2vectortiles-downloads.os.zhdk.cloud.switch.ch/v1.0/extracts/germany.mbtiles
-    dest=/home/{{ tiles_user }}/germany.mbtiles
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
+    url: https://osm2vectortiles-downloads.os.zhdk.cloud.switch.ch/v1.0/extracts/germany.mbtiles
+    dest: "/home/{{ tiles_user }}/germany.mbtiles"
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
   async: 3600
   poll: 0
   register: download_sleeper
 
 - name: Create directory for Apache log files
   file:
-    path=/readonly/{{ tiles_user }}/log
-    state=directory
-    owner=root
-    group={{ tiles_group }}
-    mode=0750
+    path: "/readonly/{{ tiles_user }}/log"
+    state: directory
+    owner: root
+    group: "{{ tiles_group }}"
+    mode: 0750
 
 - name: Create needed folder structure
   file:
-    path={{ item }}
-    state=directory
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
-    mode=0755
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
+    mode: 0755
   with_items:
   - /home/{{ tiles_user }}/.opt
   - /home/{{ tiles_user }}/.var/gollum-envs
@@ -41,7 +41,9 @@
 
 ### Install tessera, style and dependencies
 - name: Install tessera tile server and dependencies
-  npm: name={{ item }} path=/home/{{ tiles_user }}/
+  npm:
+    name: "{{ item }}"
+    path: "/home/{{ tiles_user }}/"
   with_items:
     - tilelive-vector
     - tessera
@@ -60,10 +62,10 @@
 
 - name: Install OpenSans font
   copy:
-    src=OpenSans/{{ item }}
-    dest=/home/{{ tiles_user }}/.fonts/{{ item }}
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
+    src: "OpenSans/{{ item }}"
+    dest: "/home/{{ tiles_user }}/.fonts/{{ item }}"
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
   with_items:
   - OpenSans-Bold.ttf
   - OpenSans-Italic.ttf
@@ -76,75 +78,78 @@
 - name: Create daemontools folder
   shell: /usr/local/bin/ffhb-setup-svscan
   args:
-    creates: /home/{{ tiles_user }}/.config/service
+    creates: "/home/{{ tiles_user }}/.config/service"
   become: yes
   become_user: "{{ tiles_user }}"
 
 - name: Create tessera daemontools folders
   file:
-    path=/home/{{ tiles_user }}/.config/etc/{{ item }}
-    state=directory
-    recurse=yes
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
-    mode=0755
+    path: "/home/{{ tiles_user }}/.config/etc/{{ item }}"
+    state: directory
+    recurse: yes
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
+    mode: 0755
   with_items:
     - run-tessera
     - run-tessera/log
 
 - name: Copy start script of tessera
   template:
-    src=run
-    dest=/home/{{ tiles_user }}/.config/etc/run-tessera/run
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
-    mode=0755
+    src: run
+    dest: "/home/{{ tiles_user }}/.config/etc/run-tessera/run"
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
+    mode: 0755
   notify: restart tessera
 
 - name: Copy log script of tessera
   copy:
-    src=run-log
-    dest=/home/{{ tiles_user }}/.config/etc/run-tessera/log/run
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
-    mode=0755
+    src: run-log
+    dest: "/home/{{ tiles_user }}/.config/etc/run-tessera/log/run"
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
+    mode: 0755
   notify: restart tessera log
 
 - name: Create symlink to start tessera
   file:
-    src=/home/{{ tiles_user }}/.config/etc/run-tessera
-    dest=/home/{{ tiles_user }}/.config/service/tessera
-    state=link
-    owner={{ tiles_user }}
-    group={{ tiles_group }}
+    src: "/home/{{ tiles_user }}/.config/etc/run-tessera"
+    dest: "/home/{{ tiles_user }}/.config/service/tessera"
+    state: link
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
 
 ### Configure apache
 - name: Enable Apache cache modules
-  apache2_module: state=present name=cache_disk
+  apache2_module:
+    state: present
+    name: cache_disk
 
 - name: Get letsencrypt certificates
   lineinfile:
-    dest=/etc/letsencrypt/domains.txt
-    line="{{ tiles_subdomain }}.{{ main_domain }} {{ tiles_subdomain }}.{{ alt_domain }}"
-    create=yes
+    dest: /etc/letsencrypt/domains.txt
+    line: "{{ tiles_subdomain }}.{{ main_domain }} {{ tiles_subdomain }}.{{ alt_domain }}"
+    create: yes
   notify: regenerate certificates
 
 - name: Install Apache vHost config
   template:
-    src=apache2.conf
-    dest=/etc/apache2/sites-available/{{ tiles_user }}.{{ tiles_domain }}.conf
-    mode=0644
+    src: apache2.conf
+    dest: "/etc/apache2/sites-available/{{ tiles_user }}.{{ tiles_domain }}.conf"
+    mode: 0644
   notify: reload apache
 
 - name: Enable Apache vHost config
-  command: a2ensite {{ tiles_user }}.{{ tiles_domain }}
+  command: "a2ensite {{ tiles_user }}.{{ tiles_domain }}"
   args:
-    creates: /etc/apache2/sites-enabled/{{ tiles_user }}.{{ tiles_domain }}.conf
+    creates: "/etc/apache2/sites-enabled/{{ tiles_user }}.{{ tiles_domain }}.conf"
   notify: reload apache
 
 ### Wait for download to finish
 - name: Waiting for map data download to complete
-  async_status: jid={{ download_sleeper.job_id }}
+  async_status:
+    jid: "{{ download_sleeper.job_id }}"
   register: download_result
   until: download_result.finished
   when: 'download_sleeper is not undefined and "job_id" in download_sleeper'

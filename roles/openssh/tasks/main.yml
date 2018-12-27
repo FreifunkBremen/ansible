@@ -1,10 +1,10 @@
 ---
 - name: Update SSH configuration
-  replace: >
-    dest=/etc/ssh/sshd_config
-    regexp="^([\#\s]*)?{{item.key}}\s+([\w_-]+)"
-    replace="{{item.key}} {{item.value}}"
-    backup=yes
+  replace:
+    dest: /etc/ssh/sshd_config
+    regexp: "^([\#\s]*)?{{item.key}}\s+([\w_-]+)"
+    replace: "{{item.key}} {{item.value}}"
+    backup: yes
   with_items:
   - key: PermitRootLogin
     value: without-password
@@ -18,6 +18,8 @@
   - reload ssh
 
 - name: Open firewall for SSH
-  copy: src=firewall.sh dest={{ firewall_path }}/10-ssh
+  copy:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/10-ssh"
   when: firewall_enabled
   notify: reload firewall

@@ -12,10 +12,13 @@
       - zsh
 
 - name: Download .zshrc from grml
-  get_url: url=https://raw.githubusercontent.com/grml/grml-etc-core/v0.12.5/etc/zsh/zshrc
-           dest=/etc/zsh/zshrc
-           checksum=sha256:ad88c76951693c2f9c38773ed2602a9fd5c74431615c4a23aaff679b295919ce
-           validate_certs=false
+  get_url:
+    url: https://raw.githubusercontent.com/grml/grml-etc-core/v0.12.5/etc/zsh/zshrc
+    dest: /etc/zsh/zshrc
+    checksum: sha256:ad88c76951693c2f9c38773ed2602a9fd5c74431615c4a23aaff679b295919ce
+    validate_certs: false
 
 - name: Change shell for root
-  user: name=root shell=/bin/zsh
+  user:
+    name: root
+    shell: /bin/zsh

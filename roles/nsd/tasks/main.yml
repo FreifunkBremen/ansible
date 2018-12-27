@@ -6,9 +6,9 @@
       - python3
 
 - name: Configure nsd
-  template: >
-    src=nsd.conf
-    dest=/etc/nsd/nsd.conf
+  template:
+    src: nsd.conf
+    dest: /etc/nsd/nsd.conf
   notify: restart nsd
 
 - name: Clone internal dns repo
@@ -18,24 +18,43 @@
     version: "{{ dns_nsd_git_commit }}"
 
 - name: Install script to copy zone files
-  copy: src=update-dns-zones.sh dest=/usr/local/sbin/update-dns-zones.sh owner=root group=root mode=0755
+  copy:
+    src: update-dns-zones.sh
+    dest: /usr/local/sbin/update-dns-zones.sh
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Copy zone files
   command: /usr/local/sbin/update-dns-zones.sh
 
 - name: Install script to generate nodes zone
-  copy: src=zonegen.py dest=/usr/local/bin/zonegen.py owner=root group=root mode=0755
+  copy:
+    src: zonegen.py
+    dest: /usr/local/bin/zonegen.py
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Install cronjob to generate nodes zone
-  copy: src=cronjob dest=/etc/cron.hourly/zonegen owner=root group=root mode=0755
+  copy:
+    src: cronjob
+    dest: /etc/cron.hourly/zonegen
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Initially generate nodes zone
   command: /etc/cron.hourly/zonegen
 
 - name: Open firewall for DNS
-  copy: src=firewall.sh dest={{ firewall_path }}/30-nsd
+  copy:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-nsd"
   when: firewall_enabled
   notify: reload firewall
 
 - name: Autostart nsd
-  service: name=nsd enabled=yes
+  service:
+    name: nsd
+    enabled: yes

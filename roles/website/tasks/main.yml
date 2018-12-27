@@ -1,25 +1,25 @@
 ---
 - name: Add user
   user:
-    name={{ website_user }}
-    home=/home/{{ website_user }}
-    shell=/bin/zsh
+    name: "{{ website_user }}"
+    home: "/home/{{ website_user }}"
+    shell: /bin/zsh
 
 - name: Create directory for Apache log files
   file:
-    path=/var/log/apache2/website/
-    state=directory
-    owner=root
-    group={{ website_group }}
-    mode=0750
+    path: /var/log/apache2/website/
+    state: directory
+    owner: root
+    group: "{{ website_group }}"
+    mode: 0750
 
 - name: Create needed folder structure
   file:
-    path={{ item }}
-    state=directory
-    owner={{ website_user }}
-    group={{ website_group }}
-    mode=0755
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ website_user }}"
+    group: "{{ website_group }}"
+    mode: 0755
   with_items:
   - /home/{{ website_user }}/.local/bin
   - /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}
@@ -41,68 +41,66 @@
 
 - name: Install Jekyll and dependencies via bundler
   bundler:
-    gem_path=.bundle
-    chdir=/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}
+    gem_path: .bundle
+    chdir: "/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}"
   when: website_checkout.changed
   become: yes
   become_user: "{{ website_user }}"
 
 - name: Install CGI wrapper
   template:
-    src=php-fcgi-starter
-    dest=/var/www/{{ website_user }}/fcgi-bin/
-    mode=700
-    owner={{ website_user }}
-    group={{ website_group }}
+    src: php-fcgi-starter
+    dest: "/var/www/{{ website_user }}/fcgi-bin/"
+    mode: 0700
+    owner: "{{ website_user }}"
+    group: "{{ website_group }}"
 
 - name: Install Github webhook target
   template:
-    src=webhook.php
-    dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/
-    owner={{ website_user }}
-    group={{ website_user }}
+    src: webhook.php
+    dest: "/var/www/{{ website_user }}/domains/{{ website_domain }}/"
+    owner: "{{ website_user }}"
+    group: "{{ website_user }}"
 
 - name: Install Jekyll update script
   template:
-    src=update-jekyll.sh
-    dest=/home/{{ website_user }}/.local/bin/update-jekyll.sh
-    mode=700
-    owner={{ website_user }}
-    group={{ website_user }}
-
+    src: update-jekyll.sh
+    dest: "/home/{{ website_user }}/.local/bin/update-jekyll.sh"
+    mode: 0700
+    owner: "{{ website_user }}"
+    group: "{{ website_user }}"
 
 # Apache
-
 - name: Get letsencrypt certificates
   lineinfile:
-    dest=/etc/letsencrypt/domains.txt
-    line="{{ website_domain }} {{ alt_domain }} www.{{ website_domain }} www.{{ alt_domain }}"
-    create=yes
+    dest: /etc/letsencrypt/domains.txt
+    line: "{{ website_domain }} {{ alt_domain }} www.{{ website_domain }} www.{{ alt_domain }}"
+    create: yes
   notify: regenerate certificates
 
 - name: Install Apache vHost config
   template:
-    src=apache2.conf
-    dest=/etc/apache2/sites-available/{{ website_user }}.{{ website_domain }}.conf
-    mode=0644
+    src: apache2.conf
+    dest: "/etc/apache2/sites-available/{{ website_user }}.{{ website_domain }}.conf"
+    mode: 0644
   notify: reload apache
 
 - name: Enable Apache vHost config
-  command: a2ensite {{ website_user }}.{{ website_domain }}
+  command: "a2ensite {{ website_user }}.{{ website_domain }}"
   args:
-    creates: /etc/apache2/sites-enabled/{{ website_user }}.{{ website_domain }}.conf
+    creates: "/etc/apache2/sites-enabled/{{ website_user }}.{{ website_domain }}.conf"
   notify: reload apache
 
 - name: Copy htaccess file
   copy:
-    src=htaccess
-    dest=/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess
-    owner={{ website_user }}
-    group={{ website_group }}
-    mode=0644
+    src: htaccess
+    dest: "/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess"
+    owner: "{{ website_user }}"
+    group: "{{ website_group }}"
+    mode: 0644
 
 - name: Run Jekyll
-  command: /home/{{ website_user }}/.local/bin/update-jekyll.sh
+  command: "/home/{{ website_user }}/.local/bin/update-jekyll.sh"
   when: website_checkout.changed
   become: yes
   become_user: "{{ website_user }}"
