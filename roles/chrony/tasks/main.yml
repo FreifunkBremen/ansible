@@ -1,18 +1,23 @@
 - name: Install chrony
-  apt: name=chrony
+  apt:
+    name: chrony
 
 - name: Install configuration
-  template: >
-    src=chrony.conf
-    dest=/etc/chrony/chrony.conf
-    mode=0644
+  template:
+    src: chrony.conf
+    dest: /etc/chrony/chrony.conf
+    mode: 0644
   notify: restart chrony
   when: "'vpnservers' in group_names"
 
 - name: Open firewall for NTP
-  template: src=firewall.sh dest={{ firewall_path }}/30-chrony
+  template:
+    src: firewall.sh
+    dest: {{ firewall_path }}/30-chrony
   notify: reload firewall
   when: "firewall_enabled and 'vpnservers' in group_names"
 
 - name: Autostart chrony
-  service: name=chrony enabled=yes
+  service:
+    name: chrony
+    enabled: yes

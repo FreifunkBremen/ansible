@@ -1,12 +1,18 @@
 ---
 - name: restart grafana
-  service: name=grafana-server state=restarted
+  service:
+    name: grafana-server
+    state: restarted
 
 - name: regenerate certificates
   command: /opt/dehydrated/dehydrated -f /etc/letsencrypt/config -c
 
 - name: reload apache
-  service: name=apache2 state=reloaded
+  service:
+    name: apache2
+    state: reloaded
 
 - name: reload caddy
-  service: name=caddy state=reloaded
+  service:
+    name: caddy
+    state: reloaded

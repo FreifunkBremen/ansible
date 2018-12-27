@@ -1,42 +1,49 @@
 ---
 - name: Create users
-  user: name=freifunkmanager generate_ssh_key=yes ssh_key_type=rsa  ssh_key_file=.ssh/id_rsa ssh_key_comment="yanic@{{inventory_hostname}}"
+  user:
+    name: freifunkmanager
+    generate_ssh_key: yes
+    ssh_key_type: rsa
+    ssh_key_file: .ssh/id_rsa
+    ssh_key_comment: "yanic@{{ inventory_hostname }}"
 
 - name: Install yanic
-  shell: >
-       /usr/local/go/bin/go get -u github.com/FreifunkBremen/freifunkmanager/cmd/freifunkmanager
+  shell: /usr/local/go/bin/go get -u github.com/FreifunkBremen/freifunkmanager/cmd/freifunkmanager
   environment:
     GOPATH: /opt/go
   notify:
     - restart freifunkmanager
 
 - name: Configure freifunkmanager
-  template: >
-    src=config.toml
-    dest=/etc/freifunkmanager.conf
+  template:
+    src: config.toml
+    dest: /etc/freifunkmanager.conf
   notify:
     - restart freifunkmanager
 
 - name: Configure caddy
-  template: >
-    src=caddy
-    dest=/etc/caddy/hosts/10-freifunkmanager.act
+  template:
+    src: caddy
+    dest: /etc/caddy/hosts/10-freifunkmanager.act
   when: freifunkmanager_caddy
   notify:
     - reload caddy
 
 - name: Create directory
-  file: path={{ yanic_meshviewer_path }}/ state=directory owner=yanic
-
+  file:
+    path: "{{ yanic_meshviewer_path }}/"
+    state: directory
+    owner: yanic
 
 - name: Install system unit
-  template: >
-    src=freifunkmanager.service
-    dest=/lib/systemd/system/freifunkmanager.service
+  template:
+    src: freifunkmanager.service
+    dest: /lib/systemd/system/freifunkmanager.service
   notify:
     - reload systemd
     - restart yanic
 
-
 - name: Enable freifunkmanager
-  service: name=freifunkmanager enabled=yes
+  service:
+    name: freifunkmanager
+    enabled: yes

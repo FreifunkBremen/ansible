@@ -1,19 +1,28 @@
 ---
 - name: Install packages
-  apt: name=iptables
+  apt:
+    name: iptables
 
 - name: Install xtables-addons-dkms
-  apt: name=xtables-addons-dkms
+  apt:
+    name: xtables-addons-dkms
   when: ipp2p_drop is defined and ipp2p_drop
 
 - name: Install firewall script
-  template: src=init.sh dest=/etc/init.d/firewall.sh mode=0755
+  template:
+    src: init.sh
+    dest: /etc/init.d/firewall.sh
+    mode: 0755
 
 - name: Install systemd unit
-  copy: src=firewall.service dest=/etc/systemd/system/firewall.service
+  copy:
+    src: firewall.service
+    dest: /etc/systemd/system/firewall.service
 
 - name: Install basic firewall rules
-  copy: src={{ item }} dest={{ firewall_path }}/
+  copy:
+    src: "{{ item }}"
+    dest: "{{ firewall_path }}/"
   with_items:
     - 00-base
     - 90-established
@@ -21,13 +30,23 @@
   notify: reload firewall
 
 - name: Enable firewall service
-  service: name=firewall enabled=yes
+  service:
+    name: firewall
+    enabled: yes
 
 - name: Add nf_conntrack_ipv4 to /etc/modules
-  lineinfile: dest=/etc/modules regexp="nf_conntrack_ipv4" line=nf_conntrack_ipv4
+  lineinfile:
+    dest: /etc/modules
+    regexp: "nf_conntrack_ipv4"
+    line: nf_conntrack_ipv4
 
 - name: Copy sysctl file for conntrack
-  copy: src=ipv4-netfilter-ip-conntrack-max.conf dest=/etc/sysctl.d/ mode=0644 owner=root group=root
+  copy:
+    src: ipv4-netfilter-ip-conntrack-max.conf
+    dest: /etc/sysctl.d/
+    mode: 0644
+    owner: root
+    group: root
   notify: reload sysctl
 
 - name: Add sysctl call to /etc/rc.local
@@ -40,4 +59,6 @@
     mode: 0755
 
 - name: Uninstall iptables-persistent
-  apt: name=netfilter-persistent state=absent
+  apt:
+    name: netfilter-persistent
+    state: absent

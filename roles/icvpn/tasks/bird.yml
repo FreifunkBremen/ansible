@@ -12,7 +12,7 @@
     version: "{{ icvpn_scripts_git_commit }}"
 
 - name: Install cronjob to automatically update bgp bird configurations
-  template: >
-    src=icvpn-update
-    dest=/etc/cron.hourly/icvpn-update
-    mode=0755
+  template:
+    src: icvpn-update
+    dest: /etc/cron.hourly/icvpn-update
+    mode: 0755

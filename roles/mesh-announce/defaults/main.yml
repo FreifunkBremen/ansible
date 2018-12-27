@@ -9,6 +9,5 @@ mesh_announce_alfred: false
 alfred_master: False
 alfred_mtu_interface: 'br-{{ site_code }}-mtu'
 
-
 # respondds
 respondd_vpn: true

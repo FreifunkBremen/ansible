@@ -6,19 +6,43 @@
       - etckeeper
 
 - name: Comment all VCSs
-  replace: dest=/etc/etckeeper/etckeeper.conf regexp='^VCS="(?!git)' replace='#VCS="' backup=yes
+  replace:
+    dest: /etc/etckeeper/etckeeper.conf
+    regexp: '^VCS="(?!git)'
+    replace: '#VCS="'
+    backup: yes
 
 - name: Activate git as only VCS
-  replace: dest=/etc/etckeeper/etckeeper.conf regexp='^#VCS="git"' replace='VCS="git"' backup=yes
+  replace:
+    dest: /etc/etckeeper/etckeeper.conf
+    regexp: '^#VCS="git"'
+    replace: 'VCS="git"'
+    backup: yes
 
 - name: Create git configuration directory
-  file: path=/root/.config/git recurse=yes state=directory owner=root group=root mode=700
+  file:
+    path: /root/.config/git
+    recurse: yes
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
 
 - name: Copy Git configuration
-  copy: src=git-config dest=/root/.config/git/config owner=root group=root mode=600 force=no
+  copy:
+    src: git-config
+    dest: /root/.config/git/config
+    owner: root
+    group: root
+    mode: 0600
+    force: no
 
 - name: Uninitialize repository in /etc
-  command: /usr/bin/etckeeper uninit -f creates=/etc/.git
+  command: /usr/bin/etckeeper uninit -f
+  args:
+    creates: /etc/.git
 
 - name: Initialize repository in /etc with git
-  command: /usr/bin/etckeeper init creates=/etc/.git
+  command: /usr/bin/etckeeper init
+  args:
+    creates: /etc/.git

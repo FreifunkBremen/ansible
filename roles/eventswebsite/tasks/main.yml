@@ -1,2 +1,6 @@
 - name: Install index
-  template: src=index.html dest=/var/www/html/ owner=www-data mode=0644
+  template:
+    src: index.html
+    dest: /var/www/html/
+    owner: www-data
+    mode: 0644

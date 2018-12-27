@@ -1,9 +1,11 @@
 ---
 - name: Install JSON processor
-  apt: name=jq
+  apt:
+    name: jq
 
 - name: Install dnsutils
-  apt: name=dnsutils
+  apt:
+    name: dnsutils
 
 - name: Clone blacklist repository
   git:
@@ -12,10 +14,12 @@
     version: "{{ fastd_blacklist_git_commit }}"
 
 - name: Copy blacklist script
-  command: cp /opt/{{ site_code }}/vpn-blacklist/blacklist.sh /etc/fastd/{{ site_code }}/blacklist.sh creates=/etc/fastd/{{ site_code }}/blacklist.sh
+  command: cp /opt/{{ site_code }}/vpn-blacklist/blacklist.sh /etc/fastd/{{ site_code }}/blacklist.sh
+  args:
+    creates: /etc/fastd/{{ site_code }}/blacklist.sh
 
 - name: Install cronjob to automatically update blacklist repository
-  template: >
-    src=update-fastd-blacklist
-    dest=/etc/cron.hourly/update-fastd-blacklist-{{ site_code }}
-    mode=0755
+  template:
+    src: update-fastd-blacklist
+    dest: "/etc/cron.hourly/update-fastd-blacklist-{{ site_code }}"
+    mode: 0755

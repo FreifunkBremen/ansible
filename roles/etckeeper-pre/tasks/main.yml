@@ -1,6 +1,7 @@
 ---
 - name: Check if etckeeper is installed
-  stat: path=/usr/bin/etckeeper
+  stat:
+    path: /usr/bin/etckeeper
   register: etckeeper_binary
 
 - block:

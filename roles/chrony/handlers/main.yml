@@ -1,3 +1,5 @@
 ---
 - name: restart chrony
-  service: name=chrony state=restarted
+  service:
+    name: chrony
+    state: restarted

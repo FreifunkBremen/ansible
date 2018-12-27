@@ -1,6 +1,11 @@
 ---
 - name: Create /root/.ssh if necessary
-  file: path=/root/.ssh state=directory mode=0700 owner=root group=root
+  file:
+    path: /root/.ssh
+    state: directory
+    mode: 0700
+    owner: root
+    group: root
 
 - name: Generate ssh key for ffhb-backup user
   command: ssh-keygen -t rsa -b 4096 -C "ffhb-backup@webserver" -N "" -f /root/.ssh/id_rsa.ffhb-backup
@@ -8,16 +13,37 @@
     creates: /root/.ssh/id_rsa.ffhb-backup
 
 - name: Restrict permissions of private SSH key
-  file: path=/root/.ssh/id_rsa.ffhb-backup mode=0400 owner=root group=root
+  file:
+    path: /root/.ssh/id_rsa.ffhb-backup
+    mode: 0400
+    owner: root
+    group: root
 
 - name: Disable automatically installed automysqlbackup cronjob
-  file: path=/etc/cron.daily/automysqlbackup state=absent
+  file:
+    path: /etc/cron.daily/automysqlbackup
+    state: absent
 
 - name: Create directory for config fragments
-  file: path=/etc/backup.d/ state=directory mode=0700 owner=root group=root
+  file:
+    path: /etc/backup.d/
+    state: directory
+    mode: 0700
+    owner: root
+    group: root
 
 - name: Copy backup script
-  copy: src=restic_backup.sh dest=/usr/local/bin/ mode=0755 owner=root group=root
+  copy:
+    src: restic_backup.sh
+    dest: /usr/local/bin/
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Copy cron.daily script
-  copy: src=restic_backup.cron dest=/etc/cron.daily/restic_backup mode=0755 owner=root group=root
+  copy:
+    src: restic_backup.cron
+    dest: /etc/cron.daily/restic_backup
+    mode: 0755
+    owner: root
+    group: root

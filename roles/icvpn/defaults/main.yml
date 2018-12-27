@@ -4,9 +4,12 @@ icvpn_subnet_v6: 96
 icvpn_port: 656
 
 icvpn_interface: 'icvpn'
+
 icvpn_git_root: 'https://github.com/freifunk/icvpn'
 icvpn_git_commit: '479ea3533623bc979505729f3358b60704708f4e'
+
 icvpn_meta_git_root: 'https://github.com/freifunk/icvpn-meta'
 icvpn_meta_git_commit: '89791d1ad18f26dfaa8689eedaf81f9f9df4ab62'
+
 icvpn_scripts_git_root: 'https://github.com/freifunk/icvpn-scripts'
 icvpn_scripts_git_commit: '898eb449091db4029f1bf3ab6bb478a0f3cf4b4d'

@@ -1,6 +1,8 @@
 ---
 - name: reload firewall
-  service: name=firewall state=restarted
+  service:
+    name: firewall
+    state: restarted
 
 - name: reload sysctl
   command: /sbin/sysctl --system

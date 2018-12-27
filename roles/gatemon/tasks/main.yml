@@ -1,25 +1,25 @@
 ---
 - name: Add user
   user:
-    name={{ gatemon_user }}
-    home=/home/{{ gatemon_user }}
-    shell=/bin/zsh
+    name: "{{ gatemon_user }}"
+    home: "/home/{{ gatemon_user }}"
+    shell: /bin/zsh
 
 - name: Create directory for Apache log files
   file:
-    path=/readonly/{{ gatemon_user }}/log
-    state=directory
-    owner=root
-    group={{ gatemon_group }}
-    mode=0750
+    path: "/readonly/{{ gatemon_user }}/log"
+    state: directory
+    owner: root
+    group: "{{ gatemon_group }}"
+    mode: 0750
 
 - name: Create needed folder structure
   file:
-    path={{ item }}
-    state=directory
-    owner={{ gatemon_user }}
-    group={{ gatemon_group }}
-    mode=0755
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ gatemon_user }}"
+    group: "{{ gatemon_group }}"
+    mode: 0755
   with_items:
   - /home/{{ gatemon_user }}/.local/bin
   - /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
@@ -28,19 +28,19 @@
 
 - name: Install PHP composer
   get_url:
-    url=https://getcomposer.org/download/1.0.0/composer.phar
-    dest=/home/{{ gatemon_user }}/.local/bin/composer
-    mode=0755
-    owner={{ gatemon_user }}
-    group={{ gatemon_group }}
+    url: https://getcomposer.org/download/1.0.0/composer.phar
+    dest: "/home/{{ gatemon_user }}/.local/bin/composer"
+    mode: 0755
+    owner: "{{ gatemon_user }}"
+    group: "{{ gatemon_group }}"
 
 - name: Install CGI wrapper
   template:
-    src=php-fcgi-starter
-    dest=/var/www/{{ gatemon_user }}/fcgi-bin/
-    mode=0700
-    owner={{ gatemon_user }}
-    group={{ gatemon_group }}
+    src: php-fcgi-starter
+    dest: "/var/www/{{ gatemon_user }}/fcgi-bin/"
+    mode: 0700
+    owner: "{{ gatemon_user }}"
+    group: "{{ gatemon_group }}"
 
 - name: Clone gatemon git repository
   git:
@@ -54,9 +54,9 @@
 
 - name: Restrict read access for token/ directory
   file:
-    path=/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/token/
-    state=directory
-    mode=0700
+    path: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/token/
+    state: directory
+    mode: 0700
 
 - name: Install dependencies
   shell: /home/{{ gatemon_user }}/.local/bin/composer install
@@ -68,16 +68,16 @@
 
 - name: Get letsencrypt certificates
   lineinfile:
-    dest=/etc/letsencrypt/domains.txt
-    line="{{ gatemon_subdomain }}.{{ main_domain }} {{ gatemon_subdomain }}.{{ alt_domain }}"
-    create=yes
+    dest: /etc/letsencrypt/domains.txt
+    line: "{{ gatemon_subdomain }}.{{ main_domain }} {{ gatemon_subdomain }}.{{ alt_domain }}"
+    create: yes
   notify: regenerate certificates
 
 - name: Install Apache vHost config
   template:
-    src=apache2.conf
-    dest=/etc/apache2/sites-available/{{ gatemon_user }}.{{ gatemon_domain }}.conf
-    mode=0644
+    src: apache2.conf
+    dest: "/etc/apache2/sites-available/{{ gatemon_user }}.{{ gatemon_domain }}.conf"
+    mode: 0644
   notify: reload apache
 
 - name: Enable Apache vHost config

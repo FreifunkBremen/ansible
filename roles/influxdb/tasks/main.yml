@@ -1,32 +1,40 @@
 ---
 - name: Install apt-transport-https
-  apt: name=apt-transport-https
+  apt:
+    name: apt-transport-https
 
 - name: Add influxdb key
-  apt_key: >
-    id=684A14CF2582E0C5
-    url=https://repos.influxdata.com/influxdb.key
+  apt_key:
+    id: 684A14CF2582E0C5
+    url: https://repos.influxdata.com/influxdb.key
 
 - name: Add repository
-  apt_repository: >
-    repo='deb [arch=amd64] https://repos.influxdata.com/{{ansible_distribution|lower}} {{ansible_distribution_release|lower}} stable'
+  apt_repository:
+    repo: 'deb [arch=amd64] https://repos.influxdata.com/{{ansible_distribution|lower}} {{ansible_distribution_release|lower}} stable'
 
 - name: Install influxdb
-  apt: name=influxdb
+  apt:
+    name: influxdb
   register: new
 
 - name: Upload influxdb without auth configuration
-  template: src=influxdb.conf dest=/etc/influxdb/
+  template:
+    src: influxdb.conf
+    dest: /etc/influxdb/
   vars:
     influxdb_auth_enabled: false
 
 - name: Open firewall for InfluxDB
-  copy: src=firewall.sh dest={{ firewall_path }}/30-influxdb
+  copy:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-influxdb"
   when: firewall_enabled
   notify: reload firewall
 
 - name: Start influxdb
-  service: name=influxdb state=started
+  service:
+    name: influxdb
+    state: started
 
 - name: Create admin user
   uri:
@@ -54,7 +62,6 @@
     force_basic_auth: yes
   with_items: "{{ influxdb_databases }}"
 
-
 - name: Grant access
   uri:
     url: "http://localhost:8086/query"
@@ -66,9 +73,13 @@
   with_items: "{{ influxdb_access }}"
 
 - name: Upload influxdb configuration with auth
-  template: src=influxdb.conf dest=/etc/influxdb/
+  template:
+    src: influxdb.conf
+    dest: /etc/influxdb/
   vars:
     influxdb_auth_enabled: true
 
 - name: Restart influxdb
-  service: name=influxdb state=restarted
+  service:
+    name: influxdb
+    state: restarted

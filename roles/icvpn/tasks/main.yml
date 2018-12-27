@@ -18,32 +18,35 @@
     creates: /etc/tinc/icvpn/.git/hooks/post-merge
 
 - name: Install ICVPN Tinc configuration
-  template: >
-    src=tinc.conf
-    dest=/etc/tinc/icvpn/tinc.conf
-    mode=0644
+  template:
+    src: tinc.conf
+    dest: /etc/tinc/icvpn/tinc.conf
+    mode: 0644
 
 - name: Install ICVPN Tinc up/down script
-  copy: >
-    src={{item}}
-    dest=/etc/tinc/icvpn/{{item}}
-    mode=0755
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/tinc/icvpn/{{ item }}"
+    mode: 0755
   with_items:
     - tinc-down
     - tinc-up
 
 - name: Add network configuration
-  template: src=interfaces dest=/etc/network/interfaces.d/{{ icvpn_interface }}
+  template:
+    src: interfaces
+    dest: "/etc/network/interfaces.d/{{ icvpn_interface }}"
 
-- name: Check if a new private Key and hostfile is necessary
-  stat: path=/etc/tinc/icvpn/rsa_key.priv
+- name: Check if a new private key and hostfile is necessary
+  stat:
+    path: /etc/tinc/icvpn/rsa_key.priv
   register: hostsfile
 
 - name: Generate Hostsfile for Github
-  template: >
-    src=pub-icvpn-gate
-    dest=/etc/tinc/icvpn/hosts/{{ site_city }}{{ vpn_id }}
-    mode=0755
+  template:
+    src: pub-icvpn-gate
+    dest: "/etc/tinc/icvpn/hosts/{{ site_city }}{{ vpn_id }}"
+    mode: 0755
   when: hostsfile.stat.exists == False
 
 - name: Generate Key
@@ -56,12 +59,16 @@
   import_tasks: bird.yml
 
 - name: Open firewall for Tinc and ICVPN routing
-  template: src=firewall.sh dest={{ firewall_path }}/15-icvpn
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/15-icvpn"
   when: firewall_enabled
   notify: reload firewall
 
 - name: Add ICVPN to Tinc start
-  lineinfile: dest=/etc/tinc/nets.boot line="icvpn"
+  lineinfile:
+    path: /etc/tinc/nets.boot
+    line: "icvpn"
   notify: restart tinc
 
 - name: Run first post-merge to get Connections
@@ -72,4 +79,6 @@
   notify: restart tinc
 
 - name: Autostart tinc
-  service: name=tinc enabled=yes
+  service:
+    name: tinc
+    enabled: yes

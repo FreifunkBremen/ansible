@@ -1,23 +1,25 @@
 ---
 - name: Install old networking tools
-  apt: name=net-tools
+  apt:
+    name: net-tools
 
 - name: Install batctl
-  apt: name=batctl
+  apt:
+    name: batctl
 
 - name: Install batman pre-up script
-  copy: >
-    src=if-pre-up
-    dest=/etc/network/if-pre-up.d/batadv
-    mode=0755
+  copy:
+    src: if-pre-up
+    dest: /etc/network/if-pre-up.d/batadv
+    mode: 0755
 
 - name: Install interfaces file
-  template: >
-    src=interfaces
-    dest=/etc/network/interfaces.d/{{ batman_interface }}
+  template:
+    src: interfaces
+    dest: /etc/network/interfaces.d/{{ batman_interface }}
 
 - name: Set interfaces up
-  command: ifup {{item}}
+  command: ifup {{ item }}
   register: ifup_result
   changed_when: '"already configured" not in ifup_result.stderr'
   with_items:

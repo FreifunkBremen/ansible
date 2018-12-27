@@ -1,10 +1,14 @@
 ---
 - name: Setup GRE interfaces
-  template: src=interfaces dest=/etc/network/interfaces.d/backbone
+  template:
+    src: interfaces
+    dest: /etc/network/interfaces.d/backbone
   notify:
   - ifup backbone-gre
 
 - name: Open firewall
-  copy: src=firewall.sh dest={{ firewall_path }}/10-allow-gre
+  copy:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/10-allow-gre"
   when: firewall_enabled
   notify: reload firewall

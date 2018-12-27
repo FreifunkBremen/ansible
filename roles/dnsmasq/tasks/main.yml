@@ -1,15 +1,22 @@
 ---
 - name: Install dnsmasq
-  apt: name=dnsmasq
+  apt:
+    name: dnsmasq
 
 - name: Configure dnsmasq
-  template: src=dnsmasq.conf dest=/etc/
+  template:
+    src: dnsmasq.conf
+    dest: /etc/
   notify: restart dnsmasq
 
 - name: Open firewall for DHCP
-  template: src=firewall.sh dest={{ firewall_path }}/30-dnsmasq
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-dnsmasq"
   when: firewall_enabled
   notify: reload firewall
 
 - name: Enable dnsmasq
-  service: name=dnsmasq enabled=yes
+  service:
+    name: dnsmasq
+    enabled: yes

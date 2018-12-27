@@ -7,10 +7,18 @@
       - daemontools-run
 
 - name: Install scripts
-  copy: src={{ item }} dest=/usr/local/bin/{{ item }} mode=0755 owner=root group=root
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
   with_items:
     - ffhb-setup-service
     - ffhb-setup-svscan
 
 - name: Installing sudoers file
-  copy: src=sudo-utils dest=/etc/sudoers.d/utils mode=0440
+  copy:
+    src: sudo-utils
+    dest: /etc/sudoers.d/utils
+    mode: 0440
