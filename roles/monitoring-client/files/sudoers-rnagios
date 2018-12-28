@@ -1,3 +1,4 @@
 rnagios ALL=(root) NOPASSWD: \
     /usr/local/lib/nagios/plugins/check_checkrestart "", \
-    /usr/local/lib/nagios/plugins/check_git_status /etc
+    /usr/local/lib/nagios/plugins/check_git_status /etc, \
+    /usr/lib/nagios/plugins/check_running_kernel ""
