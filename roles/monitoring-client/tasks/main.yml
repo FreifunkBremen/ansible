@@ -101,6 +101,13 @@
     dest: /etc/nagios/ssh-forcecommand.default.cfg
   register: default_nagios_config
 
+- name: Copy contact nagios file
+  copy:
+    src: ssh-forcecommand.contact.cfg
+    dest: /etc/nagios/ssh-forcecommand.contact.cfg
+    force: no
+  register: contact_nagios_config
+
 - name: Copy kernel nagios configuration file
   copy:
     src: ssh-forcecommand.kernel.cfg
@@ -131,7 +138,7 @@
 
 - name: Concat forcecommand files
   shell: cat /etc/nagios/ssh-forcecommand.*.cfg > /etc/nagios/ssh-forcecommand.cfg
-  when: default_nagios_config|changed or kernel_nagios_config_added|changed or kernel_nagios_config_removed|changed or swap_nagios_config_added|changed or swap_nagios_config_removed|changed
+  when: default_nagios_config|changed or contact_nagios_config|changed or kernel_nagios_config_added|changed or kernel_nagios_config_removed|changed or swap_nagios_config_added|changed or swap_nagios_config_removed|changed
 
 - name: Create sudo config
   copy:
