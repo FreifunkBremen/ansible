@@ -3,41 +3,70 @@
   apt:
     name: rkhunter
 
-- name: Configure rkhunter
-  lineinfile:
-    path: /etc/rkhunter.conf
-    line: "{{item.key}}={{item.value}}"
-    regexp: "^#?{{item.key}}="
-  with_items:
-  - key: ALLOW_SSH_PROT_V1
-    value: 2
+- name: Set default values
+  replace:
+    dest: /etc/default/rkhunter
+    regexp: '^[\#\s]*(CRON_DAILY_RUN|CRON_DB_UPDATE|APT_AUTOGEN)=".*"'
+    replace: '\1="true"'
 
-- name: Configure rkhunter hiddendirs
-  lineinfile:
-    path: /etc/rkhunter.conf
-    line: "ALLOWHIDDENDIR={{item}}"
-    insertafter: "^#?ALLOWHIDDENDIR="
-  with_items:
-  - /etc/.git
+- name: Find out if /usr/bin/lwp-request exists
+  stat: path=/usr/bin/lwp-request
+  register: lwp_request
 
-- name: Configure rkhunter hiddenfiles
-  lineinfile:
-    path: /etc/rkhunter.conf
-    line: "ALLOWHIDDENFILE={{item}}"
-    insertafter: "^#?ALLOWHIDDENFILE="
-  with_items:
-  - /etc/.gitignore
-  - /etc/.etckeeper
+- name: Fix script whitlisting for /usr/bin/lwp-request
+  replace:
+    dest: /etc/rkhunter.conf
+    regexp: '^[#\s]*SCRIPTWHITELIST=/usr/bin/lwp-request'
+    replace: '{{ lwp_request.stat.exists | ternary("", "#") }}SCRIPTWHITELIST=/usr/bin/lwp-request'
 
-- name: Configure rkhunter cronjob etc
+- name: Allow root login with public key authentication
   lineinfile:
-    path: /etc/default/rkhunter
-    line: '{{item.key}}="{{item.value}}"'
-    regexp: "^#?{{item.key}}="
+    dest: /etc/rkhunter.conf
+    regexp: 'ALLOW_SSH_ROOT_USER='
+    line: 'ALLOW_SSH_ROOT_USER=without-password'
+
+- name: Allow unspecified SSH protocol version
+  lineinfile:
+    dest: /etc/rkhunter.conf
+    regexp: 'ALLOW_SSH_PROT_V1='
+    line: 'ALLOW_SSH_PROT_V1=2'
+  when: ansible_distribution == 'Debian' and (ansible_distribution_version is version_compare("9.0", ">="))
+
+- name: Allow dev files
+  lineinfile:
+    dest: /etc/rkhunter.conf
+    insertafter: '^#?ALLOWDEVFILE='
+    line: 'ALLOWDEVFILE="{{ item }}"'
+    regexp: '^ALLOWDEVFILE="{{ item | regex_escape() }}"$'
   with_items:
-  - key: CRON_DAILY_RUN
-    value: 'true'
-  - key: CRON_DB_UPDATE
-    value: 'true'
-  - key: APT_AUTOGEN
-    value: 'true'
+    - /dev/shm/*
+    - /dev/.udev/rules.d/root.rules
+
+- name: Allow hidden directories
+  lineinfile:
+    dest: /etc/rkhunter.conf
+    insertafter: '^#?ALLOWHIDDENDIR='
+    line: 'ALLOWHIDDENDIR="{{ item }}"'
+    regexp: '^ALLOWHIDDENDIR="{{ item | regex_escape() }}"$'
+  with_items:
+    - /etc/.git
+    - /etc/.java
+    - /dev/.udev
+
+- name: Allow hidden files
+  lineinfile:
+    dest: /etc/rkhunter.conf
+    insertafter: '^#?ALLOWHIDDENFILE='
+    line: 'ALLOWHIDDENFILE="{{ item }}"'
+    regexp: '^ALLOWHIDDENFILE="{{ item | regex_escape() }}"'
+  with_items:
+    - /etc/.etckeeper
+    - /etc/.gitignore
+    - /dev/.blkid.tab
+    - /dev/.blkid.tab.old
+    - /dev/.initramfs
+
+- name: Create rkhunter properties database
+  command: rkhunter --propupd
+  args:
+    creates: /var/lib/rkhunter/db/rkhunter.dat
