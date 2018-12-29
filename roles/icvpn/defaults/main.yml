@@ -6,7 +6,8 @@ icvpn_port: 656
 icvpn_interface: 'icvpn'
 
 icvpn_git_root: 'https://github.com/freifunk/icvpn'
-icvpn_git_commit: '479ea3533623bc979505729f3358b60704708f4e'
+# updated via cronjob, so always clone HEAD
+icvpn_git_commit: 'HEAD'
 
 icvpn_meta_git_root: 'https://github.com/freifunk/icvpn-meta'
 # updated via cronjob, so always clone HEAD
