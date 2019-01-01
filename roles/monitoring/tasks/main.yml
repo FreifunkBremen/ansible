@@ -1,27 +1,49 @@
 ---
+- name: Set correct Python version
+  copy:
+    content: "PYTHONVERSION=2.7"
+    dest: "/home/{{ monitoring_user }}/.config/etc/pythonversion"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0644
+
 - name: Add vHosts
-  shell: space-mod-vhost add --domain={{ item }}
+  shell: "space-mod-vhost add --domain={{ item }}"
   args:
     creates: "/var/www/{{ monitoring_user }}/domains/{{ item }}"
   with_items:
     - "{{ monitoring_subdomain }}.{{ main_domain }}"
     - "{{ monitoring_subdomain }}.{{ alt_domain }}"
 
-- name: Remove directory for alternative domain
-  file:
+- stat:
     path: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
-    state: absent
+  register: monitoring_alternative_domain_path
 
-- name: Symlink domain directories
-  file:
-    src: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}"
-    dest: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
-    owner: "{{ monitoring_user }}"
-    group: "{{ monitoring_group }}"
-    state: link
+- block:
+  - name: Remove directory for alternative domain
+    file:
+      path: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
+      state: absent
+
+  - name: Symlink domain directories
+    file:
+      src: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}"
+      dest: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ alt_domain }}"
+      owner: "{{ monitoring_user }}"
+      group: "{{ monitoring_group }}"
+      state: link
+  when: monitoring_alternative_domain_path.stat.islnk is defined and monitoring_alternative_domain_path.stat.islnk == False
 
 - name: Get certificates
-  shell: "space-run-letsencrypt certonly -d {{ item }}"
+  shell: "space-run-letsencrypt certonly --agree-tos --email {{ monitoring_email }} --domains {{ item }}"
+  args:
+    creates: "/home/{{ monitoring_user }}/.config/letsencrypt/live/{{ item }}/fullchain.pem"
+  with_items:
+    - "{{ monitoring_subdomain }}.{{ main_domain }}"
+    - "{{ monitoring_subdomain }}.{{ alt_domain }}"
+
+- name: Import certificate
+  shell: "space-prepare-certificate -c /home/{{ monitoring_user }}/.config/letsencrypt/live/{{ item }}/cert.pem -k /home/{{ monitoring_user }}/.config/letsencrypt/live/{{ item }}/privkey.pem"
   args:
     creates: "/home/{{ monitoring_user }}/.tls-certs/{{ monitoring_user }}.{{ item }}.combined.pem"
   with_items:
@@ -31,7 +53,7 @@
 - name: Add vHosts (SSL)
   shell: "space-mod-vhost add --domain={{ item }} --ssl"
   args:
-    creates: "/var/www/{{ monitoring_user }}/domains/{{ item }}"
+    creates: "/readonly/{{ monitoring_user }}/log/{{ item }}-error.log"
   with_items:
     - "{{ monitoring_subdomain }}.{{ main_domain }}"
     - "{{ monitoring_subdomain }}.{{ alt_domain }}"
@@ -40,20 +62,29 @@
   file:
     path: "{{ item }}"
     state: directory
-    recurse: yes
     owner: "{{ monitoring_user }}"
     group: "{{ monitoring_group }}"
     mode: 0755
   with_items:
-    - /home/{{ monitoring_user }}/.local/bin
-    - /home/{{ monitoring_user }}/.ssh
-    - /home/{{ monitoring_user }}/.var/tmp/icinga
-    - /home/{{ monitoring_user }}/.opt/icinga/etc/apache2
-    - /home/{{ monitoring_user }}/.opt/icinga/etc/init.d
-    - /home/{{ monitoring_user }}/.opt/icinga/var/lock
-    - /home/{{ monitoring_user }}/.opt/icinga/var/rw
-    - /home/{{ monitoring_user }}/cgi-bin/icinga
-    - /home/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}/icinga
+    - "/home/{{ monitoring_user }}/.local/bin"
+    - "/home/{{ monitoring_user }}/.ssh"
+    - "/home/{{ monitoring_user }}/.var/tmp/icinga"
+    - "/home/{{ monitoring_user }}/.var/tmp/nagios-plugins"
+    - "/home/{{ monitoring_user }}/.opt/nagios-plugins-custom"
+    - "/home/{{ monitoring_user }}/.opt/icinga/etc/apache2"
+    - "/home/{{ monitoring_user }}/.opt/icinga/etc/init.d"
+    - "/home/{{ monitoring_user }}/.opt/icinga/var/lock"
+    - "/home/{{ monitoring_user }}/.opt/icinga/var/rw"
+    - "/home/{{ monitoring_user }}/cgi-bin/icinga"
+    - "/home/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}/icinga"
+
+- name: Create tmp folder for check_multi
+  file:
+    path: "/home/{{ monitoring_user }}/.var/tmp/check_multi"
+    state: directory
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 01777
 
 - name: Create some symlinks
   file:
@@ -69,29 +100,31 @@
 - name: Retrieve Icinga version
   shell: "/home/{{ monitoring_user }}/.opt/icinga/bin/icinga -V 2>&1 | awk 'NR==2{print $2}'"
   ignore_errors: yes
+  changed_when: false
   register: icinga_version
 
 - block:
   - name: Download and extract Icinga source
     unarchive:
-      src: "https://github.com/Icinga/icinga-core/releases/download/v{{ monitoring_icinga_version }}/icinga-{{ monitoring_icinga_version }}.tar.gz"
+      src: "https://github.com/Icinga/icinga-core/archive/v{{ monitoring_icinga_version }}.tar.gz"
       dest: "/home/{{ monitoring_user }}/.var/tmp/icinga"
       copy: no
 
   - name: Configure the source
     command: "./configure --prefix=$HOME/.opt/icinga --with-icinga-user={{ monitoring_user }} --with-icinga-group={{ monitoring_user }} --with-command-user={{ monitoring_user }} --with-command-group={{ monitoring_user }} --with-web-user={{ monitoring_user }} --with-web-group={{ monitoring_user }} --with-httpd-conf=/home/{{ monitoring_user }}/.opt/icinga/etc/apache2 --with-init-dir=/home/{{ monitoring_user }}/.opt/icinga/etc/init.d --with-cgiurl=/cgi-bin/icinga --disable-idoutils"
     args:
-      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-core-{{ monitoring_icinga_version }}"
 
   - name: Remove needed root access
-    command: "sed -e '/^INIT_OPTS=/s/root/{{ monitoring_user }}/g' -i Makefile"
-    args:
-      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
+    replace:
+      path: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-core-{{ monitoring_icinga_version }}/Makefile"
+      regexp: '^INIT_OPTS=root'
+      replace: "{{ monitoring_user }}"
 
   - name: Build and install Icinga
     command: "{{ item }}"
     args:
-      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-core-{{ monitoring_icinga_version }}"
     with_items:
       - make all
       - make fullinstall
@@ -99,18 +132,80 @@
   - name: Install configs
     command: make install-config
     args:
-      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-{{ monitoring_icinga_version }}"
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/icinga/icinga-core-{{ monitoring_icinga_version }}"
       creates: "/home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg"
   when: icinga_version.stdout != monitoring_icinga_version
 
+- name: Check if Nagios-plugins exists
+  stat:
+    path: "/home/{{ monitoring_user }}/.opt/icinga/libexec/check_apt"
+  register: monitoring_nagios_plugins_exists
+
+- block:
+  - name: Download and extract nagios-plugins source
+    unarchive:
+      src: "https://nagios-plugins.org/download/nagios-plugins-{{ monitoring_nagios_plugins_version }}.tar.gz"
+      dest: "/home/{{ monitoring_user }}/.var/tmp/nagios-plugins"
+      copy: no
+
+  - name: Configure the source
+    command: "./configure --prefix=/home/{{ monitoring_user }}/.opt/icinga --with-nagios-user={{ monitoring_user }} --with-nagios-group={{ monitoring_group }}"
+    args:
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/nagios-plugins/nagios-plugins-{{ monitoring_nagios_plugins_version }}"
+
+  - name: Build and install Nagios-plugins
+    command: "{{ item }}"
+    args:
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/nagios-plugins/nagios-plugins-{{ monitoring_nagios_plugins_version }}"
+    with_items:
+      - make all
+      - make install
+  when: monitoring_nagios_plugins_exists.stat.exists is defined and not monitoring_nagios_plugins_exists.stat.exists
+
+- name: Check if check_multi exists
+  stat:
+    path: "/home/{{ monitoring_user }}/.opt/check_multi/libexec/check_multi"
+  register: monitoring_check_multi_exists
+
+- block:
+  - name: Download and extract check_multi source
+    unarchive:
+      src: "http://my-plugin.de/check_multi/check_multi-stable-{{ monitoring_check_multi_version }}.tar.gz"
+      dest: "/home/{{ monitoring_user }}/.var/tmp/check_multi"
+      copy: no
+
+  - name: Configure the source
+    command: "./configure --prefix=/home/{{ monitoring_user }}/.opt/check_multi --with-tmp_dir=/home/{{ monitoring_user }}/.var/tmp/check_multi"
+    args:
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/check_multi/check_multi-{{ monitoring_check_multi_version }}"
+
+  - name: Build and install check_multi
+    command: "{{ item }}"
+    args:
+      chdir: "/home/{{ monitoring_user }}/.var/tmp/check_multi/check_multi-{{ monitoring_check_multi_version }}"
+    with_items:
+      - make all
+      - make install
+  when: monitoring_check_multi_exists.stat.exists is defined and not monitoring_check_multi_exists.stat.exists
+
+- name: Install additional Nagios checks
+  copy:
+    src: nagios-plugins-custom/
+    dest: "/home/{{ monitoring_user }}/.opt/nagios-plugins-custom/"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0755
+
 - name: Disable syslog logging
-  command: "sed -e '/use_syslog=1/s/1/0/' -i /home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg"
+  lineinfile:
+    path: "/home/{{ monitoring_user }}/.opt/icinga/etc/icinga.cfg"
+    regexp: 'use_syslog=([\w_-]+)'
+    line: 'use_syslog=0'
 
 - name: Create folder structure
   file:
     path: "/home/{{ monitoring_user }}/.opt/icinga/etc/{{ item }}"
     state: directory
-    recurse: yes
     owner: "{{ monitoring_user }}"
     group: "{{ monitoring_group }}"
     mode: 0755
@@ -121,6 +216,7 @@
     - hostgroups_enabled
     - servers_available
     - servers_enabled
+    - objects_custom
 
 - name: Copy config files
   template:
@@ -140,6 +236,58 @@
     src: hostgroups_available/
     dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/"
 
+- name: Disable global access for single user
+  replace:
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/cgi.cfg"
+    regexp: '^{{ item }}=icingaadmin$'
+    replace: '{{ item }}='
+  with_items:
+    - authorized_for_system_information
+    - authorized_for_configuration_information
+    - authorized_for_full_command_resolution
+    - authorized_for_system_commands
+    - authorized_for_all_services
+    - authorized_for_all_hosts
+    - authorized_for_all_service_commands
+    - authorized_for_all_host_commands
+
+- name: Enable global access for single contact group
+  replace:
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/cgi.cfg"
+    regexp: '^#{{ item }}=$'
+    replace: '{{ item }}={{ monitoring_global_access_contactgroup }}'
+  with_items:
+    - authorized_contactgroup_for_system_information
+    - authorized_contactgroup_for_configuration_information
+    - authorized_contactgroup_for_full_command_resolution
+    - authorized_contactgroup_for_system_commands
+    - authorized_contactgroup_for_all_services
+    - authorized_contactgroup_for_all_hosts
+    - authorized_contactgroup_for_all_service_commands
+    - authorized_contactgroup_for_all_host_commands
+
+- name: Disable HTML escaping
+  replace:
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/cgi.cfg"
+    regexp: '^escape_html_tags=1$'
+    replace: 'escape_html_tags=0'
+
+- name: Set resources
+  lineinfile:
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/resource.cfg"
+    line: "{{ item }}"
+  with_items:
+    - "$USER2$=/home/{{ monitoring_user }}/.opt/nagios-plugins-custom"
+    - "$USER3$=/home/{{ monitoring_user }}/.opt/check_multi/libexec"
+
+- name: Copy check_multi template
+  template:
+    src: check_multi_host_dualstack.cmd
+    dest: "/home/{{ monitoring_user }}/.opt/icinga/etc/check_multi_host_dualstack.cmd"
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+    mode: 0644
+
 - name: Create daemontools folder
   shell: /usr/local/bin/space-setup-svscan
   args:
@@ -149,7 +297,6 @@
   file:
     path: "/home/{{ monitoring_user }}/.config/etc/{{ item }}"
     state: directory
-    recurse: yes
     owner: "{{ monitoring_user }}"
     group: "{{ monitoring_group }}"
     mode: 0755
@@ -184,7 +331,18 @@
 - name: Copy htaccess file
   template:
     src: htaccess
-    dest: "/var/www/{{ monitoring_user }}/domains/{{ monitoring_domain }}/.htaccess"
+    dest: "/var/www/{{ monitoring_user }}/{{ item }}/.htaccess"
     mode: 0644
+    owner: "{{ monitoring_user }}"
+    group: "{{ monitoring_group }}"
+  with_items:
+    - domains/{{ monitoring_domain }}
+    - cgi-bin/icinga
+
+- name: Copy sendxmpp
+  template:
+    src: sendxmpp
+    dest: "/home/{{ monitoring_user }}/.local/bin/sendxmpp"
+    mode: 0755
     owner: "{{ monitoring_user }}"
     group: "{{ monitoring_group }}"

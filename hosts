@@ -53,7 +53,7 @@ grp = inv.group("etherpad")
 grp.host(0, "pads.ffhb.de")
 
 grp = inv.group("monitoring")
-grp.host(0, "monitoring.ffhb.de")
+grp.host(0, "monitoring.bremen.freifunk.net")
 
 # vpnservers und downlinks zu backbone zusammenfassen
 grp = inv.group("backbone")
