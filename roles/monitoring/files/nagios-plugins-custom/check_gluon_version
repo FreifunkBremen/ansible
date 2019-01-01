@@ -1,0 +1,84 @@
+#! /usr/bin/env bash
+# 2014, Moritz Kaspar Rudert (mortzu) <mr@planetcyborg.de>.
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are
+# permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this list of
+#   conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice, this list
+#   of conditions and the following disclaimer in the documentation and/or other materials
+#   provided with the distribution.
+#
+# * The names of its contributors may not be used to endorse or promote products derived
+#   from this software without specific prior written permission.
+#
+# * Feel free to send Club Mate to support the work.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
+# AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+declare -i STATE_OK=0
+declare -i STATE_WARNING=1
+declare -i STATE_CRITICAL=2
+declare -i STATE_UNKNOWN=3
+
+declare -i ERR_CODE=$STATE_OK
+ERR_MSG='Gluon version is up to date'
+
+if [ -z "$1" ]; then
+  echo "$0 <hostname>"
+  exit $STATE_UNKNOWN
+fi
+
+JSON_VALUE="$(curl -s -f http://$1/cgi-bin/nodeinfo)"
+
+if [ -z "$JSON_VALUE" ]; then
+  echo 'Could not get JSON values from node'
+  exit $STATE_UNKNOWN
+fi
+
+GLUON_BRANCH="$(jq -r .software.autoupdater.branch <<<"$JSON_VALUE")"
+
+if [ -z "$GLUON_BRANCH" ]; then
+  echo 'Could not get branch from device'
+  exit $STATE_UNKNOWN
+fi
+
+GLUON_VERSION_CURRENT="$(jq -r .software.firmware.release <<<"$JSON_VALUE")"
+
+if [ -z "$GLUON_VERSION_CURRENT" ]; then
+  echo 'Could not get version from device'
+  exit $STATE_UNKNOWN
+fi
+
+GLUON_VERSION_UPSTREAM="$(curl -s -f http://downloads.ffhb.de/firmware/${GLUON_BRANCH}/sysupgrade/manifest | tail -n+6 | head -n1 | awk '{ print $2 }')"
+
+if [ -z "$GLUON_VERSION_UPSTREAM" ]; then
+  echo 'Could not get version from server'
+  exit $STATE_UNKNOWN
+fi
+
+if [ "$GLUON_VERSION_CURRENT" != "$GLUON_VERSION_UPSTREAM" ]; then
+  ERR_MSG="Gluon is out-of-date (${GLUON_VERSION_CURRENT} vs. ${GLUON_VERSION_UPSTREAM} / ${GLUON_BRANCH})"
+  ERR_CODE=$STATE_WARNING
+else
+  ERR_MSG="Gluon version is up to date (${GLUON_VERSION_UPSTREAM} / ${GLUON_BRANCH})"
+fi
+
+if [ $ERR_CODE -eq $STATE_OK ]; then
+  echo "OK: ${ERR_MSG}"
+else
+  echo "WARNING: ${ERR_MSG}"
+fi
+
+exit $ERR_CODE
