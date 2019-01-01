@@ -1,24 +1,4 @@
 ---
-- name: Install virt-what
-  apt:
-    name: virt-what
-
-- name: Detect running in LXC
-  shell: virt-what | grep -q lxc
-  ignore_errors: yes
-  register: lxc_detect
-
-- name: Detect running in OpenVZ
-  shell: virt-what | grep -q openvz
-  ignore_errors: yes
-  register: openvz_detect
-
-- name: Detect if we have swap
-  shell: test -n "$(cat /proc/swaps | tail -n +2)"
-  ignore_errors: yes
-  register: swap_detect
-  changed_when: False
-
 - name: Add user for nagios
   user:
     name: rnagios
@@ -99,46 +79,42 @@
   copy:
     src: ssh-forcecommand.default.cfg
     dest: /etc/nagios/ssh-forcecommand.default.cfg
-  register: default_nagios_config
 
 - name: Copy contact nagios file
   copy:
     src: ssh-forcecommand.contact.cfg
     dest: /etc/nagios/ssh-forcecommand.contact.cfg
     force: no
-  register: contact_nagios_config
 
 - name: Copy kernel nagios configuration file
   copy:
     src: ssh-forcecommand.kernel.cfg
     dest: /etc/nagios/ssh-forcecommand.kernel.cfg
-  register: kernel_nagios_config_added
-  when: lxc_detect.rc != 0 and openvz_detect.rc != 0
+  when: ansible_virtualization_type is not defined or not (ansible_virtualization_role == 'guest' and (ansible_virtualization_type == 'openvz' or ansible_virtualization_type == 'lxc'))
 
 - name: Remove kernel nagios configuration file
   file:
     dest: /etc/nagios/ssh-forcecommand.kernel.cfg
     state: absent
-  register: kernel_nagios_config_removed
-  when: lxc_detect.rc == 0 or openvz_detect.rc == 0
+  when: ansible_virtualization_type is defined and (ansible_virtualization_role == 'guest' and (ansible_virtualization_type == 'openvz' or ansible_virtualization_type == 'lxc'))
 
 - name: Copy swap nagios configuration file
   copy:
     src: ssh-forcecommand.swap.cfg
     dest: /etc/nagios/ssh-forcecommand.swap.cfg
-  register: swap_nagios_config_added
-  when: swap_detect.rc == 0
+  when: ansible_swaptotal_mb != 0
 
 - name: Remove swap nagios configuration file
   file:
     dest: /etc/nagios/ssh-forcecommand.swap.cfg
     state: absent
-  register: swap_nagios_config_removed
-  when: swap_detect.rc != 0
+  when: ansible_swaptotal_mb == 0
 
 - name: Concat forcecommand files
-  shell: cat /etc/nagios/ssh-forcecommand.*.cfg > /etc/nagios/ssh-forcecommand.cfg
-  when: default_nagios_config|changed or contact_nagios_config|changed or kernel_nagios_config_added|changed or kernel_nagios_config_removed|changed or swap_nagios_config_added|changed or swap_nagios_config_removed|changed
+  assemble:
+    src: /etc/nagios
+    dest: /etc/nagios/ssh-forcecommand.cfg
+    regexp: '^ssh-forcecommand\..*\.cfg$'
 
 - name: Create sudo config
   copy:
