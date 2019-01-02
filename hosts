@@ -28,10 +28,10 @@ grp = inv.group("eventsserver")
 grp.host(0, "mgmt.bremen.freifunk.net")
 
 grp = inv.group("webserver")
-grp.host(0, "webserver.ffhb.de")
+grp.host(0, "webserver.bremen.freifunk.net")
 
 grp = inv.group("downlinks", batman_gateway=True, firewall_enabled=True)
-grp.host(12, "ipv6-downlink.ffhb.de")
+grp.host(12, "ipv6-downlink.bremen.freifunk.net")
 
 grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net");
@@ -41,16 +41,16 @@ grp.host(0, "bre-1.bremen.freifunk.net")
 grp.host(0, "bre-2.bremen.freifunk.net")
 
 grp = inv.group("standardserver")
-grp.host(0, "mail.ffhb.de")
+grp.host(0, "mail.bremen.freifunk.net")
 grp.host(0, "syslog.bremen.freifunk.net")
 grp.host(0, "jenkins.bremen.freifunk.net")
 grp.child("vmhosts")
 
 grp = inv.group("ffmapserver")
-grp.host(0, "ffmap.ffhb.de")
+grp.host(0, "ffmap.bremen.freifunk.net")
 
 grp = inv.group("etherpad")
-grp.host(0, "pads.ffhb.de")
+grp.host(0, "pads.bremen.freifunk.net")
 
 grp = inv.group("monitoring")
 grp.host(0, "monitoring.bremen.freifunk.net")
