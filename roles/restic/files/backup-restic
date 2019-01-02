@@ -1,0 +1,108 @@
+#! /usr/bin/env bash
+# 2018, mortzu <mortzu@gmx.de>
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are
+# permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this list of
+#   conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice, this list
+#   of conditions and the following disclaimer in the documentation and/or other materials
+#   provided with the distribution.
+#
+# * The names of its contributors may not be used to endorse or promote products derived
+#   from this software without specific prior written permission.
+#
+# * Feel free to send Club Mate to support the work.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
+# AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# Set path to defaults
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Set some default variables
+declare -a EXCLUDES=('/dev' '/proc' '/sys' '/var/run' '/run' '/lost+found' '/mnt')
+declare -a TARGETS=()
+declare -a RESTIC_PASSWORDS=()
+declare BACKUP_PARAMS=''
+declare LOCK_FILE='/run/backup-restic.lock'
+
+# Run before backup
+backup_prepare() {
+  return
+}
+
+# Check if config exists
+if [ ! -f /etc/default/backup-restic ]; then
+  echo '/etc/default/backup-restic does not exists!' >&2
+  exit 1
+fi
+
+# Include config
+. /etc/default/backup-restic
+
+# Check if valid targets defined
+if [ "${#TARGETS[*]}" -eq 0 ]; then
+  echo 'No backup targets defined' >&2
+  exit 1
+fi
+
+# Run with low priority
+ionice -n 7 -p $$
+renice 3 -p $$ > /dev/null
+
+# Check if lock file exists
+if [ -f "$LOCK_FILE" ]; then
+  echo 'Already running...' >&2
+  exit 1
+else
+  touch "$LOCK_FILE"
+fi
+
+# Delete lockfile after completion
+cleanup() {
+  if [ -n "$LOCK_FILE" -a -f "$LOCK_FILE" ]; then
+    rm "$LOCK_FILE"
+  fi
+}
+trap cleanup EXIT
+
+# Run prepare tasks (e.g. MySQL backup)
+backup_prepare
+
+# Build parameteres for backup
+for EXCLUDE in ${EXCLUDES[*]}; do
+  BACKUP_PARAMS="--exclude=${EXCLUDE} ${BACKUP_PARAMS}"
+done
+
+# Run the actual backup
+for TARGET_KEY in ${!TARGETS[*]}; do
+  # Export password for restic
+  export RESTIC_PASSWORD="${RESTIC_PASSWORDS[$TARGET_KEY]}"
+
+  # Path to repository
+  export RESTIC_REPOSITORY="${TARGETS[$TARGET_KEY]}"
+
+  # If password is empty something is wrong
+  if [ -z "$RESTIC_PASSWORD" ]; then
+    echo 'No passphrase defined' >&2
+    continue
+  fi
+
+  # Run restic
+  restic \
+    --one-file-system \
+    --quiet \
+    ${BACKUP_PARAMS} \
+    backup /
+done

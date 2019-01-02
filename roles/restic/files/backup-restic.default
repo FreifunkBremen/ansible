@@ -1,0 +1,7 @@
+EXCLUDES=('/dev' '/proc' '/sys' '/var/run' '/var/tmp' '/run' '/lost+found' '/mnt' '/tmp')
+TARGETS=()
+RESTIC_PASSWORDS=()
+
+backup_prepare() {
+  return
+}

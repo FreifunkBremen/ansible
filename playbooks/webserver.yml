@@ -25,6 +25,6 @@
   - { role: grafana, tags: [grafana] }
   - { role: meshviewer, tags: [meshviewer] }
   - { role: monitoring-client, tags: [monitoring-client] }
-  - { role: backup-webserver, tags: [backup-webserver] }
+  - { role: restic, tags: [restic] }
   - { role: tasksite, tags: [tasksite] }
   - { role: etckeeper-post, tags: [etckeeper-post] }

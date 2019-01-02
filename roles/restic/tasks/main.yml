@@ -26,3 +26,19 @@
     src: "/opt/restic/restic_{{ restic_version }}_linux_amd64"
     path: /usr/local/bin/restic
     state: link
+
+- name: Copy cronjob
+  copy:
+    src: backup-restic
+    dest: /etc/cron.daily/backup-restic
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy configuration file
+  copy:
+    src: backup-restic.default
+    dest: /etc/default/backup-restic
+    owner: root
+    group: root
+    mode: 0600
