@@ -33,7 +33,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # Set some default variables
 declare -a EXCLUDES=('/dev' '/proc' '/sys' '/var/run' '/run' '/lost+found' '/mnt')
 declare -a TARGETS=()
-declare -a RESTIC_PASSWORDS=()
+declare -a BACKUP_PASSWORDS=()
+declare BACKUP_NICE=0
 declare BACKUP_PARAMS=''
 declare LOCK_FILE='/run/backup-restic.lock'
 
@@ -46,10 +47,10 @@ backup_prepare() {
 if [ ! -f /etc/default/backup-restic ]; then
   echo '/etc/default/backup-restic does not exists!' >&2
   exit 1
+else
+  # Include config
+  . /etc/default/backup-restic
 fi
-
-# Include config
-. /etc/default/backup-restic
 
 # Check if valid targets defined
 if [ "${#TARGETS[*]}" -eq 0 ]; then
@@ -58,8 +59,10 @@ if [ "${#TARGETS[*]}" -eq 0 ]; then
 fi
 
 # Run with low priority
-ionice -n 7 -p $$
-renice 3 -p $$ > /dev/null
+if [ "$BACKUP_NICE" = "1" ]; then
+  ionice -n 7 -p $$
+  renice 3 -p $$ > /dev/null
+fi
 
 # Check if lock file exists
 if [ -f "$LOCK_FILE" ]; then
@@ -88,7 +91,7 @@ done
 # Run the actual backup
 for TARGET_KEY in ${!TARGETS[*]}; do
   # Export password for restic
-  export RESTIC_PASSWORD="${RESTIC_PASSWORDS[$TARGET_KEY]}"
+  export RESTIC_PASSWORD="${BACKUP_PASSWORDS[$TARGET_KEY]}"
 
   # Path to repository
   export RESTIC_REPOSITORY="${TARGETS[$TARGET_KEY]}"
