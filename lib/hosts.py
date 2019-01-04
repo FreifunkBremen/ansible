@@ -3,6 +3,10 @@
 # sudo apt-get install python-pip
 # sudo pip install ipcalc
 #
+# Also, you need python-gnupg and python-yaml to read the secret variables
+# (which obviously also have to be encrypted for you)
+#
+from __future__ import print_function
 
 import copy
 import ipcalc
@@ -122,7 +126,22 @@ class Group:
     vars["ipv6_uplink_own_gateway"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
     vars["ipv6_uplink_own_vpnserver"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+2)
 
-    self.hosts.append((hostname, vars))
+    try:
+      with open("host_vars/{}.gpg".format(hostname), 'r') as f:
+        import gnupg
+        gpg = gnupg.GPG(gpgbinary='gpg2')
+        decrypted = gpg.decrypt_file(f)
+        if decrypted.ok:
+          import yaml
+          vars.update(yaml.load(str(decrypted)))
+        else:
+          print("There are secret variables for the host {}, but you don't have access to them.".format(hostname), file=sys.stderr)
+    except IOError:
+      pass
+    except ImportError:
+      print("There are secret variables for the host {}, but you're missing python-gnupg or PyYAML".format(hostname), file=sys.stderr)
+    finally:
+      self.hosts.append((hostname, vars))
 
   def calculate_address(self, *args):
     return self.inventory.calculate_address(*args)
