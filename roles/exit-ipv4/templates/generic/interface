@@ -15,6 +15,7 @@ iface {{ exit_ipv4_interface }} inet manual
 
 	# Set address to interface with scope link
 {% set exit_ipv4_prefix = exit_ipv4_address | ipaddr('host/prefix') | ipaddr('prefix') %}
+{% set exit_ipv4_address_plain = exit_ipv4_address | ipaddr('host/prefix') | ipaddr('address') %}
 {% if exit_ipv4_prefix == 32 %}
 	up   ip address add {{ exit_ipv4_address }} peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
 	down ip address del {{ exit_ipv4_address }} peer {{ exit_ipv4_address_peer }} scope link dev $IFACE
@@ -22,11 +23,15 @@ iface {{ exit_ipv4_interface }} inet manual
 	up   ip address add {{ exit_ipv4_address }} dev $IFACE
 	down ip address del {{ exit_ipv4_address }} dev $IFACE
 {% endif %}
+	post-up ip rule add from {{ exit_ipv4_address_plain }} lookup default-freifunk priority 16385
+	pre-down ip rule del from {{ exit_ipv4_address_plain }} lookup default-freifunk priority 16385
 
 {% if exit_ipv4_address_global %}
 	# Set address for NAT
 	post-up  ip address add {{ exit_ipv4_address_global }}/32 dev $IFACE
 	pre-down ip address del {{ exit_ipv4_address_global }}/32 dev $IFACE
+	post-up ip rule add from {{ exit_ipv4_address_global }} lookup default-freifunk priority 16384
+	pre-down ip rule del from {{ exit_ipv4_address_global }} lookup default-freifunk priority 16384
 {% endif %}
 
 	# Default route
