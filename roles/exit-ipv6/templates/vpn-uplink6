@@ -13,3 +13,5 @@ iface vpn-uplink6 inet6 static
 	post-down ip -6 rule del from {{ batman_ipv6_global.address }} table default-freifunk priority 16386
 	post-up ip -6 rule add from {{ ipv6_uplink_own_vpnserver.address }} table default-freifunk priority 16387
 	post-down ip -6 rule del from {{ ipv6_uplink_own_vpnserver.address }} table default-freifunk priority 16387
+	post-up ip -6 rule add from {{ batman_ipv6_local.address }} table default-freifunk priority 16388
+	post-down ip -6 rule del from {{ batman_ipv6_local.address }} table default-freifunk priority 16388
