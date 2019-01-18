@@ -122,6 +122,8 @@ class Group:
     if self.icvpn:
       vars["icvpn_ipv4"] = self.calculate_address("icvpn_ipv4_network", (id << 8))
       vars["icvpn_ipv6"] = self.calculate_address("icvpn_ipv6_network", (id << 16))
+      vars["icvpn_ipv4_network"] = self.inventory.attributeString("icvpn_ipv4_network")
+      vars["icvpn_ipv6_network"] = self.inventory.attributeString("icvpn_ipv6_network")
 
     vars["ipv6_uplink_own_gateway"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
     vars["ipv6_uplink_own_vpnserver"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+2)
