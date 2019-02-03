@@ -4,6 +4,7 @@
   - apt
   - openssh
   - { role: babeld,  tags: [ babeld, babel ] }
+  - { role: wireguard,  tags: [ wireguard, babel ] }
   - system
   - tmpfs
   - tools

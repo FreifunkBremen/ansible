@@ -1,0 +1,13 @@
+---
+- name: Add apt repository
+  apt_repository:
+    repo: 'deb {{ wireguard_repository_url }}'
+
+- name: fix apt repository
+  copy:
+    src: limit-unstable
+    dest: /etc/apt/preferences.d/limit-unstable
+
+- name: Install wireguard
+  apt:
+    name: wireguard
