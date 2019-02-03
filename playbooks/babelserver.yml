@@ -1,0 +1,11 @@
+---
+- hosts: babelservers
+  roles:
+  - apt
+  - openssh
+  - { role: babeld,  tags: [ babeld, babel ] }
+  - system
+  - tmpfs
+  - tools
+  - motd
+  - { role: nginx, tags: nginx }

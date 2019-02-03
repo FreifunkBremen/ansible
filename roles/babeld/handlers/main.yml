@@ -1,0 +1,6 @@
+---
+- name: restart babeld
+  service: name=babeld state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
