@@ -2,7 +2,6 @@
 Description=babeld
 Wants=basic.target
 After=basic.target network.target
-Before=fastd.service
 
 [Service]
 Type=forking

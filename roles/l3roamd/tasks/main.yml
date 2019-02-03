@@ -1,0 +1,24 @@
+- name: Add repository key for babeld and utils
+  apt_key: keyserver="{{ pgp_keyserver }}" id="{{l3roamd_repository_key}}"
+
+- name: Add repository for babeld and utils
+  apt_repository: repo="deb {{l3roamd_repository}}"
+
+- name: Install l3roamd (babel utils)
+  apt: name="l3roamd"
+
+- name: Install interfaces file
+  template: >
+    src=interfaces
+    dest=/etc/network/interfaces.d/babel-{{site_code}}-l3roamd
+
+- name: Configure firewall
+  template: src=firewall.sh dest={{ firewall_path }}/35-babel-{{site_code}}-l3roamd
+  when: firewall_enabled
+  notify: reload firewall
+
+- name: Install l3roamd service
+  template: src=l3roamd.service dest=/etc/systemd/system/l3roamd.service
+  notify:
+  - reload systemd
+  - restart l3roamd

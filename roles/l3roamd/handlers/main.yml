@@ -1,0 +1,6 @@
+---
+- name: restart l3roamd
+  service: name=l3roamd state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload

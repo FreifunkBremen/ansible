@@ -5,10 +5,10 @@
   apt_repository: repo="deb {{babeld_repository}}"
 
 - name: Install babeld
-  apt: name="{{ item }}"
-  with_items:
-  - babeld
-  - netcat-openbsd
+  apt:
+    name:
+    - babeld
+    - netcat-openbsd
 
 - name: Create batman routing table
   lineinfile:

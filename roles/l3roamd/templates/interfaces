@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+allow-hotplug l3roam0
+auto l3roam0
+iface l3roam0 inet manual
+	up ip link set $IFACE up
+	down ip link set $IFACE down
+
+	post-up  ip -6 r add {{ ipv6_babelmesh_network   }} dev $IFACE table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 r add {{ ipv6_babelclient_network }} dev $IFACE table {{ ffhb_routing_table }} priority 16385
