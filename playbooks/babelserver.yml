@@ -9,3 +9,4 @@
   - tools
   - motd
   - { role: nginx, tags: nginx }
+  - { role: speedtest, tags: speedtest }
