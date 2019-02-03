@@ -9,7 +9,7 @@
   - { role: babeld,  tags: [ babeld, babel ] }
   # - { role: l3roamd,  tags: [ l3roamd, babel ] }
   - { role: mmfd,  tags: [ mmfd, babel ] }
-  - { role: wireguard,  tags: [ wireguard, vpn ] }
+  - { role: wg-broker,  tags: [ wireguard, vpn ] }
   - { role: mesh-announce, tags: respondd }
   - system
   - tmpfs

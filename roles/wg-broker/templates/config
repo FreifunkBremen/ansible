@@ -1,0 +1,11 @@
+BROKERPORT={{ wgbroker_port }}		# tcp port where the broker listens for connections
+STARTPORT={{ wgbroker_wg_startport }}	# start of udp portrange accepting wireguard connections
+ENDPORT={{ wgbroker_wg_endport }}	# end of udp portrange accepting wireguard connections
+BABELPORT={{ babel_port }}		# control port of local babeld
+MTU={{ wgbroker_wg_mtu }}		# MTU of VPN in this network
+WG="wg"					# wireguard command
+WAN="{{ ansible_default_ipv4.interface }}"	# accepting inbound wireguard connections on this interface
+MAXCONNECTIONS={{ wgbroker_max }}	# allow MAXCONNECTIONS concurrent vpn connections
+PRIVATEKEY={{ wgbroker_wg_privkey }}	# this file contains the secret key
+L3ROAMDSOCK={{ l3roamd_socket }}	# this is the l3roamd socket
+

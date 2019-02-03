@@ -1,0 +1,41 @@
+---
+- name: Fetch wg-broker
+  git:
+    repo: "{{ wgbroker_git_root }}"
+    dest: "/opt/{{ site_code }}/wg-broker"
+    version: "{{ wgbroker_git_commit }}"
+
+- name: Create directory
+  file:
+    path: "/etc/wg-broker"
+    state: directory
+
+- name: Create wg-broker secret
+  raw: wg genkey > {{ wgbroker_wg_privkey }}
+  args:
+    creates: "{{ wgbroker_wg_privkey }}"
+ 
+- name: Configure wg-broker
+  template:
+    src: config
+    dest: "/etc/wg-broker/config"
+  notify: restart wg-broker
+
+- name: Open firewall for wg-broker
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-wireguard-{{ site_code }}"
+  when: firewall_enabled
+  notify: reload firewall
+
+- name: Install wg-broker service
+  template: src=service dest=/etc/systemd/system/wg-broker.service
+  notify:
+  - reload systemd
+  - restart wg-broker
+
+- name: Enable wg-broker
+  service:
+    name: "wg-broker"
+    enabled: yes
+    state: started

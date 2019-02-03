@@ -1,0 +1,12 @@
+[Unit]
+Description=Wireguard Broker
+
+[Service]
+Type=simple
+ExecStart=/opt/{{ site_code }}/wg-broker/src/wg-broker-server
+Restart=always
+RestartSec=5s
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=multi-user.target

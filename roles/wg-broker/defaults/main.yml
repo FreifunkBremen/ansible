@@ -1,0 +1,15 @@
+---
+wgbroker_git_root: 'https://github.com/christf/wg-broker.git'
+wgbroker_git_commit: 'master'
+
+wgbroker_port: 40999
+wgbroker_max: 200
+
+wgbroker_wg_startport: 41000
+wgbroker_wg_endport: 42000
+wgbroker_wg_mtu: 1374
+wgbroker_wg_privkey: /etc/wg-broker/secret
+
+babel_port: 33123
+l3roamd_socket: /var/run/l3roamd.sock
+

@@ -1,5 +1,6 @@
 ---
 l3roamd_repository: "https://dl.ffm.freifunk.net/debian-packages/ sid main"
 l3roamd_repository_key: 390BF305
+l3roamd_socket: /var/run/l3roamd.sock
 
 babel_bridge: babel-{{ site_code }}

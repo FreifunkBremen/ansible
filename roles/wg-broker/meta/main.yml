@@ -1,0 +1,9 @@
+---
+dependencies:
+  - wireguard
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie

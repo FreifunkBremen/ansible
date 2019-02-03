@@ -1,0 +1,8 @@
+---
+- name: restart wg-broker
+  service:
+    name: "wg-broker"
+    state: restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
