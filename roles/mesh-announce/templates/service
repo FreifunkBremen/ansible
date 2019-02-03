@@ -4,10 +4,14 @@ Description=Respondd
 After=network.target
 
 [Service]
+{% if babel %}
+ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -d /opt/{{ site_code }}/mesh-announce/providers -g ff05::2:1001 -i mmfd0 -ba [::]:33123
+{% else %}
 {% if respondd_vpn %}
 ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -d /opt/{{ site_code }}/mesh-announce/providers -b {{ batman_interface }} -i {{ main_bridge }} -i vpn-{{ site_code }}-legacy -i vpn-{{ site_code }}
 {% else %}
 ExecStart=/opt/{{ site_code }}/mesh-announce/respondd.py -d /opt/{{ site_code }}/mesh-announce/providers -b {{ ansible_default_ipv4.interface }} -i {{ ansible_default_ipv4.interface }}
+{% endif %}
 {% endif %}
 
 [Install]

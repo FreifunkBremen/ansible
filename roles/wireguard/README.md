@@ -32,4 +32,7 @@ ipt6 -A FORWARD -o wg-bb-+ -i babel-wg+ -j ACCEPT
 ipt6 -A FORWARD -i wg-bb-+ -o babel-wg+ -j ACCEPT
 ipt6 -A FORWARD -o wg-bb-+ -i wg-bb-+ -j ACCEPT
 
+# respondd (with mmfd + mesh-announce)
+ipt6 -A INPUT -i wg-bb-+ -p udp --dport 1001 -j ACCEPT
+
 ```

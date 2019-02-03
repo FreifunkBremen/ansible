@@ -111,6 +111,7 @@ class Group:
     vars.update(host_vars)
     vars.update({
       "vpn_id":             id,
+      "babel":              self.babel,
       "batman_ipv4":        self.calculate_address("ipv4_network", id),
       "batman_ipv6_global": self.calculate_address("ipv6_global_network", id),
       "batman_ipv6_local":  self.calculate_address("ipv6_local_network", id),
