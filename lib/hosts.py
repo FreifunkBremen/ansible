@@ -22,7 +22,7 @@ class Inventory:
 
   groups = {}
 
-  def __init__(self, site_conf, ipv6_global_network=None, ipv6_local_network=None, ipv6_uplink_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None):
+  def __init__(self, site_conf, ipv6_global_network=None, ipv6_local_network=None, ipv6_uplink_network=None, icvpn_ipv4_network=None, icvpn_ipv6_network=None, ipv6_babelmesh_network=None, ipv6_babelclient_network=None):
 
     # read and parse site.conf
     with open(site_conf,'r') as f:
@@ -30,11 +30,13 @@ class Inventory:
       if not isinstance(self.site, dict):
         raise TypeError("Unable to parse site.conf")
 
-    self.ipv4_network        = ipcalc.Network(self.site["prefix4"])
-    self.icvpn_ipv4_network  = ipcalc.Network(icvpn_ipv4_network)
-    self.icvpn_ipv6_network  = ipcalc.Network(icvpn_ipv6_network)
-    self.ipv6_uplink_network = ipcalc.Network(ipv6_uplink_network)
-    self.ipv6_global_network  = ipcalc.Network(ipv6_global_network)
+    self.ipv4_network              = ipcalc.Network(self.site["prefix4"])
+    self.icvpn_ipv4_network        = ipcalc.Network(icvpn_ipv4_network)
+    self.icvpn_ipv6_network        = ipcalc.Network(icvpn_ipv6_network)
+    self.ipv6_uplink_network       = ipcalc.Network(ipv6_uplink_network)
+    self.ipv6_global_network       = ipcalc.Network(ipv6_global_network)
+    self.ipv6_babelmesh_network    = ipcalc.Network(ipv6_babelmesh_network)
+    self.ipv6_babelclient_network  = ipcalc.Network(ipv6_babelclient_network)
 
     if "prefix6" in self.site:
       self.ipv6_local_network = ipcalc.Network(self.site["prefix6"])
@@ -60,12 +62,14 @@ class Inventory:
 
     data["_meta"] = {"hostvars": hostvars}
     data["all"]   = {"vars": {
-      "site":                self.site,
-      "site_code":           self.site["site_code"],
-      "ipv4_network":        self.attributeString("ipv4_network"),
-      "ipv6_local_network":  self.attributeString("ipv6_local_network"),
-      "ipv6_uplink_network": self.attributeString("ipv6_uplink_network"),
-      "ipv6_global_network": self.attributeString("ipv6_global_network"),
+      "site":                     self.site,
+      "site_code":                self.site["site_code"],
+      "ipv4_network":             self.attributeString("ipv4_network"),
+      "ipv6_local_network":       self.attributeString("ipv6_local_network"),
+      "ipv6_uplink_network":      self.attributeString("ipv6_uplink_network"),
+      "ipv6_global_network":      self.attributeString("ipv6_global_network"),
+      "ipv6_babelmesh_network":   self.attributeString("ipv6_babelmesh_network"),
+      "ipv6_babelclient_network": self.attributeString("ipv6_babelclient_network"),
     }}
 
     return data
@@ -93,10 +97,11 @@ class Inventory:
     }
 
 class Group:
-  def __init__(self, inventory, dhcp=False, icvpn=False, **vars):
+  def __init__(self, inventory, dhcp=False, icvpn=False, babel=False, **vars):
     self.inventory = inventory
     self.dhcp      = dhcp
     self.icvpn     = icvpn
+    self.babel     = babel
     self.vars      = vars
     self.hosts     = []
     self.children  = []
@@ -110,6 +115,7 @@ class Group:
       "batman_ipv6_global": self.calculate_address("ipv6_global_network", id),
       "batman_ipv6_local":  self.calculate_address("ipv6_local_network", id),
     })
+     
 
     if self.dhcp:
       begin = self.inventory.ipv4_network.ip + (id << 8)*10
@@ -124,6 +130,10 @@ class Group:
       vars["icvpn_ipv6"] = self.calculate_address("icvpn_ipv6_network", (id << 16))
       vars["icvpn_ipv4_network"] = self.inventory.attributeString("icvpn_ipv4_network")
       vars["icvpn_ipv6_network"] = self.inventory.attributeString("icvpn_ipv6_network")
+
+    if self.babel:
+      vars["babel_ipv6_mesh"]   = self.calculate_address("ipv6_babelmesh_network", id)
+      vars["babel_ipv6_client"] = self.calculate_address("ipv6_babelclient_network", id)
 
     vars["ipv6_uplink_own_gateway"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+1)
     vars["ipv6_uplink_own_vpnserver"] = self.calculate_address("ipv6_uplink_network", (id << 16*4)+2)
