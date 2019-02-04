@@ -1,12 +1,16 @@
 ---
-- name: Add apt repository
-  apt_repository:
-    repo: 'deb {{ wireguard_repository_url }}'
-
-- name: fix apt repository
+- name: Fix unstable apt repository
   copy:
     src: limit-unstable
     dest: /etc/apt/preferences.d/limit-unstable
+
+- name: Add unstable apt repository
+  apt_repository:
+    repo: 'deb {{ wireguard_repository_url }}'
+
+- name: Install linux-headers (before dkms on wireguard runs)
+  apt:
+    name: linux-headers-amd64
 
 - name: Install wireguard
   apt:
