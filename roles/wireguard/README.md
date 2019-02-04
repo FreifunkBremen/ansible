@@ -1,7 +1,5 @@
 # Install
 
-required linux-headers-$(uname -r)
-
 ## Configurate
 ```
 [Interface]
@@ -18,9 +16,9 @@ EndPoint   = vpn04.bremen.freifunk.net:40{{PORT}}
 
 ```
 
-Bootsave: `systemctl enable wg-quick@wg-bb-up.service`
+make run on boot: `systemctl enable wg-quick@wg-bb-up.service`
 
-Start: `systemctl start wg-quick@wg-bb-up.service`
+start wireguard connection: `systemctl start wg-quick@wg-bb-up.service`
 
 ## Example Firewall
 ```
