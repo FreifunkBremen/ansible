@@ -1,4 +1,10 @@
 ---
+- name: Install tools for wg-broker
+  apt:
+    name:
+    - jq
+    - socat
+
 - name: Fetch wg-broker
   git:
     repo: "{{ wgbroker_git_root }}"
