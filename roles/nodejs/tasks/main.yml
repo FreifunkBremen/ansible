@@ -6,7 +6,7 @@
 
 - name: Install the Node.js APT repository
   apt_repository:
-    repo: 'deb https://deb.nodesource.com/node_5.x jessie main'
+    repo: 'deb https://deb.nodesource.com/node_10.x stretch main'
 
 - name: Install Node.js
   apt:

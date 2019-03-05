@@ -8,7 +8,7 @@
 
 - name: Download map data of Germany
   get_url:
-    url: https://osm2vectortiles-downloads.os.zhdk.cloud.switch.ch/v1.0/extracts/germany.mbtiles
+    url: https://openmaptiles.os.zhdk.cloud.switch.ch/v3.3/extracts/germany.mbtiles
     dest: "/home/{{ tiles_user }}/germany.mbtiles"
     owner: "{{ tiles_user }}"
     group: "{{ tiles_group }}"
@@ -45,9 +45,9 @@
     name: "{{ item }}"
     path: "/home/{{ tiles_user }}/"
   with_items:
-    - tilelive-vector
+    - "@mapbox/tilelive-vector"
     - tessera
-    - mbtiles
+    - "@mapbox/mbtiles"
     - tilelive-tmstyle
   become: yes
   become_user: "{{ tiles_user }}"
