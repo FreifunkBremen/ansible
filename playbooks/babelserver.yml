@@ -12,7 +12,7 @@
   - { role: monitoring-client, tags: [monitoring-client] }
   - { role: mesh-announce, tags: [mesh-announce] }
   - { role: babeld,  tags: [ babeld, babel ] }
-  # - { role: l3roamd,  tags: [ l3roamd, babel ] }
+  - { role: l3roamd,  tags: [ l3roamd, babel ] }
   - { role: mmfd,  tags: [ mmfd, babel ] }
   - { role: wg-broker,  tags: [ wireguard, vpn ] }
   - { role: unbound, tags: [unbound] }
