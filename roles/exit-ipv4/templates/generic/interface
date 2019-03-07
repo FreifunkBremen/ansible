@@ -5,7 +5,7 @@ iface {{ exit_ipv4_interface }} inet manual
 	mode {{ exit_ipv4 }}
 
 	pre-up    ip tunnel add $IFACE mode {{ exit_ipv4 }} remote {{ exit_ipv4_remote }} local {{ exit_ipv4_local }} ttl 255
-	post-down ip tunnel del $IFACE mode {{ exit_ipv4 }} remote {{ exit_ipv4_remote }} local {{ exit_ipv4_local }} ttl 255
+	post-down ip tunnel del $IFACE
 
 	up   ip link set up   dev $IFACE
 	down ip link set down dev $IFACE
