@@ -29,6 +29,11 @@
   - /var/www/{{ website_user }}/cgi-bin
   - /var/www/{{ website_user }}/fcgi-bin
 
+- name: Install imagemagick
+  apt:
+    name:
+      - imagemagick
+
 - name: Clone content repository
   git:
     repo: "{{ website_git_root }}"
