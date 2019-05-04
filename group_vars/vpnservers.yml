@@ -1,0 +1,9 @@
+---
+yanic_respondd: true
+yanic_version: respondd
+
+yanic_respondd_batman: [bat-ffhb]
+yanic_respondd_listen_clientdev: [br-ffhb]
+yanic_respondd_listen_meshdev: 
+- vpn-ffhb
+- vpn-ffhb-legacy
