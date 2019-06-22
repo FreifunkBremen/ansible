@@ -16,6 +16,7 @@
   modprobe:
     name: jool
     state: absent
+  ignore_errors: yes
   when: modinfo.stdout.find(jool_version) == -1
 
 - name: compile it

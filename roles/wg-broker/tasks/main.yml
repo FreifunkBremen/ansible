@@ -17,7 +17,7 @@
     state: directory
 
 - name: Create wg-broker secret
-  raw: wg genkey > {{ wgbroker_wg_privkey }}
+  shell: wg genkey > {{ wgbroker_wg_privkey }}
   args:
     creates: "{{ wgbroker_wg_privkey }}"
  
