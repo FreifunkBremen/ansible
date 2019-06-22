@@ -1,0 +1,7 @@
+- name: restart jool
+  service:
+    name: jool
+    state: restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload

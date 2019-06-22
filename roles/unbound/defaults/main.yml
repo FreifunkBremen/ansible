@@ -1,2 +1,6 @@
 ---
 dns_root_hints: http://www.internic.net/domain/named.cache
+nat64: "64:ff9b::/96"
+# http://www.trex.fi/2011/dns64.html
+# nat64: "2001:67c:2b0:db32:0:1::/96"
+unbound_nat64_pool: "{{ nat64 }}"

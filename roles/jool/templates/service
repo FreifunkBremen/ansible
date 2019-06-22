@@ -1,0 +1,12 @@
+[Unit]
+Description=Jool nat64
+After=network-online.target nss-lookup.target
+Wants=network-online.target nss-lookup.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/jool instance add --iptables --pool6={{ jool_pool6 }}
+ExecStop=/usr/local/bin/jool instance flush
+
+[Install]
+WantedBy=multi-user.target
