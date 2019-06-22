@@ -1,0 +1,25 @@
+- name: Clone jool repository
+  git:
+    repo: "{{jool_url}}"
+    dest: /opt/jool/
+    version: "v{{ jool_version }}"
+
+- name: generate configure
+  shell: autoreconf --install
+  args:
+    chdir: "/opt/jool/"
+
+- name: configure before compile
+  shell: ./configure
+  args:
+    chdir: "/opt/jool/"
+
+- name: compile
+  shell: make
+  args:
+    chdir: "/opt/jool/"
+
+- name: install
+  shell: make install
+  args:
+    chdir: "/opt/jool/"

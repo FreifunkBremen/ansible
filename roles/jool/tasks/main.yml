@@ -1,0 +1,31 @@
+- name: Install needed tools
+  apt:
+    name:
+      - build-essential
+      - pkg-config
+      - linux-headers-amd64
+      - libnl-genl-3-dev
+      - libxtables-dev
+
+- name: Fetch current version
+  raw: modinfo jool | grep "version:"| egrep -o "([0-9]{1,}\.){1,2}[0-9]{1,}"
+  register: modinfo
+  ignore_errors: yes
+
+- name: remove old module
+  modprobe:
+    name: jool
+    state: absent
+  when: modinfo.stdout.find(jool_version) == -1
+
+- name: compile it
+  include: compile.yml
+  when: modinfo.stdout.find(jool_version) == -1
+
+- name: Enable during boot
+  lineinfile: dest=/etc/modules regexp='^jool' line="jool"
+
+- name: load modprobe
+  modprobe:
+    name: jool
+    state: present

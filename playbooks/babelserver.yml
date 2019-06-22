@@ -15,7 +15,8 @@
   - { role: l3roamd,  tags: [ l3roamd, babel ] }
   - { role: mmfd,  tags: [ mmfd, babel ] }
   - { role: wg-broker,  tags: [ wireguard, vpn ] }
-  - { role: unbound, tags: [unbound] }
+  - { role: jool, tags: [jool,plat,nat64] }
+  - { role: unbound, tags: [unbound,plat,dns64] }
   - { role: system, tags: [system] }
   - { role: tmpfs, tags: [tmpfs] }
   - { role: tools, tags: [tools] }
