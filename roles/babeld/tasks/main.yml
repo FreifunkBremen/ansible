@@ -9,6 +9,7 @@
     name:
     - babeld
     - netcat-openbsd
+    - bridge-utils
 
 - name: Create batman routing table
   lineinfile:
