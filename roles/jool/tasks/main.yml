@@ -2,6 +2,7 @@
   apt:
     name:
       - build-essential
+      - automake
       - pkg-config
       - linux-headers-amd64
       - libnl-genl-3-dev
