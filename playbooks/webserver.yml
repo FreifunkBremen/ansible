@@ -5,14 +5,6 @@
     alt_domain: ffhb.de
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
-  - { role: apt, tags: [apt] }
-  - { role: openssh, tags: [openssh] }
-  - { role: system, tags: [system] }
-  - { role: sudo, tags: [sudo] }
-  - { role: etckeeper, tags: [etckeeper] }
-  - { role: tmpfs, tags: [tmpfs] }
-  - { role: tools, tags: [tools] }
-  - { role: motd, tags: [motd] }
   - { role: chrony, tags: [chrony] }
   - { role: letsencrypt, tags: [letsencrypt] }
   - { role: apache, tags: [apache] }
@@ -24,7 +16,6 @@
   - { role: influxdb, tags: [influxdb] }
   - { role: grafana, tags: [grafana] }
   - { role: meshviewer, tags: [meshviewer] }
-  - { role: monitoring-client, tags: [monitoring-client] }
   - { role: restic, tags: [restic] }
   - { role: tasksite, tags: [tasksite] }
   - { role: etckeeper-post, tags: [etckeeper-post] }

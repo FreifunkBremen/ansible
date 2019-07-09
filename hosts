@@ -40,12 +40,6 @@ grp = inv.group("vmhosts")
 grp.host(0, "bre-1.bremen.freifunk.net")
 grp.host(0, "bre-2.bremen.freifunk.net")
 
-grp = inv.group("standardserver")
-grp.host(0, "mail.bremen.freifunk.net")
-grp.host(0, "syslog.bremen.freifunk.net")
-grp.host(0, "jenkins.bremen.freifunk.net")
-grp.child("vmhosts")
-
 grp = inv.group("ffmapserver")
 grp.host(0, "ffmap.bremen.freifunk.net")
 
@@ -59,5 +53,16 @@ grp.host(0, "monitoring.bremen.freifunk.net")
 grp = inv.group("backbone")
 grp.child("vpnservers")
 grp.child("downlinks")
+
+# alle Root-Server mit Standard-Config
+grp = inv.group("standardserver")
+grp.host(0, "mail.bremen.freifunk.net")
+grp.host(0, "syslog.bremen.freifunk.net")
+grp.host(0, "jenkins.bremen.freifunk.net")
+grp.child("vmhosts")
+grp.child("backbone")
+grp.child("webserver")
+grp.child("dnsserver")
+grp.child("ffmapserver")
 
 print inv.json_dump(indent=4)

@@ -3,12 +3,7 @@
   vars:
     batman_gateway: true
   roles:
-  - { role: etckeeper-pre, tags: [etckeeper-pre] }
-  - { role: apt, tags: [apt] }
-  - { role: openssh, tags: [openssh] }
-  - { role: rkhunter, tags: [rkhunter] }
-  - { role: etckeeper, tags: [etckeeper] }
-  - { role: monitoring-client, tags: [monitoring-client] }
+  - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
   - { role: batman-adv-14, tags: [batman-adv-14] }
   - { role: main-bridge, tags: [main-bridge] }
   - { role: fastd, tags: [fastd] }
@@ -20,10 +15,6 @@
   - { role: chrony, tags: [chrony] }
   - { role: unbound, tags: [unbound] }
   - { role: dnsmasq, tags: [dnsmasq] }
-  - { role: system, tags: [system] }
-  - { role: tmpfs, tags: [tmpfs] }
-  - { role: tools, tags: [tools] }
-  - { role: motd, tags: [motd] }
   - { role: nginx, tags: [nginx] }
   - { role: speedtest, tags: [speedtest] }
-  - { role: etckeeper-post, tags: [etckeeper-post] }
+  - { role: etckeeper-post, tags: [etckeeper-post, always] }

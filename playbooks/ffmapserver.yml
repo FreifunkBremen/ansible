@@ -16,11 +16,5 @@
         password: ""
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
-  - { role: apt, tags: [apt] }
-  - { role: openssh, tags: [openssh] }
-  - { role: system, tags: [system] }
-  - { role: tmpfs, tags: [tmpfs] }
-  - { role: tools, tags: [tools] }
-  - { role: motd, tags: [motd] }
   - { role: yanic, tags: [yanic] }
   - { role: etckeeper-post, tags: [etckeeper-post] }
