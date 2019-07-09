@@ -1,7 +1,7 @@
 ---
 - hosts: standardserver
   roles:
-  - { role: etckeeper-pre, tags: [etckeeper-pre] }
+  - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
   - { role: apt, tags: [apt] }
   - { role: openssh, tags: [openssh] }
   - { role: system, tags: [system] }
@@ -11,4 +11,4 @@
   - { role: rkhunter, tags: [rkhunter] }
   - { role: etckeeper, tags: [etckeeper] }
   - { role: monitoring-client, tags: [monitoring-client] }
-  - { role: etckeeper-post, tags: [etckeeper-post] }
+  - { role: etckeeper-post, tags: [etckeeper-post, always] }

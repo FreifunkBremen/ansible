@@ -4,17 +4,8 @@
     batman_gateway: false
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
-  - { role: apt, tags: [apt] }
-  - { role: openssh, tags: [openssh] }
-  - { role: rkhunter, tags: [rkhunter] }
-  - { role: etckeeper, tags: [etckeeper] }
-  - { role: monitoring-client, tags: [monitoring-client] }
   - { role: batman-adv-14, tags: [batman-adv-14] }
   - { role: main-bridge, tags: [main-bridge] }
   - { role: backbone-gre, tags: [backbone-gre] }
   - { role: chrony, tags: [chrony] }
-  - { role: system, tags: [system] }
-  - { role: tmpfs, tags: [tmpfs] }
-  - { role: tools, tags: [tools] }
-  - { role: motd, tags: [motd] }
   - { role: etckeeper-post, tags: [etckeeper-post, always] }
