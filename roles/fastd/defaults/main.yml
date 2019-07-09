@@ -17,4 +17,4 @@ fastd_legacy_interface: vpn-{{ site_code }}-legacy
 fastd_legacy_port: 10000
 fastd_legacy_mtu: 1426
 
-fastd_blacklist_git_commit: '57322c05c7f1535869b4acfd5ef4f588dfb74451'
+fastd_blacklist_git_commit: 'bd01a3fc0252ed8d42d36e2b4ad8ddbee57a5577'
