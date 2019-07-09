@@ -8,11 +8,9 @@
   apt:
     name: apt-transport-https
 
-- name: Install debian-goodies for checkrestart
+- name: Install needrestart
   apt:
-    name:
-      - debian-goodies
-      - lsof
+    name: needrestart
 
 - name: Configure periodic APT updates
   copy:
@@ -32,8 +30,3 @@
   copy:
     src: unattended-upgrades-dpkg.conf
     dest: /etc/apt/apt.conf.d/51unattended-upgrades
-
-- name: Configure APT to run checkrestart after updates
-  copy:
-    src: apt-checkrestart.conf
-    dest: /etc/apt/apt.conf.d/99checkrestart
