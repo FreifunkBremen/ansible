@@ -50,6 +50,7 @@ grp = inv.group("babelservers",
   firewall_enabled=True,
 )
 grp.host(4, "vpn04.bremen.freifunk.net")
+grp.host(9, "babel-gw-lwlcom.bremen.freifunk.net")
 grp.host(7, "ffhb.h.sum7.eu")
 
 grp = inv.group("eventsserver")

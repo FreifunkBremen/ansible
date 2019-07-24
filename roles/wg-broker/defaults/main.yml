@@ -1,15 +1,16 @@
 ---
-wgbroker_git_root: 'https://github.com/christf/wg-broker.git'
-wgbroker_git_commit: 'master'
+wgbroker_repository: "https://dl.ffm.freifunk.net/debian-packages/ sid main"
+wgbroker_repository_key: 390BF305
 
-wgbroker_port: 40999
+wgbroker_port: 1999
 wgbroker_max: 200
 
-wgbroker_wg_startport: 41000
-wgbroker_wg_endport: 42000
+wgbroker_wg_startport: 2000
+wgbroker_wg_endport: 2999
 wgbroker_wg_mtu: 1374
 wgbroker_wg_privkey: /etc/wg-broker/secret
 
 babel_port: 33123
 l3roamd_socket: /var/run/l3roamd.sock
+mmfd_socket: /var/run/mmfd.sock
 

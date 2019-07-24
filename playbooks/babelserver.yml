@@ -1,8 +1,5 @@
 ---
 - hosts: babelservers
-  vars:
-    mesh_announce_git_root: https://github.com/FreifunkBremen/mesh-announce
-    mesh_announce_git_commit: babel
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: apt, tags: [apt] }
@@ -10,7 +7,7 @@
   - { role: rkhunter, tags: [rkhunter] }
   - { role: etckeeper, tags: [etckeeper] }
   - { role: monitoring-client, tags: [monitoring-client] }
-  - { role: mesh-announce, tags: [mesh-announce] }
+  - { role: respondd, tags: [respondd] }
   - { role: babeld,  tags: [ babeld, babel ] }
   - { role: l3roamd,  tags: [ l3roamd, babel ] }
   - { role: mmfd,  tags: [ mmfd, babel ] }

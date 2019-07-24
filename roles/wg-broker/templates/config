@@ -8,4 +8,4 @@ WAN="{{ ansible_default_ipv4.interface }}"	# accepting inbound wireguard connect
 MAXCONNECTIONS={{ wgbroker_max }}	# allow MAXCONNECTIONS concurrent vpn connections
 PRIVATEKEY={{ wgbroker_wg_privkey }}	# this file contains the secret key
 L3ROAMDSOCK={{ l3roamd_socket }}	# this is the l3roamd socket
-
+MMFDSOCK={{ mmfd_socket }}		# this is the mmfd socket
