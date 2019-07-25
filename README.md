@@ -91,13 +91,26 @@ On this way the other vpns got the new internal routing in ```bird``` and ```bir
 
 ## Babel
 
+**NAT64**
+
 if installed nat64 maybe extends port pool by reconfigure local range `sysctl net.ipv4.ip_local_port_range`
+
+Or use other address-pool (and firewall)  `/etc/systemd/system/jool.service`:
+```
+...
+ExecStart=/usr/local/bin/jool instance add --iptables --pool6=64:ff9b::/96
+ExecStartPost=/usr/local/bin/jool pool4 add --icmp 185.117.213.250 1601:3000
+ExecStartPost=/usr/local/bin/jool pool4 add --udp  185.117.213.250 3001:65535
+ExecStartPost=/usr/local/bin/jool pool4 add --tcp  185.117.213.250 1601:65535
+...
+```
+
 
 ### Babel Gateway
 A babel gateway is a maschine which allow to exit ipv6 default route and recieve the client and nodes subnet
 
 Such a gateway need some special configuration.
-- (A bigget nat64 whould be nice)
+- (A bigger nat64 whould be nice)
 - ip routes for exit
 	- `post-up  ip -r r add default via 2a06:8782:ff00::1 dev $IFACE proto 159 table default-freifunk`
 	- firewall rules /etc/firewall.d/20-exit 
@@ -123,3 +136,4 @@ TODO: respondd firewall:
 ipt6 -A INPUT -i babel-+ -p udp --dport 1001 -j ACCEPT
 ipt6 -A INPUT -i mmfd0 -p udp --dport 1001 -j ACCEPT
 ```
+
