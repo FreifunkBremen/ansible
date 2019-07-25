@@ -91,6 +91,8 @@ On this way the other vpns got the new internal routing in ```bird``` and ```bir
 
 ## Babel
 
+if installed nat64 maybe extends port pool by reconfigure local range `sysctl net.ipv4.ip_local_port_range`
+
 ### Babel Gateway
 A babel gateway is a maschine which allow to exit ipv6 default route and recieve the client and nodes subnet
 
