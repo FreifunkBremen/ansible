@@ -5,7 +5,7 @@ After=basic.target network.target babeld.service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mmfd
+ExecStart=/usr/local/bin/mmfd -s /var/run/mmfd.sock -i babel-ffhb
 KillMode=process
 Restart=always
 RestartSec=3
