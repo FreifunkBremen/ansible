@@ -1,9 +1,6 @@
 [Unit]
 Description=Firewall
-DefaultDependencies=no
 Before=network.target
-Requires=systemd-modules-load.service local-fs.target
-After=systemd-modules-load.service local-fs.target
 
 [Service]
 Type=oneshot

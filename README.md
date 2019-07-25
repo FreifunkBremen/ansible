@@ -87,3 +87,27 @@ Add your new VPN to the [IC-VPN-Meta](https://github.com/freifunk/icvpn-meta) to
 Ask to other VPN-Owner to run ansible again.
 On this way the other vpns got the new internal routing in ```bird``` and ```bird6```.
 [See here](https://github.com/FreifunkBremen/ansible/tree/master/roles/router-bird/templates)
+
+
+## Babel
+
+### Babel Gateway
+A babel gateway is a maschine which allow to exit ipv6 default route and recieve the client and nodes subnet
+
+Such a gateway need some special configuration.
+- (A bigget nat64 whould be nice)
+- ip routes for exit
+	- firewall rules /etc/firewall.d/20-exit 
+		```
+		ipt6 -A FORWARD -o ens3 -i babel-+ -j ACCEPT
+		ipt6 -A FORWARD -i ens3 -o babel-+ -j ACCEPT
+		```
+
+- maybe run yanic to collect and forward stats data
+- tunnel to babel vpn
+	- add to /etc/babeld.conf
+	- to /etc/systemd/system/mmfd.service
+
+### Babel VPN
+A babel vpn is a maschine which recieve VPN connection and "forward" them to a gateway.
+It could run nat64 at his own and exit ipv4.
