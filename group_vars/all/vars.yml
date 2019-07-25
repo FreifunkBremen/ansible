@@ -4,5 +4,6 @@ site_git_root:        'https://github.com/FreifunkBremen'
 site_city:            'bremen'
 site_domain:          'bremen.freifunk.net'
 site_vpn_prefix:      'vpn'
+freifunk_site_code:   'ffhb'
 icvpn_as:             65196
 fastd_peers_limit:    200

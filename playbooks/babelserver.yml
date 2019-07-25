@@ -1,5 +1,11 @@
 ---
 - hosts: babelservers
+  vars:
+    yanic_respondd: true
+    yanic_version: respondd
+    yanic_respondd_batman: []
+    yanic_respondd_listen_clientdev:
+      - babel-ffhb
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: apt, tags: [apt] }

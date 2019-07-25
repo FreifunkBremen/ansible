@@ -97,6 +97,7 @@ A babel gateway is a maschine which allow to exit ipv6 default route and recieve
 Such a gateway need some special configuration.
 - (A bigget nat64 whould be nice)
 - ip routes for exit
+	- `post-up  ip -r r add default via 2a06:8782:ff00::1 dev $IFACE proto 159 table default-freifunk`
 	- firewall rules /etc/firewall.d/20-exit 
 		```
 		ipt6 -A FORWARD -o ens3 -i babel-+ -j ACCEPT
@@ -104,6 +105,8 @@ Such a gateway need some special configuration.
 		```
 
 - maybe run yanic to collect and forward stats data
+	- firewall for respondd
+	- firewall for yanic
 - tunnel to babel vpn
 	- add to /etc/babeld.conf
 	- to /etc/systemd/system/mmfd.service
@@ -111,3 +114,10 @@ Such a gateway need some special configuration.
 ### Babel VPN
 A babel vpn is a maschine which recieve VPN connection and "forward" them to a gateway.
 It could run nat64 at his own and exit ipv4.
+
+TODO: respondd firewall:
+```
+# babel
+ipt6 -A INPUT -i babel-+ -p udp --dport 1001 -j ACCEPT
+ipt6 -A INPUT -i mmfd0 -p udp --dport 1001 -j ACCEPT
+```
