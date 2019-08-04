@@ -1,5 +1,5 @@
 # clear all tables, not only filter
-for table in $(grep -oP '(?<=^iptable_)\S*' /proc/modules); do
+for table in $(iptables-save | grep '^*' | cut -d'*' -f2); do
     ipt -t $table -F
     ipt -t $table -X
 done
