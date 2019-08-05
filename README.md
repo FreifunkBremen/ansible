@@ -99,9 +99,9 @@ Or use other address-pool (and firewall)  `/etc/systemd/system/jool.service`:
 ```
 ...
 ExecStart=/usr/local/bin/jool instance add --iptables --pool6=64:ff9b::/96
-ExecStartPost=/usr/local/bin/jool pool4 add --icmp 185.117.213.250 1601:3000
-ExecStartPost=/usr/local/bin/jool pool4 add --udp  185.117.213.250 3001:65535
-ExecStartPost=/usr/local/bin/jool pool4 add --tcp  185.117.213.250 1601:65535
+ExecStartPost=/usr/local/bin/jool pool4 add --icmp 185.117.213.250 1601-3000
+ExecStartPost=/usr/local/bin/jool pool4 add --udp  185.117.213.250 3001-65535
+ExecStartPost=/usr/local/bin/jool pool4 add --tcp  185.117.213.250 1601-65535
 ...
 ```
 
