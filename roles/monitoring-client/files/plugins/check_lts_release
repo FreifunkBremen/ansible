@@ -85,10 +85,13 @@ else
           EXPIRE_DATE=20180531
         ;;
         jessie)
-          EXPIRE_DATE=20200430
+          EXPIRE_DATE=20200630
         ;;
         stretch)
-          ERR_CODE=$STATE_OK
+          EXPIRE_DATE=20220630
+        ;;
+        buster)
+          EXPIRE_DATE=20240630
         ;;
         *)
           ERR_CODE=$STATE_UNKNOWN
