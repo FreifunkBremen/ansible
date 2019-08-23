@@ -56,6 +56,7 @@ grp.child("downlinks")
 
 # alle Root-Server mit Standard-Config
 grp = inv.group("standardserver")
+grp.host(0, "bgp-plutex01.bremen.freifunk.net")
 grp.host(0, "mail.bremen.freifunk.net")
 grp.host(0, "syslog.bremen.freifunk.net")
 grp.host(0, "jenkins.bremen.freifunk.net")
