@@ -37,8 +37,8 @@
       - nagios-plugins-basic
       - nagios-plugins-standard
       - needrestart
-  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version < 8) or
-        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < 16)
+  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version is version_compare("8", "<")) or
+        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version is version_compare("16", "<"))
 
 - name: Install Nagios checks for debian jessie
   apt:
@@ -46,8 +46,8 @@
       - monitoring-plugins-basic
       - monitoring-plugins-standard
       - needrestart
-  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version >= 8) or
-        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version >= 16)
+  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version is version_compare("8", ">=")) or
+        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version is version_compare("16", ">="))
 
 - name: Create directory for additional checks
   file:
