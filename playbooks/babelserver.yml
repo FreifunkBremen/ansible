@@ -7,6 +7,7 @@
     yanic_respondd_batman: []
     yanic_respondd_listen_clientdev:
       - babel-ffhb
+      - mmfd0
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: apt, tags: [apt] }
