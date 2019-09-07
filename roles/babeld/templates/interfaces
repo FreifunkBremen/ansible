@@ -19,9 +19,13 @@ iface {{ babel_bridge }} inet6 static
 	pre-down ip -6 rule del to {{ ipv6_babelmesh_network }} table {{ ffhb_routing_table }} priority 16385
 	post-up  ip -6 rule add to {{ ipv6_babelclient_network }} table {{ ffhb_routing_table }} priority 16385
 	pre-down ip -6 rule del to {{ ipv6_babelclient_network }} table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add to fd2f:5119:f2c:624::/48 table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del to fd2f:5119:f2c:624::/48 table {{ ffhb_routing_table }} priority 16385
 	post-up  ip -6 rule add from {{ ipv6_babelmesh_network }} table {{ ffhb_routing_table }} priority 16385
 	pre-down ip -6 rule del from {{ ipv6_babelmesh_network }} table {{ ffhb_routing_table }} priority 16385
 	post-up  ip -6 rule add from {{ ipv6_babelclient_network }} table {{ ffhb_routing_table }} priority 16385
 	pre-down ip -6 rule del from {{ ipv6_babelclient_network }} table {{ ffhb_routing_table }} priority 16385
+	post-up  ip -6 rule add from fd2f:5119:f2c:624::/48 table {{ ffhb_routing_table }} priority 16385
+	pre-down ip -6 rule del from fd2f:5119:f2c:624::/48 table {{ ffhb_routing_table }} priority 16385
 
 	post-up  ip -r r add {{ babel_ipv6_mesh.address }}/128 dev $IFACE proto 159 table {{ ffhb_routing_table }}
