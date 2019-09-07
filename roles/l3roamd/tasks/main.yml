@@ -22,3 +22,9 @@
   notify:
   - reload systemd
   - restart l3roamd
+
+- name: Autostart l3roamd
+  service:
+    name: l3roamd
+    enabled: yes
+    state: started
