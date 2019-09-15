@@ -2,7 +2,6 @@
 - name: Add user for nagios
   user:
     name: rnagios
-    uid: 996
     home: /var/lib/rnagios
     shell: /bin/bash
     system: yes
