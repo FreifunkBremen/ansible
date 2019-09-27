@@ -1,13 +1,4 @@
 ---
-- name: Add repository-gpg-key for fastd
-  apt_key:
-    keyserver: "{{ pgp_keyserver }}"
-    id: "{{ fastd_repository_key }}"
-
-- name: Add apt repository
-  apt_repository:
-    repo: 'deb {{ fastd_repository_url }}'
-
 - name: Install fastd
   apt:
     name: fastd
