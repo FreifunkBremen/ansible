@@ -1,29 +1,32 @@
 ---
 # tasks file for batman-adv-14
-- name: Add repository key for batman-adv compat 14
-  apt_key:
-    keyserver: "{{ pgp_keyserver }}"
-    id: "{{ batman_adv_14_repository_key }}"
-
-- name: Add repository for batman-adv compat 14
-  apt_repository:
-    repo: "deb {{ batman_adv_14_repository }}"
+- name: Remove old repository
+  apt:
+    name: batman-adv-dkms
+    state: absent
+    purge: yes
 
 - name: Install batman-adv dependencies
   apt:
     name:
+      - dkms
       - lsof
       - linux-headers-amd64
-      - batman-adv-dkms
+
+- name: Clone blacklist repository
+  git:
+    repo: "{{ batman_adv_14_repository }}"
+    dest: "/usr/src/batman-adv-legacy-2013.4.0"
+    version: "{{ batman_adv_14_git_commit }}"
 
 - name: Copy kernel postinst downgrade hook
   copy:
     src: dkms-batman-adv-downgrade
-    dest: /etc/kernel/postinst.d/dkms-batman-adv-downgrade
+    dest: /etc/kernel/postinst.d/00dkms-batman-adv-downgrade
     mode: 0755
 
 - name: Ensure correct version was installed
-  shell: /etc/kernel/postinst.d/dkms-batman-adv-downgrade $(uname -r)
+  shell: /etc/kernel/postinst.d/00dkms-batman-adv-downgrade $(uname -r)
   register: batman_adv_version_result
   changed_when: '"already installed" not in batman_adv_version_result.stderr'
 
