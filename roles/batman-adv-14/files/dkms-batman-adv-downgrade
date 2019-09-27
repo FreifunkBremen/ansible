@@ -2,7 +2,7 @@
 
 # We're passed the version of the kernel being installed
 inst_kern=$1
-pkg_name=batman-adv
+pkg_name=batman-adv-legacy
 pkg_ver=2013.4.0
 module_name=$pkg_name
 
