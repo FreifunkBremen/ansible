@@ -1,3 +1,4 @@
 ---
+batman_adv_14_apt_repository: 'https://repo.universe-factory.net/debian/ sid main'
 batman_adv_14_repository: 'https://github.com/freifunk-gluon/batman-adv-legacy'
 batman_adv_14_git_commit: '90b4d1511cd7bd3e0802412ca6d1b90e964d8691'

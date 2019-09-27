@@ -1,6 +1,11 @@
 ---
 # tasks file for batman-adv-14
 - name: Remove old repository
+  apt_repository:
+    repo: "deb {{ batman_adv_14_apt_repository }}"
+    state: absent
+
+- name: Remove old dkms package
   apt:
     name: batman-adv-dkms
     state: absent
@@ -13,11 +18,16 @@
       - lsof
       - linux-headers-amd64
 
-- name: Clone blacklist repository
+- name: Clone batman-adv repo
   git:
     repo: "{{ batman_adv_14_repository }}"
     dest: "/usr/src/batman-adv-legacy-2013.4.0"
     version: "{{ batman_adv_14_git_commit }}"
+
+- name: Add repo to dkms
+  shell: dkms add -m batman-adv-legacy -v 2013.4.0
+  args:
+    creates: /var/lib/dkms/batman-adv-legacy/2013.4.0/source/Makefile
 
 - name: Copy kernel postinst downgrade hook
   copy:
