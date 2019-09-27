@@ -38,11 +38,12 @@ case "${uname_s}" in
     ;;
 esac
 
-if dkms status $pkg_name/$pkg_ver -k $inst_kern | grep -q ' installed$'; then
+if dkms status -m $pkg_name -v $pkg_ver -k $inst_kern | grep -q ' installed$'; then
     echo "$pkg_name in version $pkg_ver already installed." >&2
 else
-    dkms uninstall $pkg_name/$pkg_ver -k $inst_kern || true
-    dkms install --force $pkg_name/$pkg_ver -k $inst_kern
+    dkms remove -m $pkg_name -v $pkg_ver -k $inst_kern || true
+    dkms build -m $pkg_name -v $pkg_ver -k $inst_kern
+    dkms install -m $pkg_name -v $pkg_ver --force -k $inst_kern
 fi
 
 if ! _check_kernel_dir $inst_kern ; then
