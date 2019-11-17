@@ -30,7 +30,6 @@
   - /home/{{ downloads_user }}/.ssh
   - /home/{{ downloads_user }}/.var/run
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}
-  - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/data/nodes
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/firmware/all
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/opkg/modules
   - /var/www/{{ downloads_user }}/domains/{{ downloads_domain }}/video

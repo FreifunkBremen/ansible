@@ -58,8 +58,6 @@
   git:
     repo: "{{ wiki_content_git_root }}"
     dest: "/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen"
-    force: yes
-    version: "{{ wiki_content_git_commit }}"
   become: yes
   become_user: "{{ wiki_user }}"
 
