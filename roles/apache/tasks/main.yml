@@ -121,12 +121,6 @@
     - unique_id
   notify: restart apache
 
-- name: Create directory for log files
-  file:
-    path: /readonly
-    state: directory
-    mode: 0755
-
 - name: Copy logrotate job
   copy:
     src: logrotate-apache2-user

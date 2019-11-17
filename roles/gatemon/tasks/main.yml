@@ -7,7 +7,7 @@
 
 - name: Create directory for Apache log files
   file:
-    path: "/readonly/{{ gatemon_user }}/log"
+    path: "/var/log/apache2/{{ gatemon_user }}"
     state: directory
     owner: root
     group: "{{ gatemon_group }}"

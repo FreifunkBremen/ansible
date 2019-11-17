@@ -12,7 +12,7 @@
 
 - name: Create directory for Apache log files
   file:
-    path: "/readonly/{{ downloads_user }}/log"
+    path: "/var/log/apache2/{{ downloads_user }}"
     state: directory
     owner: root
     group: "{{ downloads_group }}"
