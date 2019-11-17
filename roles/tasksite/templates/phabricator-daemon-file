@@ -1,0 +1,19 @@
+{
+    "daemonize": false,
+    "daemons": [
+        {
+            "class": "PhabricatorRepositoryPullLocalDaemon",
+            "label": "PhabricatorRepositoryPullLocalDaemon"
+        },
+        {
+            "class": "PhabricatorTriggerDaemon",
+            "label": "PhabricatorTriggerDaemon"
+        },
+        {
+            "class": "PhabricatorTaskmasterDaemon",
+            "label": "PhabricatorTaskmasterDaemon"
+        }
+    ],
+    "log": "/home/{{ tasks_user }}/.var/tmp/log/daemons.log",
+    "piddir": "/home/{{ tasks_user }}/.var/tmp/pid"
+}

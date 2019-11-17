@@ -83,13 +83,6 @@
     priv: '`phabricator\_%`.*:ALL'
     state: present
 
-- name: Create daemontools folder
-  shell: /usr/local/bin/ffhb-setup-svscan
-  args:
-    creates: /home/{{ tasks_user }}/.config/service
-  become: yes
-  become_user: "{{ tasks_user }}"
-
 # Apache
 - name: Get letsencrypt certificates
   lineinfile:
@@ -112,14 +105,6 @@
   notify: restart apache
 
 # Phabricator
-- name: Install php_env.sh script
-  copy:
-    src: php_env.sh
-    dest: "/home/{{ tasks_user }}/.local/bin/"
-    owner: "{{ tasks_user }}"
-    group: "{{ tasks_group }}"
-    mode: 0700
-
 - name: Install Phabricator components
   git:
     repo: "https://github.com/phacility/{{ item.name }}.git"
@@ -181,38 +166,25 @@
   args:
     chdir: "/var/www/{{ tasks_user }}/opt/phabricator/phabricator"
 
-- name: Create Phabricator daemontools folders
-  file:
-    path: "/home/{{ tasks_user }}/.config/etc/{{ item }}"
-    state: directory
-    recurse: yes
-    owner: "{{ tasks_user }}"
-    group: "{{ tasks_group }}"
-    mode: 0755
-  with_items:
-    - run-phabricator
-    - run-phabricator/log
-
-- name: Copy start script of Phabricator
+# Start daemons
+- name: Copy phabricator.service unit
   template:
-    src: run-phabricator
-    dest: "/home/{{ tasks_user }}/.config/etc/run-phabricator/run"
+    src: phabricator.service
+    dest: "/home/{{ tasks_user }}/.config/systemd/user/"
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
-    mode: 0755
+    mode: 0644
 
-- name: Copy log script of Phabricator
-  copy:
-    src: run-log
-    dest: "/home/{{ tasks_user }}/.config/etc/run-phabricator/log/run"
-    owner: "{{ tasks_user }}"
-    group: "{{ tasks_group }}"
-    mode: 0755
+- name: Enable and start phabricator.service
+  systemd:
+    name: phabricator.service
+    state: started
+    enabled: yes
+    scope: user
+  become: yes
+  become_user: "{{ tasks_user }}"
 
-- name: Create symlink to start Phabricator
-  file:
-    src: "/home/{{ tasks_user }}/.config/etc/run-phabricator"
-    dest: "/home/{{ tasks_user }}/.config/service/phabricator"
-    state: link
-    owner: "{{ tasks_user }}"
-    group: "{{ tasks_group }}"
+- name: Enable linger for user systemd instance
+  command: loginctl enable-linger {{ tasks_user|quote }}
+  args:
+    creates: /var/lib/systemd/linger/{{ tasks_user|quote }}

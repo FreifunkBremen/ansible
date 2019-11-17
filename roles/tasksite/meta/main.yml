@@ -3,7 +3,6 @@ dependencies:
   - apt
   - sudo
   - tools
-  - daemontools
   - apache
   - letsencrypt
   - php

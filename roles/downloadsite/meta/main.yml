@@ -3,7 +3,6 @@ dependencies:
   - tools
   - apache
   - letsencrypt
-  - daemontools
 galaxy_info:
   platforms:
     - name: Debian

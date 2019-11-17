@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Tessera map tile renderer
+
+[Service]
+Environment=MAPNIK_FONT_PATH=%h/.fonts
+
+MemoryMax=2G
+SyslogIdentifier=%p
+ExecStart=%h/node_modules/tessera/bin/tessera.js -p {{ tiles_tessera_port }} -b 127.0.0.1 tmstyle://./mapbox-studio-osm-bright.tm2
+
+[Install]
+WantedBy=default.target
