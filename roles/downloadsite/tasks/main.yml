@@ -89,48 +89,29 @@
 - name: Copy rsync daemon config
   template:
     src: rsyncd.conf
-    dest: "/home/{{ downloads_user }}/.config/etc/rsyncd.conf"
+    dest: "/home/{{ downloads_user }}/.config/rsyncd.conf"
     owner: "{{ downloads_user }}"
     group: "{{ downloads_group }}"
     mode: 0644
 
-- name: Create daemontools folder
-  shell: /usr/local/bin/ffhb-setup-svscan creates=/home/{{ downloads_user }}/.config/service
+- name: Copy rsync.service unit
+  copy:
+    src: rsync.service
+    dest: "/home/{{ downloads_user }}/.config/systemd/user/"
+    owner: "{{ downloads_user }}"
+    group: "{{ downloads_group }}"
+    mode: 0644
+
+- name: Enable and start rsync.service
+  systemd:
+    name: rsync.service
+    scope: user
+    state: started
+    enabled: yes
   become: yes
   become_user: "{{ downloads_user }}"
 
-- name: Create rsync daemontools folders
-  file:
-    path: "/home/{{ downloads_user }}/.config/etc/{{ item }}"
-    state: directory
-    recurse: yes
-    owner: "{{ downloads_user }}"
-    group: "{{ downloads_group }}"
-    mode: 0755
-  with_items:
-    - run-rsync
-    - run-rsync/log
-
-- name: Copy start script of rsync
-  template:
-    src: run
-    dest: "/home/{{ downloads_user }}/.config/etc/run-rsync/run"
-    owner: "{{ downloads_user }}"
-    group: "{{ downloads_group }}"
-    mode: 0755
-
-- name: Copy log script of rsync
-  copy:
-    src: run-log
-    dest: "/home/{{ downloads_user }}/.config/etc/run-rsync/log/run"
-    owner: "{{ downloads_user }}"
-    group: "{{ downloads_group }}"
-    mode: 0755
-
-- name: Create symlink to start rsync
-  file:
-    src: "/home/{{ downloads_user }}/.config/etc/run-rsync"
-    dest: "/home/{{ downloads_user }}/.config/service/rsync"
-    state: link
-    owner: "{{ downloads_user }}"
-    group: "{{ downloads_group }}"
+- name: Enable linger for user systemd instance
+  command: loginctl enable-linger {{ downloads_user|quote }}
+  args:
+    creates: /var/lib/systemd/linger/{{ downloads_user|quote }}

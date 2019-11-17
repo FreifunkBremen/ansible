@@ -76,50 +76,28 @@
   - OpenSans-Semibold.ttf
 
 ### Setup autostart
-- name: Create daemontools folder
-  shell: /usr/local/bin/ffhb-setup-svscan
-  args:
-    creates: "/home/{{ tiles_user }}/.config/service"
+- name: Copy tessera.service unit
+  template:
+    src: tessera.service
+    dest: "/home/{{ tiles_user }}/.config/systemd/user/"
+    owner: "{{ tiles_user }}"
+    group: "{{ tiles_group }}"
+    mode: 0644
+  notify: restart tessera
+
+- name: Enable and start tessera.service
+  systemd:
+    name: tessera.service
+    scope: user
+    state: started
+    enabled: yes
   become: yes
   become_user: "{{ tiles_user }}"
 
-- name: Create tessera daemontools folders
-  file:
-    path: "/home/{{ tiles_user }}/.config/etc/{{ item }}"
-    state: directory
-    recurse: yes
-    owner: "{{ tiles_user }}"
-    group: "{{ tiles_group }}"
-    mode: 0755
-  with_items:
-    - run-tessera
-    - run-tessera/log
-
-- name: Copy start script of tessera
-  template:
-    src: run
-    dest: "/home/{{ tiles_user }}/.config/etc/run-tessera/run"
-    owner: "{{ tiles_user }}"
-    group: "{{ tiles_group }}"
-    mode: 0755
-  notify: restart tessera
-
-- name: Copy log script of tessera
-  copy:
-    src: run-log
-    dest: "/home/{{ tiles_user }}/.config/etc/run-tessera/log/run"
-    owner: "{{ tiles_user }}"
-    group: "{{ tiles_group }}"
-    mode: 0755
-  notify: restart tessera log
-
-- name: Create symlink to start tessera
-  file:
-    src: "/home/{{ tiles_user }}/.config/etc/run-tessera"
-    dest: "/home/{{ tiles_user }}/.config/service/tessera"
-    state: link
-    owner: "{{ tiles_user }}"
-    group: "{{ tiles_group }}"
+- name: Enable linger for user systemd instance
+  command: loginctl enable-linger {{ tiles_user|quote }}
+  args:
+    creates: /var/lib/systemd/linger/{{ tiles_user|quote }}
 
 ### Configure apache
 - name: Enable Apache cache modules

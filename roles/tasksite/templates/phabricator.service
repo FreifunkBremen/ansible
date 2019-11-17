@@ -1,0 +1,13 @@
+[Unit]
+Description=Phabricator project management system
+
+[Service]
+Environment=PHP_INI_SCAN_DIR=:%h/.config/etc/php
+Environment=INSTALL_ROOT=/var/www/{{ tasks_user }}/opt/phabricator
+Environment=PHD_TMP_DIR=%h/.var/tmp/phabricator
+SyslogIdentifier=%p
+ExecStartPre=/bin/mkdir -p ${PHD_TMP_DIR}/pid ${PHD_TMP_DIR}/log
+ExecStart=/bin/sh -c "exec /var/www/{{ tasks_user }}/opt/phabricator/phabricator/scripts/daemon/phd-daemon < .config/phabricator-daemon-file"
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=fast remote file copy program daemon
+
+[Service]
+ExecStart=/usr/bin/rsync --no-detach --daemon --config .config/rsyncd.conf
+
+[Install]
+WantedBy=default.target

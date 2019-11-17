@@ -2,7 +2,6 @@
 dependencies:
   - apache
   - apt
-  - daemontools
   - git
   - letsencrypt
   - ruby

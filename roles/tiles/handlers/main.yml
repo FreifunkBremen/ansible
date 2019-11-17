@@ -1,6 +1,6 @@
 ---
 - name: restart tessera
-  command: svc -t /home/{{ tiles_user }}/.config/etc/run-tessera
-
-- name: restart tessera log
-  command: svc -t /home/{{ tiles_user }}/.config/etc/run-tessera/log
+  systemd:
+    name: tessera.service
+    scope: user
+    state: restarted
