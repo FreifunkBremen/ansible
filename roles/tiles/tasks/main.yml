@@ -18,7 +18,7 @@
 
 - name: Create directory for Apache log files
   file:
-    path: "/readonly/{{ tiles_user }}/log"
+    path: "/var/log/apache2/{{ tiles_user }}"
     state: directory
     owner: root
     group: "{{ tiles_group }}"
