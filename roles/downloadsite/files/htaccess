@@ -8,4 +8,5 @@ AddDescription "Knotendaten für <a href=\"http://bremen.freifunk.net/map/list.h
 AddDescription "Aktuelle Firmware, s.a. <a href=\"http://wiki.bremen.freifunk.net/Firmware-flashen\">Anleitung zum Flashen</a>" firmware
 AddDescription "\"Freifunk verbindet!\"-Video" video
 AddOutputFilter DEFLATE json
+AddType text/plain manifest
 Header set Access-Control-Allow-Origin "*"
