@@ -3,6 +3,8 @@ Description=fast remote file copy program daemon
 
 [Service]
 ExecStart=/usr/bin/rsync --no-detach --daemon --config .config/rsyncd.conf
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=default.target

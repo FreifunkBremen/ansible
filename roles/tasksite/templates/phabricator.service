@@ -8,6 +8,8 @@ Environment=PHD_TMP_DIR=%h/.var/tmp/phabricator
 SyslogIdentifier=%p
 ExecStartPre=/bin/mkdir -p ${PHD_TMP_DIR}/pid ${PHD_TMP_DIR}/log
 ExecStart=/bin/sh -c "exec /var/www/{{ tasks_user }}/opt/phabricator/phabricator/scripts/daemon/phd-daemon < .config/phabricator-daemon-file"
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=default.target
