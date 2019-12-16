@@ -5,21 +5,9 @@
 
 - name: Copy Configuration
   copy:
-    src: "{{ item }}"
-    dest: "/etc/unbound/unbound.conf.d/{{ item }}"
+    src: "unbound.conf.d/"
+    dest: "/etc/unbound/unbound.conf.d/"
     mode: 0644
-  with_items:
-    - caching-timeouts.conf
-    - caching-tweaking.conf
-    - disable-dnssec.conf
-    - edns-buffer-size.conf
-    - harden-glue.conf
-    - hide-version.conf
-    - jostle-timeout.conf
-    - minimal-responses.conf
-    - no-logging.conf
-    - number-of-threads.conf
-    - root-hints.conf
   notify: restart unbound
 
 - name: Fix unbound default config
