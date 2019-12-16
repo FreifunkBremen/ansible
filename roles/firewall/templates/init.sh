@@ -47,6 +47,7 @@ ipt6() {
 case "$1" in
 start|restart)
 	for rule in "$RULEPATH"/*; do
+		# shellcheck disable=SC1090
 		. "$rule"
 	done
 	;;
