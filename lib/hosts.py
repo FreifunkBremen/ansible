@@ -135,7 +135,11 @@ class Group:
         decrypted = gpg.decrypt_file(f)
         if decrypted.ok:
           import yaml
-          vars.update(yaml.load(str(decrypted)))
+          try:
+            from yaml import CLoader as Loader, CDumper as Dumper
+          except ImportError:
+            from yaml import Loader, Dumper
+          vars.update(yaml.load(str(decrypted), Loader=Loader))
         else:
           print("There are secret variables for the host {}, but you don't have access to them.".format(hostname), file=sys.stderr)
     except IOError:
