@@ -8,7 +8,7 @@
 - name: Load modules needed for sysctl configs early
   lineinfile:
     dest: /etc/modules
-    line: nf_conntrack_ipv4
+    line: nf_conntrack
 
 - name: Setting hostname
   hostname:
