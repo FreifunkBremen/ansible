@@ -1,5 +1,6 @@
 #! /usr/bin/env sh
 
+# shellcheck disable=SC1091
 . /etc/profile
 
 set -eu

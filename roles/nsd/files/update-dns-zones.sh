@@ -12,8 +12,8 @@ fi
 
 git -C "$DNS_ZONES_FOLDER" pull
 
-for DNS_ZONE in ${DNS_ZONES_FOLDER}/*.zone; do
-  if ! nsd-checkzone "$(basename ${DNS_ZONE} '.zone')" "${DNS_ZONE}"; then
+for DNS_ZONE in "${DNS_ZONES_FOLDER}/"*.zone; do
+  if ! nsd-checkzone "$(basename "$DNS_ZONE" '.zone')" "$DNS_ZONE"; then
     continue
   fi
 
@@ -23,8 +23,8 @@ for DNS_ZONE in ${DNS_ZONES_FOLDER}/*.zone; do
   nsd-control reconfig >/dev/null
 
   # Reload zone
-  nsd-control reload "$(basename ${DNS_ZONE} '.zone')"
+  nsd-control reload "$(basename "$DNS_ZONE" '.zone')"
 
   # Notify slaves about changed zones
-  nsd-control notify "$(basename ${DNS_ZONE} '.zone')"
+  nsd-control notify "$(basename "$DNS_ZONE" '.zone')"
 done
