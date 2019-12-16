@@ -16,8 +16,8 @@ iface {{ icvpn_interface }} inet6 static
 	address {{ icvpn_ipv6.address }}
 	netmask {{ icvpn_ipv6.size }}
 	# network route in {{ ffhb_routing_table }}
-	post-up  ip -4 route add {{ icvpn_ipv6_prefix }} dev $IFACE table {{ ffhb_routing_table }}
-	pre-down ip -4 route del {{ icvpn_ipv6_prefix }} dev $IFACE table {{ ffhb_routing_table }}
+	post-up  ip -6 route add {{ icvpn_ipv6_prefix }} dev $IFACE table {{ ffhb_routing_table }}
+	pre-down ip -6 route del {{ icvpn_ipv6_prefix }} dev $IFACE table {{ ffhb_routing_table }}
 	# prevent leak of data
 	post-up ip -6 rule add from {{ icvpn_ipv6.address }} table {{ ffhb_routing_table }} priority 16389
 	pre-down ip -6 rule del from {{ icvpn_ipv6.address }} table {{ ffhb_routing_table }} priority 16389
