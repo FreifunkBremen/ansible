@@ -34,11 +34,10 @@
     name: firewall
     enabled: yes
 
-- name: Add nf_conntrack_ipv4 to /etc/modules
+- name: Add nf_conntrack to /etc/modules
   lineinfile:
     dest: /etc/modules
-    regexp: "nf_conntrack_ipv4"
-    line: nf_conntrack_ipv4
+    line: nf_conntrack
 
 - name: Copy sysctl file for conntrack
   copy:
