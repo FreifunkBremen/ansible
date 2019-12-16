@@ -30,7 +30,6 @@
     mode: 0755
   with_items:
     - tinc-down
-    - tinc-up
 
 - name: Add network configuration
   template:
