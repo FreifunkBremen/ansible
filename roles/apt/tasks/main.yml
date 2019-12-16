@@ -22,9 +22,29 @@
     name: unattended-upgrades
 
 - name: Configure unattended-upgrades
-  copy:
-    src: unattended-upgrades.conf
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+  lineinfile:
+    path: '/etc/apt/apt.conf.d/50unattended-upgrades'
+    line: '{{ item.key }} "{{ item.value }}";'
+    regexp: '^\s*(//\s*)?{{ item.key | regex_escape() }}\b'
+  loop:
+  - key: 'Unattended-Upgrade::MinimalSteps'
+    value: 'true'
+  - key: 'Unattended-Upgrade::Mail'
+    value: 'root'
+  - key: 'Unattended-Upgrade::MailOnlyOnError'
+    value: 'true'
+
+- name: Configure unattended-upgrades origins
+  lineinfile:
+    path: '/etc/apt/apt.conf.d/50unattended-upgrades'
+    line: '        "{{ item }}";'
+    insertafter: 'Unattended-Upgrade::Origins-Pattern\s*{'
+    regexp: '^\s*(//\s*)?"{{ item | regex_escape() }}";$'
+  loop:
+  - 'origin=Debian,codename=${distro_codename}-updates'
+  - 'origin=Debian,codename=${distro_codename}-proposed-updates'
+  - 'origin=Debian,codename=${distro_codename},label=Debian'
+  - 'origin=Debian,codename=${distro_codename},label=Debian-Security'
 
 - name: Configure dpkg run with unattended-upgrades
   copy:
