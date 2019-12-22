@@ -7,6 +7,7 @@
 - name: Install APT https transport plugin
   apt:
     name: apt-transport-https
+  when: ansible_distribution == 'Debian' and ansible_distribution_version is version_compare("10", "<")
 
 - name: Install needrestart
   apt:
