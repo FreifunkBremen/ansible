@@ -9,6 +9,7 @@
   lineinfile:
     dest: /etc/modules
     line: nf_conntrack
+    regexp: '^nf_conntrack'
 
 - name: Setting hostname
   hostname:
