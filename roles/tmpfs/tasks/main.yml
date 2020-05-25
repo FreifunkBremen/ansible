@@ -4,4 +4,4 @@
     dest: /etc/default/tmpfs
     regexp: '(\#\s*)?RAMTMP\s*=\s*(.*)'
     replace: 'RAMTMP=yes'
-  when: "ansible_distribution_major_version|int < 9"
+  when: ansible_distribution == 'Debian' and ansible_distribution_version is version_compare("9", "<")
