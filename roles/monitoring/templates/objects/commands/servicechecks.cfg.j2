@@ -62,3 +62,8 @@ define command {
   command_name check_smtp
   command_line $USER1$/check_smtp -H $HOSTADDRESS$ $ARG1$
 }
+
+define command {
+  command_name check_gatemon
+  command_line $USER2$/check_gatemons.py -u https://status.ffhb.de -s $HOSTNAME$ -i 'addresses_ipv6' -a 3600
+}
