@@ -1,8 +1,0 @@
-#! /usr/bin/env bash
-
-# These environment variables are sometimes needed by the running daemons
-export USER={{ monitoring_user }}
-export HOME=/home/{{ monitoring_user }}
-
-# Now let's go!
-exec $HOME/.opt/icinga/bin/icinga $HOME/.opt/icinga/etc/icinga.cfg 2>&1
