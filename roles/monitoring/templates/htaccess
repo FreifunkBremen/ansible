@@ -9,7 +9,7 @@ RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 <If "%{HTTPS} == 'on'">
     AuthName "Icinga Access"
     AuthType Basic
-    AuthUserFile /var/www/{{ monitoring_user }}/domains/{{ monitoring_subdomain }}.{{ main_domain }}/.htpasswd
+    AuthUserFile /var/www/{{ monitoring_user }}/domains/{{ monitoring_domain }}/.htpasswd
     AuthMerging And
     Require valid-user
 </If>

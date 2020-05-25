@@ -4,7 +4,7 @@ monitoring_user: 'ffhb-monitoring'
 monitoring_group: 'ffhb-monitoring'
 monitoring_subdomain: 'monitoring'
 monitoring_domain: '{{ monitoring_subdomain }}.{{ main_domain }}'
-monitoring_icinga_version: 1.14.2
-monitoring_nagios_plugins_version: 2.2.1
+monitoring_nagios_version: 4.4.6
+monitoring_nagios_plugins_version: 2.3.3
+monitoring_global_access_contact: 'nagiosadmin'
 monitoring_check_multi_version: 0.26
-monitoring_global_access_contactgroup: 'icingaadmin'

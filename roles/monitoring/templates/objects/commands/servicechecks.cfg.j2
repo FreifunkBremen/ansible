@@ -1,0 +1,64 @@
+define command {
+  command_name check_via_snmp
+  command_line $USER2$/check_snmp_extend $HOSTADDRESS$ '$ARG1$' '$ARG2$' 2c 30
+}
+
+define command {
+  command_name check_via_ssh
+  command_line $USER1$/check_by_ssh -t 60 -o User=rnagios -o StrictHostKeyChecking=no -o CheckHostIP=no -H '$HOSTADDRESS$' '$ARG1$'
+}
+
+define command {
+  command_name check_dns
+  command_line $USER2$/check_dns -4 -H $HOSTADDRESS$ -s $HOSTADDRESS$
+}
+
+define command {
+  command_name check_dns_1arg
+  command_line $USER2$/check_dns -H $ARG1$ -s $ARG1$
+}
+
+define command {
+  command_name check_ping_4
+  command_line $USER1$/check_ping -4 -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$ -p 5
+}
+
+define command {
+  command_name check_ping_4_1arg
+  command_line $USER1$/check_ping -4 -H $ARG1$ -w $ARG2$ -c $ARG3$ -p 5
+}
+
+define command {
+  command_name check_ssh_no_password
+  command_line $USER2$/check_ssh_no_password_login -H $HOSTADDRESS$ -p $_HOSTSSH_PORT$
+}
+
+define command {
+  command_name check_mail_no_relay
+  command_line $USER2$/check_mail_no_relay $HOSTADDRESS$
+}
+
+define command {
+  command_name check_gluon_version
+  command_line $USER2$/check_gluon_version $HOSTNAME$
+}
+
+define command {
+  command_name check_http
+  command_line $USER1$/check_http -I $HOSTADDRESS$ $ARG1$
+}
+
+define command {
+  command_name check_ssh
+  command_line $USER1$/check_ssh --port=$_HOSTSSH_PORT$ $ARG1$ $HOSTADDRESS$
+}
+
+define command {
+  command_name check_ping
+  command_line $USER1$/check_ping -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$ -p 5
+}
+
+define command {
+  command_name check_smtp
+  command_line $USER1$/check_smtp -H $HOSTADDRESS$ $ARG1$
+}

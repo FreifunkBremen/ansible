@@ -18,7 +18,6 @@ define host{
   notifications_enabled                 1
   event_handler_enabled                 1
   flap_detection_enabled                1
-  failure_prediction_enabled            1
   retain_status_information             1
   retain_nonstatus_information          1
   check_interval                        5
@@ -50,7 +49,7 @@ define host {
 define host {
   name                                  linux-server-dualstack
   use                                   linux-server
-  check_command                         check_multi!check_multi_host_dualstack.cmd -r 1+2+4+8
+  check_command                         check_multi!check_multi_host_dualstack.cmd -r 1+4+8
   register                              0
 }
 
@@ -85,7 +84,6 @@ define service {
   notifications_enabled           1
   event_handler_enabled           1
   flap_detection_enabled          1
-  failure_prediction_enabled      1
   retain_status_information       1
   retain_nonstatus_information    1
   is_volatile                     0
