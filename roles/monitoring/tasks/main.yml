@@ -193,6 +193,7 @@
     - hostgroups_available/etckeeper-server.cfg
     - hostgroups_available/ssh-servers.cfg
     - hostgroups_available/ssh-servers-with-password.cfg
+    - hostgroups_available/vpn-servers.cfg
     - nagios.cfg
     - objects/commands/hostchecks.cfg
     - objects/commands/notifications.cfg
