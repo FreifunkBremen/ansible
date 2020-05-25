@@ -73,33 +73,9 @@
     state: directory
 
 - name: Copy default nagios configuration file
-  copy:
-    src: ssh-forcecommand.default.cfg
-    dest: /etc/nagios/ssh-forcecommand.default.cfg
-
-- name: Copy contact nagios file
-  copy:
-    src: ssh-forcecommand.contact.cfg
-    dest: /etc/nagios/ssh-forcecommand.contact.cfg
-    force: no
-
-- name: Copy swap nagios configuration file
-  copy:
-    src: ssh-forcecommand.swap.cfg
-    dest: /etc/nagios/ssh-forcecommand.swap.cfg
-  when: ansible_swaptotal_mb != 0
-
-- name: Remove swap nagios configuration file
-  file:
-    dest: /etc/nagios/ssh-forcecommand.swap.cfg
-    state: absent
-  when: ansible_swaptotal_mb == 0
-
-- name: Concat forcecommand files
-  assemble:
-    src: /etc/nagios
+  template:
+    src: ssh-forcecommand.cfg
     dest: /etc/nagios/ssh-forcecommand.cfg
-    regexp: '^ssh-forcecommand\..*\.cfg$'
 
 - name: Create sudo config
   copy:
