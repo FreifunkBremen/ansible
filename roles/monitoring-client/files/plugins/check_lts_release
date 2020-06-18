@@ -93,6 +93,9 @@ else
         buster)
           EXPIRE_DATE=20240630
         ;;
+        sid)
+          ERR_CODE=$STATE_OK
+        ;;
         *)
           ERR_CODE=$STATE_UNKNOWN
           ERR_MSG="Release ($RELEASE) unknown in script."
