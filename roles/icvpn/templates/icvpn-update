@@ -15,4 +15,6 @@ birdc6 configure > /dev/null
 
 # TODO: This doesn't belong here but in the unbound role
 sudo -u nobody /opt/{{ site_code }}/icvpn-scripts/mkdns -s "$DATADIR" -x bremen -f unbound > /etc/unbound/unbound.conf.d/icvpn.conf
-unbound-control reload > /dev/null
+if unbound-checkconf /etc/unbound/unbound.conf.d/icvpn.conf >/dev/null 2>&1; then
+  unbound-control reload > /dev/null
+fi
