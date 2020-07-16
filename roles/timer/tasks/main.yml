@@ -1,0 +1,24 @@
+---
+- name: Fail when timer_name is empty
+  fail: msg="timer_name is empty"
+  when: not timer_name
+
+- name: Upload service and timer
+  template:
+    src: "job.{{ item }}"
+    dest: /lib/systemd/system/{{ timer_name }}.{{ item }}
+  with_items:
+  - service
+  - timer
+  register: template_result
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  when: template_result.changed
+
+- name: Enable and start timer
+  service:
+    name: "{{ timer_name }}.timer"
+    daemon_reload: yes
+    enabled: yes
+    state: started

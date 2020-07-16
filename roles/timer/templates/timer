@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description={{ timer_name }} Service
+
+[Timer]
+Unit={{ timer_name }}.service
+{% if timer_calendar %}
+OnCalendar={{ timer_calendar }}
+{% else %}
+OnBootSec={{ timer_startup_delay }}
+OnUnitInactiveSec={{ timer_interval }}
+{% endif %}
+
+{% if timer_randomized_delay %}
+RandomizedDelaySec={{ timer_randomized_delay }}
+{% endif %}
+
+[Install]
+WantedBy=basic.target

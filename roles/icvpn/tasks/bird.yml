@@ -14,7 +14,20 @@
 - name: Install cronjob to automatically update bgp bird configurations
   template:
     src: icvpn-update
-    dest: /etc/cron.hourly/icvpn-update
+    dest: /usr/local/bin/icvpn-update
     mode: 0755
     owner: root
     group: root
+
+- name: Install timer
+  import_role:
+    name: timer
+  vars:
+    timer_name: icvpn-update
+    timer_exec: /usr/local/bin/icvpn-update
+    timer_interval: 1hour
+
+- name: Remove legacy cronjob
+  file:
+    path: /etc/cron.hourly/icvpn-update
+    state: absent
