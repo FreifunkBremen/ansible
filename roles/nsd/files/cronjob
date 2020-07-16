@@ -10,13 +10,6 @@
 /usr/local/bin/zonegen.py \
     http://downloads.bremen.freifunk.net/data/v1/nodes.json \
     --contact=noc.bremen.freifunk.net \
-    --prefix=2a06:8782:ffbb::/48 \
-    --nserver dns.bremen.freifunk.net ns2.afraid.org ns2.he.net \
-    --file=/var/lib/nsd/nodes.bremen.freifunk.net.zone || exit
-
-/usr/local/bin/zonegen.py \
-    http://downloads.bremen.freifunk.net/data/v1/nodes.json \
-    --contact=noc.bremen.freifunk.net \
     --prefix=2a06:8782:ffbb:1337::/64 \
     --nserver dns.bremen.freifunk.net ns2.afraid.org ns2.he.net \
     --file=/var/lib/nsd/7.3.3.1.b.b.f.f.2.8.7.8.6.0.a.2.ip6.arpa.zone --reverse nodes.ffhb.de. || exit
