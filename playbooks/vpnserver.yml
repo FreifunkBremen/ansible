@@ -5,6 +5,7 @@
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
   - { role: batman-adv-14, tags: [batman-adv-14] }
+  - { role: openssh, tags: [openssh] }
   - { role: main-bridge, tags: [main-bridge] }
   - { role: fastd, tags: [fastd] }
   - { role: mesh-announce, tags: [mesh-announce] }
