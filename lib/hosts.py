@@ -75,7 +75,7 @@ class Inventory:
 
   def attributeString(self, key):
     value = getattr(self, key, None)
-    if value != None:
+    if value is not None:
       value = str(value)
     return value
 
