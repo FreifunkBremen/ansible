@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 
 {% for host in backbone_peers %}
+{% if batman_legacy is undefined or hostvars[host].batman_legacy is undefined or batman_legacy == hostvars[host].batman_legacy %}
 {% set ifname = "backbone-vpn%d" % hostvars[host].vpn_id %}
 # {{ host }}
 auto {{ ifname }}
@@ -13,4 +14,5 @@ iface {{ ifname }} inet manual
   up   batctl -m {{ batman_interface }} if add $IFACE
   down batctl -m {{ batman_interface }} if del $IFACE
 
+{% endif %}
 {% endfor %}

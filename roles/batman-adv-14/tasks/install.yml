@@ -1,0 +1,50 @@
+---
+# tasks file for batman-adv-14
+- name: Remove old repository
+  apt_repository:
+    repo: "deb {{ batman_adv_14_apt_repository }}"
+    state: absent
+
+- name: Remove old dkms package
+  apt:
+    name: batman-adv-dkms
+    state: absent
+    purge: yes
+
+- name: Install batman-adv dependencies
+  apt:
+    name:
+      - dkms
+      - lsof
+      - linux-headers-amd64
+
+- name: Clone batman-adv repo
+  git:
+    repo: "{{ batman_adv_14_repository }}"
+    dest: "/usr/src/batman-adv-legacy-2013.4.0"
+    version: "{{ batman_adv_14_git_commit }}"
+
+- name: Add repo to dkms
+  shell: dkms add -m batman-adv-legacy -v 2013.4.0
+  args:
+    creates: /var/lib/dkms/batman-adv-legacy/2013.4.0/source/Makefile
+
+- name: Copy kernel postinst downgrade hook
+  copy:
+    src: dkms-batman-adv-downgrade
+    dest: /etc/kernel/postinst.d/00dkms-batman-adv-downgrade
+    mode: 0755
+
+- name: Ensure correct version was installed
+  shell: /etc/kernel/postinst.d/00dkms-batman-adv-downgrade $(uname -r)
+  register: batman_adv_version_result
+  changed_when: '"already installed" not in batman_adv_version_result.stderr'
+
+- name: Enable batman during boot
+  lineinfile:
+    path: /etc/modules
+    line: batman-adv
+
+- name: Load batman-adv module
+  modprobe:
+    name: batman-adv
