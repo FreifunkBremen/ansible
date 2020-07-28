@@ -1,6 +1,6 @@
 ---
 wiki_gollum_git_root: 'https://github.com/FreifunkBremen/gollum.git'
-wiki_gollum_git_commit: '91e4ffebbab820bbcc4c22df6a966ce24be232e1'
+wiki_gollum_git_commit: '428b397389961b7f0069528b600816d5050cc364'
 wiki_content_git_root: 'https://github.com/FreifunkBremen/wiki.git'
 wiki_email: 'info@bremen.freifunk.net'
 wiki_user: 'wiki'
