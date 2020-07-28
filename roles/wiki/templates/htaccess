@@ -6,7 +6,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ http://127.0.0.1:{{ wiki_gollum_port }}/$1 [P,L]
 RequestHeader set X-Forwarded-Proto "https" env=HTTPS
 
-SetEnvIfNoCase Request_URI ^/(create|edit|livepreview|delete|rename)/ require_auth=true
+SetEnvIfNoCase Request_URI ^/gollum/(create|edit|livepreview|delete|rename)/ require_auth=true
 
 AuthType basic
 AuthName "Dies ist ein Spamschutz. Benutzername: wellenfunk, Passwort: foobar"
