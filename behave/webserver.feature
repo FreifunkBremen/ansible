@@ -21,6 +21,16 @@ Scenario: access webhook.php file (test that PHP basically works)
     Then the status code will be 403
     And the page content will be "Forbidden\n"
 
+Scenario: access calendar.json file
+    When I access http://bremen.freifunk.net/api/calendar.json
+    Then the status code will be 200
+    And the page will contain '[{"summary":"'
+
+Scenario: access tweets.json file
+    When I access http://bremen.freifunk.net/api/tweets.json
+    Then the status code will be 200
+    And the page will contain '[{"id":"'
+
 Scenario: access Meshviewer
     When I access http://bremen.freifunk.net/map/meshviewer.html
     Then the status code will be 200
@@ -113,6 +123,11 @@ Scenario: access to .git/ directory is hidden
     When I access http://status.bremen.freifunk.net/.git/
     Then the status code will be 404
     And the page will contain "Not Found"
+
+Scenario: access to config.ini file is forbidden
+    When I access http://status.bremen.freifunk.net/config.ini
+    Then the status code will be 403
+    And the page will contain "Forbidden"
 
 
 # tasks
