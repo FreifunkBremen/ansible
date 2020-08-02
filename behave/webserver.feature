@@ -73,19 +73,19 @@ Scenario: access wiki main page over HTTPS
     And the page will contain "Herzlich willkommen im Freifunk Bremen Wiki"
 
 Scenario: try to create new page without logging in
-    When I access http://wiki.bremen.freifunk.net/create/nonexisting-page-lsdfkj
+    When I access http://wiki.bremen.freifunk.net/gollum/create/nonexisting-page-lsdfkj
     Then the status code will be 401
     And the page will contain "Die Benutzerabfrage dient lediglich der Spamvermeidung."
 
 Scenario: try to create new page
-    When I access http://wiki.bremen.freifunk.net/create/nonexisting-page-lsdfkj as wellenfunk/foobar
+    When I access http://wiki.bremen.freifunk.net/gollum/create/nonexisting-page-lsdfkj as wellenfunk/foobar
     Then the status code will be 200
-    And the page will contain "<h1>Create New Page</h1>"
+    And the page will contain ">Create New Page</h1>"
 
 Scenario: try to edit home page
-    When I access http://wiki.bremen.freifunk.net/edit/Home as wellenfunk/foobar
+    When I access http://wiki.bremen.freifunk.net/gollum/edit/Home as wellenfunk/foobar
     Then the status code will be 200
-    And the page will contain "<h1>Editing <strong>Home</strong></h1>"
+    And the page will contain ">Editing <strong>Home</strong></h1>"
 
 
 # status
