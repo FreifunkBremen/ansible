@@ -4,12 +4,12 @@ Feature: access website
 Scenario: access index page
     When I access http://bremen.freifunk.net/
     Then the status code will be 200
-    And the page will contain "Wenn du in Bremen ein unverschlüsseltes WLAN mit dem Namen"
+    And the page will contain "ist ein Projekt, das versucht ein stadtweites Datennetz auf Basis von WLAN-Routern aufzubauen."
 
 Scenario: access index page over HTTPS
     When I access https://bremen.freifunk.net/
     Then the status code will be 200
-    And the page will contain "Wenn du in Bremen ein unverschlüsseltes WLAN mit dem Namen"
+    And the page will contain "ist ein Projekt, das versucht ein stadtweites Datennetz auf Basis von WLAN-Routern aufzubauen."
 
 Scenario: access nonexisting page
     When I access http://bremen.freifunk.net/some-nonexisting-page.html
@@ -32,9 +32,9 @@ Scenario: access some blog post using old URL
     And the page will contain "Das Interesse an Freifunk wächst. Neben der gewohnten Nachfrage nach Freifunkroutern"
 
 Scenario: access nodes.json
-    When I access http://bremen.freifunk.net/map/nodes.json
+    When I access https://downloads.bremen.freifunk.net/data/meshviewer.json
     Then the status code will be 200
-    And the page will contain '"timestamp": "201'
+    And the page will contain '"timestamp":"202'
 
 
 # download site
@@ -114,22 +114,18 @@ Scenario: access to .git/ directory is denied
     Then the status code will be 403
     And the page will contain "Forbidden"
 
-Scenario: access to .well-known directory is possible
-    When I access http://status.bremen.freifunk.net/.well-known/acme-challenge/
-    Then the status code will be 200
-
 
 # tasks
 Scenario: access tasks login page
     When I access http://tasks.bremen.freifunk.net/
     Then the status code will be 200
-    And the page URL will be "https://tasks.bremen.freifunk.net/"
+    And the page URL will be "https://tasks.ffhb.de/"
     And the page will contain "Login to Phabricator</span>"
     And the page will contain "Freifunk Bremen</a>"
 
 Scenario: access tasks login page over HTTPS
     When I access https://tasks.bremen.freifunk.net/
     Then the status code will be 200
-    And the page URL will be "https://tasks.bremen.freifunk.net/"
+    And the page URL will be "https://tasks.ffhb.de/"
     And the page will contain "Login to Phabricator</span>"
     And the page will contain "Freifunk Bremen</a>"
