@@ -109,10 +109,10 @@ Scenario: access to token/ directory is denied
     Then the status code will be 403
     And the page will contain "Forbidden"
 
-Scenario: access to .git/ directory is denied
+Scenario: access to .git/ directory is hidden
     When I access http://status.bremen.freifunk.net/.git/
-    Then the status code will be 403
-    And the page will contain "Forbidden"
+    Then the status code will be 404
+    And the page will contain "Not Found"
 
 
 # tasks
