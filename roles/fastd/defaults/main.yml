@@ -8,8 +8,10 @@ fastd_peers_limit: -1
 fastd_anonymous: true
 
 fastd_interface: vpn-{{ site_code }}
-fastd_port: 50000
+fastd_port: 50001
 fastd_mtu: 1280
+
+fastd_batmanlegacy_port: 50000
 
 fastd_legacy_interface: vpn-{{ site_code }}-legacy
 fastd_legacy_port: 10000
