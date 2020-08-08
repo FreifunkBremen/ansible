@@ -3,10 +3,16 @@
 {% for host in backbone_peers %}
 {% if batman_legacy is undefined or hostvars[host].batman_legacy is undefined or batman_legacy == hostvars[host].batman_legacy %}
 {% set ifname = "backbone-vpn%d" % hostvars[host].vpn_id %}
+{% set remote_v4 = lookup('dig', host+'/A', 'flat=0') %}
+{% set remote_v6 = lookup('dig', host+'/AAAA', 'flat=0') %}
 # {{ host }}
 auto {{ ifname }}
 iface {{ ifname }} inet manual
-  pre-up    ip link add $IFACE type gretap local {{ ansible_default_ipv4.address }} remote {{ host | resolve('a') }} ttl 64
+{% if remote_v4 | length > 0 and lookup('dig', inventory_hostname+'/A', 'flat=0') | length > 0 %}
+  pre-up    ip link add $IFACE type gretap local {{ ansible_default_ipv4.address }} remote {{ remote_v4.address }} ttl 64
+{% else %}
+  pre-up    ip link add $IFACE type ip6gretap local {{ ansible_default_ipv6.address }} remote {{ remote_v6.address }} ttl 64
+{% endif %}
   post-down ip link del $IFACE
   up   ip link set up   $IFACE
   down ip link set down $IFACE
