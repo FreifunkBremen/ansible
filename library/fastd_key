@@ -24,7 +24,7 @@ if __name__ == '__main__':
     with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT, 0o600), 'w') as handle:
       # generate fastd secret
       secret = subprocess.check_output(["fastd", "--machine-readable", "--generate-key"]).strip()
-      handle.write('secret "%s";\n' % secret)
+      handle.write('secret "{}";\n'.format(secret.decode()))
 
     changed = True
 
