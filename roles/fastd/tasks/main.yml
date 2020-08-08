@@ -80,6 +80,7 @@
   - restart fastd
 
 - name: Symlink fastd secrets
+  when: batman_legacy is undefined and batman_legacy
   file:
     src: "/etc/fastd/{{ site_code }}/secret.conf"
     dest: "/etc/fastd/{{ site_code }}_legacy/secret.conf"
