@@ -4,9 +4,9 @@
     batman_gateway: true
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
+  - { role: main-bridge, tags: [main-bridge] }
   - { role: batman-adv-14, tags: [batman-adv-14] }
   - { role: openssh, tags: [openssh] }
-  - { role: main-bridge, tags: [main-bridge] }
   - { role: fastd, tags: [fastd] }
   - { role: mesh-announce, tags: [mesh-announce] }
   - { role: backbone-gre, tags: [backbone-gre] }
