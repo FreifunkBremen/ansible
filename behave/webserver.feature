@@ -144,3 +144,30 @@ Scenario: access tasks login page over HTTPS
     And the page URL will be "https://tasks.ffhb.de/"
     And the page will contain "Login to Phabricator</span>"
     And the page will contain "Freifunk Bremen</a>"
+
+
+# huginn
+Scenario: access huginn main page
+    When I access http://huginn.bremen.freifunk.net/
+    Then the status code will be 200
+    And the page will contain "<p>Huginn monitors the world and acts on your behalf"
+
+Scenario: access huginn main page over HTTPS
+    When I access https://huginn.bremen.freifunk.net/
+    Then the status code will be 200
+    And the page will contain "<p>Huginn monitors the world and acts on your behalf"
+
+Scenario: access password-protected huginn page
+    When I access https://huginn.bremen.freifunk.net/agents
+    Then the status code will be 200
+    And the page URL will be "https://huginn.bremen.freifunk.net/users/sign_in"
+    And the page will contain "You need to sign in or sign up before continuing."
+
+
+# grafana
+Scenario: access Grafana main page
+    When I access http://grafana.bremen.freifunk.net/
+    Then the status code will be 200
+    And the page URL will be "https://grafana.bremen.freifunk.net/"
+    And the page will contain "<title>Grafana</title>"
+    And the page will contain '"orgName":"Freifunk Bremen"'
