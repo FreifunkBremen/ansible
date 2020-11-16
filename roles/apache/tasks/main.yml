@@ -53,6 +53,7 @@
     - anon-logs.conf
     - default-dir-options.conf
     - ocsp-stapling.conf
+    - deflate-more-types.conf
   notify: restart apache
 
 - name: Copy proxy configuration
@@ -70,6 +71,7 @@
     - anon-logs.conf
     - default-dir-options.conf
     - ocsp-stapling.conf
+    - deflate-more-types.conf
   notify: restart apache
 
 - name: Copy user included configuration files
