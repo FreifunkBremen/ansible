@@ -9,6 +9,8 @@ iface {{ icvpn_interface }} inet static
 	post-up  ip -4 route add {{ icvpn_ipv4_prefix }} dev $IFACE table {{ ffhb_routing_table }}
 	pre-down ip -4 route del {{ icvpn_ipv4_prefix }} dev $IFACE table {{ ffhb_routing_table }}
 	# prevent leak of data
+	post-up ip -4 rule add iif {{ icvpn_interface }} table {{ ffhb_routing_table }} priority 16388
+	pre-down ip -4 rule del iif {{ icvpn_interface }} table {{ ffhb_routing_table }} priority 16388
 	post-up ip -4 rule add from {{ icvpn_ipv4.address }} table {{ ffhb_routing_table }} priority 16389
 	pre-down ip -4 rule del from {{ icvpn_ipv4.address }} table {{ ffhb_routing_table }} priority 16389
 
@@ -19,5 +21,7 @@ iface {{ icvpn_interface }} inet6 static
 	post-up  ip -6 route add {{ icvpn_ipv6_prefix }} dev $IFACE table {{ ffhb_routing_table }}
 	pre-down ip -6 route del {{ icvpn_ipv6_prefix }} dev $IFACE table {{ ffhb_routing_table }}
 	# prevent leak of data
+	post-up ip -6 rule add iif {{ icvpn_interface }} table {{ ffhb_routing_table }} priority 16388
+	pre-down ip -6 rule del iif {{ icvpn_interface }} table {{ ffhb_routing_table }} priority 16388
 	post-up ip -6 rule add from {{ icvpn_ipv6.address }} table {{ ffhb_routing_table }} priority 16389
 	pre-down ip -6 rule del from {{ icvpn_ipv6.address }} table {{ ffhb_routing_table }} priority 16389
