@@ -35,7 +35,7 @@ error_reporting(0);
 
 function log_msg($msg) {
         if (is_writable(LOGFILE))
-                file_put_contents(LOGFILE, $msg . "\n", FILE_APPEND);
+                file_put_contents(LOGFILE, date(DateTime::ISO8601) . ' ' . $msg . "\n", FILE_APPEND);
 }
 
 function array_matches($have, $should, $name = 'array') {
