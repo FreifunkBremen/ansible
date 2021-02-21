@@ -10,14 +10,24 @@
     dest: /etc/etckeeper/etckeeper.conf
     regexp: '^VCS="(?!git)'
     replace: '#VCS="'
-    backup: yes
 
 - name: Activate git as only VCS
   replace:
     dest: /etc/etckeeper/etckeeper.conf
     regexp: '^#VCS="git"'
     replace: 'VCS="git"'
-    backup: yes
+
+- name: Disable daily autocommit
+  replace:
+    dest: /etc/etckeeper/etckeeper.conf
+    regexp: '^#AVOID_DAILY_AUTOCOMMITS=1'
+    replace: 'AVOID_DAILY_AUTOCOMMITS=1'
+
+- name: Disable autocommit before APT run
+  replace:
+    dest: /etc/etckeeper/etckeeper.conf
+    regexp: '^#AVOID_COMMIT_BEFORE_INSTALL=1'
+    replace: 'AVOID_COMMIT_BEFORE_INSTALL=1'
 
 - name: Create git configuration directory
   file:
