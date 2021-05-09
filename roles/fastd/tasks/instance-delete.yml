@@ -1,0 +1,28 @@
+---
+- name: Check interface length
+  fail:
+    msg: "{{ fastd_interface }} has more than 15 characters!"
+  when: fastd_interface|length > 15
+
+- name: Enable fastd instance
+  service:
+    name: "fastd@{{ fastd_instance }}"
+    enabled: no
+    state: stopped
+
+- name: Delete fastd directory
+  file:
+    path: "/etc/fastd/{{ fastd_instance }}"
+    state: absent
+
+- name: Delete network configuration
+  file:
+    path: "/etc/network/interfaces.d/{{ fastd_interface }}"
+    state: absent
+
+- name: Close firewall for fastd
+  file:
+    path: "{{ firewall_path }}/30-fastd-{{ fastd_instance }}"
+    state: absent
+  when: firewall_enabled
+  notify: reload firewall

@@ -32,35 +32,43 @@
     name: fastd
     enabled: no
 
-- name: Include batman_legacy fastd instance
+- name: batman_legacy setup
   when: batman_legacy is undefined and batman_legacy
-  import_tasks: instance.yml
-  vars:
-    fastd_instance: "{{ site_code }}"
-    fastd_interface: "vpn-{{ site_code }}"
-    fastd_port: "{{ fastd_batmanlegacy_port }}"
-    fastd_bind: any
-    fastd_anonymous: true
+  block:
+  - name: Include batman_legacy fastd instance
+    import_tasks: instance.yml
+    vars:
+      fastd_instance: "{{ site_code }}"
+      fastd_interface: "vpn-{{ site_code }}"
+      fastd_port: "{{ fastd_batmanlegacy_port }}"
+      fastd_bind: any
+      fastd_anonymous: true
 
-- name: Include legacy/ipv4 of batman_legacy fastd instance
-  when: batman_legacy is undefined and batman_legacy
-  import_tasks: instance.yml
-  vars:
-    fastd_instance: "{{ site_code }}_legacy"
-    fastd_bind: "0.0.0.0"
-    fastd_interface: "{{ fastd_legacy_interface }}"
-    fastd_port: "{{ fastd_legacy_port }}"
-    fastd_mtu: "{{ fastd_legacy_mtu }}"
-    fastd_anonymous: true
+  - name: Include legacy/ipv4 of batman_legacy fastd instance
+    import_tasks: instance.yml
+    vars:
+      fastd_instance: "{{ site_code }}_legacy"
+      fastd_bind: "0.0.0.0"
+      fastd_interface: "{{ fastd_legacy_interface }}"
+      fastd_port: "{{ fastd_legacy_port }}"
+      fastd_mtu: "{{ fastd_legacy_mtu }}"
+      fastd_anonymous: true
 
-- name: Include fastd instance
+- name: batman_current setup
   when: batman_legacy is not undefined and not batman_legacy
-  import_tasks: instance.yml
-  vars:
-    fastd_instance: "{{ site_code }}"
-    fastd_interface: "vpn-{{ site_code }}"
-    fastd_bind: any
-    fastd_anonymous: true
+  block:
+  - name: Include fastd instance
+    import_tasks: instance.yml
+    vars:
+      fastd_instance: "{{ site_code }}"
+      fastd_interface: "vpn-{{ site_code }}"
+      fastd_bind: any
+      fastd_anonymous: true
+
+  - name: Drop batman_legacy fastd instance
+    import_tasks: instance-delete.yml
+    vars:
+      fastd_instance: "{{ site_code }}_legacy"
 
 - name: Disable deprecated backbone instance
   service:
