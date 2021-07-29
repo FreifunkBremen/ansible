@@ -1,7 +1,7 @@
 ---
 - hosts: downlinks
   vars:
-    batman_gateway: false
+    batman_gateway: true
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
   - { role: batman-adv-14, tags: [batman-adv-14] }
