@@ -1,6 +1,0 @@
----
-- name: restart openvpn
-  service:
-    name: openvpn@exit
-    state: restarted
-    enabled: yes
