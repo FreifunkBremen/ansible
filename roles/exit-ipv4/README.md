@@ -16,12 +16,6 @@ Role Variables
     exit_ipv4_local
     exit_ipv4_remote
 
-### OpenVPN Exit
-
-    exit_ipv4: openvpn
-    exit_ipv4_openvpn_username: Username for openvpn auth
-    exit_ipv4_openvpn_password: Passwort for openvpn auth
-
 ### default (dangerous)
 
 Be aware of the german "Störerhaftung"!
