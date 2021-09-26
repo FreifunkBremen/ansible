@@ -19,6 +19,7 @@
     repo: "{{ dns_nsd_git_repo }}"
     dest: "/opt/{{ site_code }}/dns/"
     version: "{{ dns_nsd_git_commit }}"
+  notify: copy zone files
 
 - name: Install script to copy zone files
   copy:
@@ -27,9 +28,6 @@
     mode: 0755
     owner: root
     group: root
-
-- name: Copy zone files
-  command: /usr/local/sbin/update-dns-zones.sh
 
 - name: Install script to generate nodes zone
   copy:
