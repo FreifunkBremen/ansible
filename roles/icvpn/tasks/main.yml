@@ -60,7 +60,7 @@
   when: not hostsfile.stat.exists
 
 - name: Generate Key
-  shell: echo "" | tincd -n icvpn -K
+  shell: set -o pipefail && echo "" | tincd -n icvpn -K
   args:
     creates: /etc/tinc/icvpn/rsa_key.priv
   notify: restart tinc
