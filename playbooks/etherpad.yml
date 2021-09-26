@@ -1,8 +1,0 @@
----
-- hosts: etherpad
-  remote_user: ffhb-pads
-  vars:
-    main_domain: bremen.freifunk.net
-    alt_domain: ffhb.de
-  roles:
-  - etherpad

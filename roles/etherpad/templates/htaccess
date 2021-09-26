@@ -1,4 +1,0 @@
-DirectoryIndex disabled
-RewriteEngine On
-RewriteBase /
-RewriteRule ^(.*)$ http://localhost:{{ etherpad_port.stdout }}/$1 [P]
