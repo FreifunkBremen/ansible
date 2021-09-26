@@ -6,7 +6,7 @@
 - name: Upload service and timer
   template:
     src: "job.{{ item }}"
-    dest: /lib/systemd/system/{{ timer_name }}.{{ item }}
+    dest: "/etc/systemd/system/{{ timer_name }}.{{ item }}"
   with_items:
   - service
   - timer
