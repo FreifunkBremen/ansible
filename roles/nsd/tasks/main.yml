@@ -5,7 +5,7 @@
       - nsd
       - python3
 
-- name: Configure nsd
+- name: Configure NSD
   template:
     src: nsd.conf
     dest: /etc/nsd/nsd.conf
@@ -60,7 +60,7 @@
   when: firewall_enabled
   notify: reload firewall
 
-- name: Autostart nsd
+- name: Autostart NSD
   service:
     name: nsd
     enabled: yes
