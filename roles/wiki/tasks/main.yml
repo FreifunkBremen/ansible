@@ -30,7 +30,7 @@
   - /var/www/{{ wiki_user }}/fcgi-bin
 
 - name: Clone gollum repository
-  git:
+  git:  # noqa 401
     repo: "{{ wiki_gollum_git_root }}"
     dest: "/home/{{ wiki_user }}/.opt/gollum"
     force: yes
@@ -55,7 +55,7 @@
   become_user: "{{ wiki_user }}"
 
 - name: Clone wiki repository
-  git:
+  git:  # noqa 401
     repo: "{{ wiki_content_git_root }}"
     dest: "/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen"
   become: yes
@@ -109,6 +109,7 @@
     path: "/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/.htpasswd"
     name: "{{ wiki_http_username }}"
     password: "{{ wiki_http_password }}"
+    mode: 0644
     owner: "{{ wiki_user }}"
     group: "{{ wiki_group }}"
 
@@ -116,6 +117,7 @@
   copy:
     src: gitconfig
     dest: "/home/{{ wiki_user }}/.gitconfig"
+    mode: 0644
     owner: "{{ wiki_user }}"
     group: "{{ wiki_group }}"
 
@@ -123,6 +125,7 @@
   copy:
     src: robots.txt
     dest: "/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/robots.txt"
+    mode: 0644
     owner: "{{ wiki_user }}"
     group: "{{ wiki_group }}"
 
@@ -130,6 +133,7 @@
   copy:
     src: favicon.ico
     dest: "/var/www/{{ wiki_user }}/domains/{{ wiki_domain }}/favicon.ico"
+    mode: 0644
     owner: "{{ wiki_user }}"
     group: "{{ wiki_group }}"
 
@@ -138,6 +142,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ wiki_subdomain }}.{{ main_domain }} {{ wiki_subdomain }}.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Install Apache vHost config
@@ -145,6 +152,8 @@
     src: apache2.conf
     dest: "/etc/apache2/sites-available/{{ wiki_user }}.{{ wiki_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   notify: reload apache
 
 - name: Enable Apache vHost config

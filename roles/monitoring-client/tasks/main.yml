@@ -51,6 +51,9 @@
   file:
     path: /usr/local/lib/nagios/plugins
     state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Install wrapper script
   copy:
@@ -65,16 +68,24 @@
     src: plugins/
     dest: /usr/local/lib/nagios/plugins/
     mode: 0755
+    owner: root
+    group: root
 
 - name: Creates nagios configuration directory
   file:
     path: /etc/nagios
     state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Copy default nagios configuration file
   template:
     src: ssh-forcecommand.cfg
     dest: /etc/nagios/ssh-forcecommand.cfg
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Create sudo config
   copy:

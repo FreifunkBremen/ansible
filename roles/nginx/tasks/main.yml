@@ -9,5 +9,8 @@
   copy:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-nginx"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall

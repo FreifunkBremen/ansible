@@ -13,6 +13,9 @@
   template:
     src: interfaces
     dest: "/etc/network/interfaces.d/br-{{ site_code }}"
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Copy sysctl file to disable bridge firewall filtering
   copy:

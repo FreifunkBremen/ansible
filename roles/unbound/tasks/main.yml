@@ -8,6 +8,8 @@
     src: "unbound.conf.d/"
     dest: "/etc/unbound/unbound.conf.d/"
     mode: 0644
+    owner: root
+    group: root
   notify: restart unbound
 
 - name: Fix unbound default config
@@ -21,12 +23,16 @@
     src: unbound-ip-up.d
     dest: /etc/network/if-up.d/unbound
     mode: 0755
+    owner: root
+    group: root
 
 - name: Generate Configuration
   template:
     src: "{{ item }}"
     dest: "/etc/unbound/unbound.conf.d/{{ item }}"
     mode: 0644
+    owner: root
+    group: root
   with_items:
     - access-control.conf
     - listen-on-all-interfaces.conf
@@ -42,5 +48,8 @@
   copy:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-unbound"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall

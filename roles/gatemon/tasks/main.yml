@@ -59,7 +59,7 @@
     mode: 0700
 
 - name: Install dependencies
-  shell: /home/{{ gatemon_user }}/.local/bin/composer install
+  command: /home/{{ gatemon_user }}/.local/bin/composer install
   args:
     chdir: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
   when: gatemon_checkout.changed
@@ -71,6 +71,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ gatemon_subdomain }}.{{ main_domain }} {{ gatemon_subdomain }}.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Install Apache vHost config
@@ -78,6 +81,8 @@
     src: apache2.conf
     dest: "/etc/apache2/sites-available/{{ gatemon_user }}.{{ gatemon_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   notify: reload apache
 
 - name: Enable Apache vHost config

@@ -65,6 +65,7 @@
   copy:
     src: "OpenSans/{{ item }}"
     dest: "/home/{{ tiles_user }}/.fonts/{{ item }}"
+    mode: 0644
     owner: "{{ tiles_user }}"
     group: "{{ tiles_group }}"
   with_items:
@@ -80,9 +81,9 @@
   template:
     src: tessera.service
     dest: "/home/{{ tiles_user }}/.config/systemd/user/"
+    mode: 0644
     owner: "{{ tiles_user }}"
     group: "{{ tiles_group }}"
-    mode: 0644
   notify: restart tessera
 
 - name: Enable and start tessera.service
@@ -110,6 +111,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ tiles_subdomain }}.{{ main_domain }} {{ tiles_subdomain }}.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Install Apache vHost config
@@ -117,6 +121,8 @@
     src: apache2.conf
     dest: "/etc/apache2/sites-available/{{ tiles_user }}.{{ tiles_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   notify: reload apache
 
 - name: Enable Apache vHost config

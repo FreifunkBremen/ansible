@@ -3,6 +3,9 @@
   copy:
     src: "10-allow-{{ exit_ipv4.lower() }}"
     dest: "{{ firewall_path }}/"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall
 
@@ -10,6 +13,9 @@
   template:
     src: generic/interface
     dest: "/etc/network/interfaces.d/{{ exit_ipv4_interface }}"
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Set interfaces up
   command: ifup {{ exit_ipv4_interface }}

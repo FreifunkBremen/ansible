@@ -9,9 +9,11 @@
     meta: flush_handlers
 
   - name: Get Git commit id
-    local_action: command git rev-parse HEAD
+    command: git rev-parse HEAD  # noqa 303
     register: ansible_git_commit_id
+    delegate_to: localhost
     changed_when: false
+    check_mode: false
 
   - name: Commit etckeeper
     command: etckeeper commit "ansible run with commit {{ ansible_git_commit_id.stdout }}"

@@ -7,6 +7,9 @@
   file:
     dest: "/etc/bird/{{ item }}"
     state: directory
+    mode: 0755
+    owner: root
+    group: root
   with_items:
   - bird.conf.d
   - bird6.conf.d
@@ -15,6 +18,9 @@
   template:
     src: "{{ item }}"
     dest: "/etc/bird/{{ item }}"
+    mode: 0644
+    owner: root
+    group: root
   with_items:
   - bird.conf
   - bird6.conf
@@ -26,6 +32,9 @@
   template:
     src: internal_ipv4.conf
     dest: /etc/bird/bird.conf.d/internal.conf
+    mode: 0644
+    owner: root
+    group: root
   notify:
   - reload bird
 
@@ -33,6 +42,9 @@
   template:
     src: internal_ipv6.conf
     dest: /etc/bird/bird6.conf.d/internal.conf
+    mode: 0644
+    owner: root
+    group: root
   notify:
   - reload bird6
 
@@ -40,6 +52,9 @@
   template:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-bird"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall
 

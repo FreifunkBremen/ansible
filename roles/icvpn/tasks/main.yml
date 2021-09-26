@@ -13,28 +13,37 @@
     version: "{{ icvpn_git_commit }}"
 
 - name: Install post-merge script
-  command: cp /etc/tinc/icvpn/scripts/post-merge /etc/tinc/icvpn/.git/hooks/post-merge
-  args:
-    creates: /etc/tinc/icvpn/.git/hooks/post-merge
+  copy:
+    remote_src: yes
+    src: /etc/tinc/icvpn/scripts/post-merge
+    dest: /etc/tinc/icvpn/.git/hooks/post-merge
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Install ICVPN Tinc configuration
   template:
     src: tinc.conf
     dest: /etc/tinc/icvpn/tinc.conf
     mode: 0644
+    owner: root
+    group: root
 
 - name: Install ICVPN Tinc up/down script
   copy:
-    src: "{{ item }}"
-    dest: "/etc/tinc/icvpn/{{ item }}"
+    src: tinc-down
+    dest: /etc/tinc/icvpn/tinc-down
     mode: 0755
-  with_items:
-    - tinc-down
+    owner: root
+    group: root
 
 - name: Add network configuration
   template:
     src: interfaces
     dest: "/etc/network/interfaces.d/{{ icvpn_interface }}"
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Check if a new private key and hostfile is necessary
   stat:
@@ -46,6 +55,8 @@
     src: pub-icvpn-gate
     dest: "/etc/tinc/icvpn/hosts/{{ site_city }}{{ vpn_id }}"
     mode: 0755
+    owner: root
+    group: root
   when: hostsfile.stat.exists == False
 
 - name: Generate Key
@@ -61,6 +72,9 @@
   template:
     src: firewall.sh
     dest: "{{ firewall_path }}/15-icvpn"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall
 

@@ -3,6 +3,9 @@
   template:
     src: interfaces
     dest: /etc/network/interfaces.d/backbone
+    mode: 0644
+    owner: root
+    group: root
   notify:
   - ifup backbone-gre
 
@@ -10,5 +13,8 @@
   copy:
     src: firewall.sh
     dest: "{{ firewall_path }}/10-allow-gre"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall

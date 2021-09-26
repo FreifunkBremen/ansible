@@ -10,17 +10,19 @@
 
 - name: Add repository
   apt_repository:
-    repo: 'deb [arch=amd64] https://repos.influxdata.com/{{ansible_distribution|lower}} {{ansible_distribution_release|lower}} stable'
+    repo: 'deb [arch=amd64] https://repos.influxdata.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} stable'
 
 - name: Install influxdb
   apt:
     name: influxdb
-  register: new
 
 - name: Upload influxdb without auth configuration
   template:
     src: influxdb.conf
     dest: /etc/influxdb/
+    mode: 0644
+    owner: root
+    group: root
   vars:
     influxdb_auth_enabled: false
 
@@ -28,6 +30,9 @@
   copy:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-influxdb"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall
 
@@ -76,6 +81,9 @@
   template:
     src: influxdb.conf
     dest: /etc/influxdb/
+    mode: 0644
+    owner: root
+    group: root
   vars:
     influxdb_auth_enabled: true
 

@@ -9,6 +9,9 @@
   template:
     src: nsd.conf
     dest: /etc/nsd/nsd.conf
+    mode: 0644
+    owner: root
+    group: root
   notify: restart nsd
 
 - name: Clone internal dns repo
@@ -21,9 +24,9 @@
   copy:
     src: update-dns-zones.sh
     dest: /usr/local/sbin/update-dns-zones.sh
+    mode: 0755
     owner: root
     group: root
-    mode: 0755
 
 - name: Copy zone files
   command: /usr/local/sbin/update-dns-zones.sh
@@ -32,17 +35,17 @@
   copy:
     src: zonegen.py
     dest: /usr/local/bin/zonegen.py
+    mode: 0755
     owner: root
     group: root
-    mode: 0755
 
 - name: Install cronjob to generate nodes zone
   copy:
     src: cronjob
     dest: /etc/cron.hourly/zonegen
+    mode: 0755
     owner: root
     group: root
-    mode: 0755
 
 - name: Initially generate nodes zone
   command: /etc/cron.hourly/zonegen
@@ -51,6 +54,9 @@
   copy:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-nsd"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall
 

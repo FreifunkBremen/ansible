@@ -3,6 +3,9 @@
   copy:
     src: apt-recommends.conf
     dest: /etc/apt/apt.conf.d/40recommends
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Install APT https transport plugin
   apt:
@@ -17,6 +20,9 @@
   copy:
     src: apt-periodic.conf
     dest: /etc/apt/apt.conf.d/10periodic
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Install unattended-upgrades
   apt:
@@ -51,3 +57,6 @@
   copy:
     src: unattended-upgrades-dpkg.conf
     dest: /etc/apt/apt.conf.d/51unattended-upgrades
+    mode: 0644
+    owner: root
+    group: root

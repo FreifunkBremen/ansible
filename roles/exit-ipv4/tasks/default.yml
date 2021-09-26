@@ -3,6 +3,9 @@
   template:
     src: "default/{{ item }}"
     dest: "{{ firewall_path }}/"
+    mode: 0644
+    owner: root
+    group: root
   with_items:
     - 10-tcpmss-ipv4
     - 20-exit-ipv4
@@ -14,6 +17,8 @@
     src: default/up.sh
     dest: "/etc/network/if-up.d/{{ ffhb_routing_table }}"
     mode: 0755
+    owner: root
+    group: root
   when: exit_ipv4 == "default"
 
 - name: Remove hook

@@ -8,9 +8,13 @@
     name: haveged
 
 - name: Copy systemd unit file
-  command: /bin/cp /lib/systemd/system/fastd@.service /etc/systemd/system/fastd@.service
-  args:
-    creates: /etc/systemd/system/fastd@.service
+  copy:
+    remote_src: yes
+    src: /lib/systemd/system/fastd@.service
+    dest: /etc/systemd/system/fastd@.service
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Stop fastd via System V init script
   service:
