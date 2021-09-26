@@ -59,17 +59,15 @@
 
 # MySQL
 - name: Generate MySQL password
-  shell: head /dev/urandom | tr -dc A-Za-z0-9 | head -c 20 > /home/{{ tasks_user }}/mysql-password
-  args:
-    creates: /home/{{ tasks_user }}/mysql-password
-
-- name: Restrict access to MySQL password file
-  file:
-    path: "/home/{{ tasks_user }}/mysql-password"
-    state: touch
+  copy:
+    src: "/home/{{ tasks_user }}/mysql-password"
+    content: "{{ pwd }}"
+    force: no
     mode: 0400
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
+  vars:
+    pwd: "{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}"
 
 - name: Fetch MySQL password
   slurp:
