@@ -8,7 +8,7 @@
     ssh_key_comment: "yanic@{{ inventory_hostname }}"
 
 - name: Install yanic
-  shell: /usr/local/go/bin/go get -u github.com/FreifunkBremen/freifunkmanager/cmd/freifunkmanager
+  command: /usr/local/go/bin/go get -u github.com/FreifunkBremen/freifunkmanager/cmd/freifunkmanager
   environment:
     GOPATH: /opt/go
   notify:
@@ -18,6 +18,9 @@
   template:
     src: config.toml
     dest: /etc/freifunkmanager.conf
+    mode: 0644
+    owner: root
+    group: root
   notify:
     - restart freifunkmanager
 
@@ -25,6 +28,9 @@
   template:
     src: caddy
     dest: /etc/caddy/hosts/10-freifunkmanager.act
+    mode: 0644
+    owner: root
+    group: root
   when: freifunkmanager_caddy
   notify:
     - reload caddy
@@ -33,12 +39,17 @@
   file:
     path: "{{ yanic_meshviewer_path }}/"
     state: directory
+    mode: 0755
     owner: yanic
+    group: yanic
 
 - name: Install system unit
   template:
     src: freifunkmanager.service
     dest: /lib/systemd/system/freifunkmanager.service
+    mode: 0644
+    owner: root
+    group: root
   notify:
     - reload systemd
     - restart yanic

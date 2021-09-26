@@ -13,16 +13,24 @@
     src: init.sh
     dest: /etc/init.d/firewall.sh
     mode: 0755
+    owner: root
+    group: root
 
 - name: Install systemd unit
   copy:
     src: firewall.service
     dest: /etc/systemd/system/firewall.service
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Install basic firewall rules
   copy:
     src: "{{ item }}"
     dest: "{{ firewall_path }}/"
+    mode: 0644
+    owner: root
+    group: root
   with_items:
     - 00-base
     - 90-established

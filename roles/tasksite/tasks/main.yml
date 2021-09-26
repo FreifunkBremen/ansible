@@ -11,9 +11,9 @@
     path: "{{ item }}"
     state: directory
     recurse: yes
+    mode: 0700
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
-    mode: 0700
   with_items:
   - /home/{{ tasks_user }}/.config/etc/php
   - /home/{{ tasks_user }}/.local/bin
@@ -25,9 +25,9 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: 0755
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
-    mode: 0755
   with_items:
   - /var/www/{{ tasks_user }}
   - /var/www/{{ tasks_user }}/domains
@@ -39,9 +39,9 @@
   file:
     path: "/var/log/apache2/{{ tasks_user }}"
     state: directory
+    mode: 0750
     owner: root
     group: "{{ tasks_group }}"
-    mode: 0750
 
 - name: Install CGI wrapper
   template:
@@ -67,9 +67,9 @@
   file:
     path: "/home/{{ tasks_user }}/mysql-password"
     state: touch
+    mode: 0400
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
-    mode: 0400
 
 - name: Fetch MySQL password
   slurp:
@@ -89,6 +89,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ tasks_subdomain }}.{{ main_domain }} {{ tasks_subdomain }}.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Install Apache site config
@@ -96,6 +99,8 @@
     src: apache-tasks.conf
     dest: "/etc/apache2/sites-available/{{ tasks_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   notify: restart apache
 
 - name: Enable Apache site config
@@ -130,14 +135,15 @@
   copy:
     src: htaccess
     dest: "/var/www/{{ tasks_user }}/domains/{{ tasks_domain }}/.htaccess"
+    mode: 0644
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
-    mode: 0644
 
 - name: Copy custom PHP config
   template:
     src: php-extopts.ini
     dest: "/home/{{ tasks_user }}/.config/etc/php/"
+    mode: 0644
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
 
@@ -145,9 +151,9 @@
   template:
     src: ffhb.conf.php
     dest: "/var/www/{{ tasks_user }}/opt/phabricator/phabricator/conf/"
+    mode: 0700
     owner: "{{ tasks_user }}"
     group: "{{ tasks_group }}"
-    mode: 0700
 
 - name: Enable custom Phabricator config
   copy:

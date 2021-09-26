@@ -15,6 +15,9 @@
   template:
     src: service
     dest: /etc/systemd/system/respondd.service
+    mode: 0644
+    owner: root
+    group: root
   notify:
     - reload systemd
     - restart respondd
@@ -28,11 +31,17 @@
   template:
     src: cronjob
     dest: /etc/cron.d/mesh-announce-alfred
+    mode: 0644
+    owner: root
+    group: root
   when: mesh_announce_alfred
 
 - name: Open firewall for respondd
   template:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-respondd"
+    mode: 0644
+    owner: root
+    group: root
   when: firewall_enabled
   notify: reload firewall

@@ -49,6 +49,9 @@
   copy:
     src: "{{ item }}"
     dest: "/etc/apache2/conf-available/{{ item }}"
+    mode: 0644
+    owner: root
+    group: root
   with_items:
     - anon-logs.conf
     - default-dir-options.conf
@@ -61,6 +64,9 @@
     src: proxy.conf
     dest: /etc/apache2/mods-available/proxy.conf
     force: yes
+    mode: 0644
+    owner: root
+    group: root
   notify: restart apache
 
 - name: Enable configurations
@@ -78,12 +84,18 @@
   copy:
     src: user-php-exec.conf
     dest: /etc/apache2/user-php-exec.conf
+    mode: 0644
+    owner: root
+    group: root
   notify: restart apache
 
 - name: Copy new default site configuration
   template:
     src: 000-default.conf
-    dest: /etc/apache2/sites-available/
+    dest: /etc/apache2/sites-available/000-default.conf
+    mode: 0644
+    owner: root
+    group: root
   notify: restart apache
 
 - name: Enable needed modules

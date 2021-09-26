@@ -3,6 +3,9 @@
   copy:
     src: nginx.conf
     dest: /etc/nginx/snippets/speedtest.conf
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Configure nginx default vHost
   lineinfile:

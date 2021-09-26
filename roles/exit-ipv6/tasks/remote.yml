@@ -3,6 +3,9 @@
   template:
     src: vpn-uplink6
     dest: /etc/network/interfaces.d/vpn-uplink6
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Set interfaces up
   command: ifup vpn-uplink6

@@ -1,3 +1,4 @@
+---
 - name: Install chrony
   apt:
     name: chrony
@@ -7,6 +8,8 @@
     src: chrony.conf
     dest: /etc/chrony/chrony.conf
     mode: 0644
+    owner: root
+    group: root
   notify: restart chrony
   when: "'vpnservers' in group_names"
 
@@ -14,6 +17,9 @@
   template:
     src: firewall.sh
     dest: "{{ firewall_path }}/30-chrony"
+    mode: 0644
+    owner: root
+    group: root
   notify: reload firewall
   when: "firewall_enabled and 'vpnservers' in group_names"
 

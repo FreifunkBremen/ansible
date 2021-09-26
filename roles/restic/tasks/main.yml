@@ -3,6 +3,9 @@
   file:
     path: /opt/restic/
     state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Download Restic
   get_url:
@@ -31,15 +34,15 @@
   copy:
     src: backup-restic
     dest: /etc/cron.daily/backup-restic
+    mode: 0755
     owner: root
     group: root
-    mode: 0755
 
 - name: Copy configuration file
   copy:
     src: backup-restic.default
     dest: /etc/default/backup-restic
+    mode: 0600
     owner: root
     group: root
-    mode: 0600
     force: no

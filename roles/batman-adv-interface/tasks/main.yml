@@ -17,6 +17,9 @@
   template:
     src: interfaces
     dest: /etc/network/interfaces.d/{{ batman_interface }}
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Set interfaces up
   command: ifup {{ item }}

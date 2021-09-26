@@ -3,13 +3,17 @@
   file:
     path: /var/www/acme-challenge
     state: directory
-    group: www-data
     mode: 0750
+    owner: root
+    group: www-data
 
 - name: Install Apache config for letsencrypt challenges
   copy:
     src: acme-challenge.conf
-    dest: /etc/apache2/conf-available/
+    dest: /etc/apache2/conf-available/acme-challenge.conf
+    mode: 0644
+    owner: root
+    group: root
 
 - name: Enable Apache config for letsencrypt challenges
   command: a2enconf acme-challenge.conf
@@ -26,11 +30,17 @@
   file:
     path: /etc/letsencrypt
     state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Copy letsencrypt client config
   copy:
     src: config
     dest: /etc/letsencrypt/config
+    mode: 0644
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Copy letsencrypt client hook script
@@ -38,9 +48,14 @@
     src: hook.sh
     dest: /etc/letsencrypt/hook.sh
     mode: 0755
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Copy letsencrypt cronjob
   copy:
     src: cronjob
     dest: /etc/cron.d/letsencrypt
+    mode: 0644
+    owner: root
+    group: root

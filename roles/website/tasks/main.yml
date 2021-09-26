@@ -9,17 +9,17 @@
   file:
     path: /var/log/apache2/website/
     state: directory
+    mode: 0750
     owner: root
     group: "{{ website_group }}"
-    mode: 0750
 
 - name: Create needed folder structure
   file:
     path: "{{ item }}"
     state: directory
+    mode: 0755
     owner: "{{ website_user }}"
     group: "{{ website_group }}"
-    mode: 0755
   with_items:
   - /home/{{ website_user }}/.local/bin
   - /home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}
@@ -64,6 +64,7 @@
   template:
     src: webhook.php
     dest: "/var/www/{{ website_user }}/domains/{{ website_domain }}/"
+    mode: 0644
     owner: "{{ website_user }}"
     group: "{{ website_user }}"
 
@@ -81,6 +82,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ website_domain }} {{ alt_domain }} www.{{ website_domain }} www.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   notify: regenerate certificates
 
 - name: Install Apache vHost config
@@ -88,6 +92,8 @@
     src: apache2.conf
     dest: "/etc/apache2/sites-available/{{ website_user }}.{{ website_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   notify: reload apache
 
 - name: Enable Apache vHost config
@@ -100,9 +106,9 @@
   copy:
     src: htaccess
     dest: "/var/www/{{ website_user }}/domains/{{ website_domain }}/.htaccess"
+    mode: 0644
     owner: "{{ website_user }}"
     group: "{{ website_group }}"
-    mode: 0644
 
 - name: Run Jekyll
   command: "/home/{{ website_user }}/.local/bin/update-jekyll.sh"

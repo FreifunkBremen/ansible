@@ -17,6 +17,9 @@
   template:
     src: grafana.ini
     dest: /etc/grafana/grafana.ini
+    mode: 0644
+    owner: root
+    group: root
   notify: restart grafana
 
 - name: Create dashboard folders
@@ -43,6 +46,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ grafana_subdomain }}.{{ main_domain }} {{ grafana_subdomain }}.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   when: not grafana_caddy
   notify: regenerate certificates
 
@@ -51,6 +57,8 @@
     src: apache2.conf
     dest: "/etc/apache2/sites-available/{{ grafana_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   when: not grafana_caddy
   notify: reload apache
 
@@ -65,6 +73,9 @@
   template:
     src: caddy
     dest: /etc/caddy/hosts/10-grafana.act
+    mode: 0644
+    owner: root
+    group: root
   when: grafana_caddy
   notify:
     - reload caddy

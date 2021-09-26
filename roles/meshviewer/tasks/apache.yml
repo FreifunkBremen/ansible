@@ -4,6 +4,9 @@
     dest: /etc/letsencrypt/domains.txt
     line: "{{ meshviewer_subdomain }}.{{ main_domain }} {{ meshviewer_subdomain }}.{{ alt_domain }}"
     create: yes
+    mode: 0644
+    owner: root
+    group: root
   when: meshviewer_subdomain is defined
   notify: regenerate certificates
 
@@ -12,6 +15,8 @@
     src: apache2.conf
     dest: "/etc/apache2/sites-available/{{ meshviewer_domain }}.conf"
     mode: 0644
+    owner: root
+    group: root
   notify: reload apache
 
 - name: Enable Apache vHost config

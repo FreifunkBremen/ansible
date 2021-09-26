@@ -23,8 +23,11 @@
 
 - name: Create destination directory
   file:
-    path="{{ meshviewer_path_bin }}"
-    state=directory
+    path: "{{ meshviewer_path_bin }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Install rsync
   apt:
