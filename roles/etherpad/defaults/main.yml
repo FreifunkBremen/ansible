@@ -1,9 +1,0 @@
----
-etherpad_git_root: 'https://github.com/ether/etherpad-lite.git'
-etherpad_git_version: '02b3d427711805bf6f96d4ac6ba5e24d264db3f1'
-etherpad_email: 'info@bremen.freifunk.net'
-etherpad_user: 'ffhb-pads'
-etherpad_group: 'ffhb-pads'
-etherpad_subdomain: 'pads'
-etherpad_domain: '{{ etherpad_subdomain }}.{{ main_domain }}'
-etherpad_title: 'Freifunk Bremen Pads'
