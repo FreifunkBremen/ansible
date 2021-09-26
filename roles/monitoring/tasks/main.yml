@@ -135,6 +135,7 @@
       src: "/home/{{ monitoring_user }}/.var/tmp/check_multi/check_multi-{{ monitoring_check_multi_version }}/debian/patches/{{ item }}"
       basedir: "/home/{{ monitoring_user }}/.var/tmp/check_multi/check_multi-{{ monitoring_check_multi_version }}"
       strip: 1
+      remote_src: yes
     with_items:
       - unescaped-left-brace-in-regex.patch
       - 0.26-defang-make-all.patch
