@@ -1,0 +1,12 @@
+---
+- name: install jekyll dependencies
+  bundler:
+    gem_path: .bundle
+    chdir: "/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}"
+  become: yes
+  become_user: "{{ website_user }}"
+
+- name: run jekyll
+  command: "/home/{{ website_user }}/.local/bin/update-jekyll.sh"
+  become: yes
+  become_user: "{{ website_user }}"

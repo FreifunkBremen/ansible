@@ -40,17 +40,11 @@
     dest: "/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}"
     force: yes
     version: "{{ website_git_commit }}"
-  register: website_checkout
   become: yes
   become_user: "{{ website_user }}"
-
-- name: Install Jekyll and dependencies via bundler
-  bundler:
-    gem_path: .bundle
-    chdir: "/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}"
-  when: website_checkout.changed
-  become: yes
-  become_user: "{{ website_user }}"
+  notify:
+  - install jekyll dependencies
+  - run jekyll
 
 - name: Install CGI wrapper
   template:
@@ -109,9 +103,3 @@
     mode: 0644
     owner: "{{ website_user }}"
     group: "{{ website_group }}"
-
-- name: Run Jekyll
-  command: "/home/{{ website_user }}/.local/bin/update-jekyll.sh"
-  when: website_checkout.changed
-  become: yes
-  become_user: "{{ website_user }}"
