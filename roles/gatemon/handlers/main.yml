@@ -1,0 +1,7 @@
+---
+- name: install dependencies
+  command:
+    cmd: /home/{{ gatemon_user }}/.local/bin/composer install
+    chdir: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
+  become: yes
+  become_user: "{{ gatemon_user }}"
