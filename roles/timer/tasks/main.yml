@@ -10,15 +10,10 @@
   with_items:
   - service
   - timer
-  register: template_result
-
-- name: Reload systemd
-  command: systemctl daemon-reload
-  when: template_result.changed
+  notify: reload systemd
 
 - name: Enable and start timer
   service:
     name: "{{ timer_name }}.timer"
-    daemon_reload: yes
     enabled: yes
     state: started
