@@ -8,7 +8,7 @@
     group: root
 
 - name: Configure nginx default vHost
-  lineinfile:
+  lineinfile:  # noqa no-tabs
     path: /etc/nginx/sites-available/default
     line: "	include snippets/speedtest.conf;"
     insertafter: "server_name _;"
