@@ -57,7 +57,7 @@
     mode: 0755
     owner: root
     group: root
-  when: hostsfile.stat.exists == False
+  when: not hostsfile.stat.exists
 
 - name: Generate Key
   shell: echo "" | tincd -n icvpn -K
