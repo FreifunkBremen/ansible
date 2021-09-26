@@ -69,11 +69,13 @@
   become_user: "{{ wiki_user }}"
 
 - name: Configure push-able Github URL for wiki repository
-  command: git remote set-url --push origin git@github.com:FreifunkBremen/wiki.git
+  git_config:
+    repo: "/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen"
+    scope: "local"
+    name: "remote.origin.url"
+    value: "git@github.com:FreifunkBremen/wiki.git"
   become: yes
   become_user: "{{ wiki_user }}"
-  args:
-    chdir: "/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen"
 
 - name: Add cron job for pushing wiki contents to Github
   cron:
