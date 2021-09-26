@@ -5,8 +5,6 @@ Description=Gollum git based wiki
 WorkingDirectory=%h/.opt/gollum
 SyslogIdentifier=%p
 ExecStart=/usr/bin/bundle exec bin/gollum --port {{ wiki_gollum_port }} --host 127.0.0.1 --adapter rugged --live-preview --css --h1-title --ref wiki "%h/.var/gollum-envs/ff-bremen"
-Restart=always
-RestartSec=5
 
 [Install]
 WantedBy=default.target
