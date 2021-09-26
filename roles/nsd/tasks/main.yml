@@ -46,7 +46,9 @@
     group: root
 
 - name: Initially generate nodes zone
-  command: /etc/cron.hourly/zonegen
+  command:
+    cmd: /etc/cron.hourly/zonegen
+    creates: /var/lib/nsd/nodes.bremen.freifunk.net.zone
 
 - name: Open firewall for DNS
   copy:
