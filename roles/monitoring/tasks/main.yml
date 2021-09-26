@@ -1,13 +1,13 @@
 ---
 - name: Add vHosts
-  shell: space-mod-vhost add --domain={{ item }}
+  command: space-mod-vhost add --domain={{ item }}
   args:
     creates: "/var/www/{{ monitoring_user }}/domains/{{ item }}"
   with_items:
     - "{{ monitoring_domain }}"
 
 - name: Add vHosts (SSL)
-  shell: space-mod-vhost add --domain={{ item }} --ssl
+  command: space-mod-vhost add --domain={{ item }} --ssl
   args:
     creates: "/readonly/{{ monitoring_user }}/log/{{ item }}-error.log"
   with_items:
