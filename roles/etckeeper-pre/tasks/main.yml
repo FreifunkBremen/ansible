@@ -6,7 +6,7 @@
 
 - block:
   - name: Check if etc is committed
-    command: git -C /etc ls-files --modified --deleted --others --exclude-standard
+    command: git -C /etc ls-files --modified --deleted --others --exclude-standard  # noqa command-instead-of-module
     register: ansible_etckeeper_committed
     changed_when: false
     failed_when: ansible_etckeeper_committed.stdout != ""
