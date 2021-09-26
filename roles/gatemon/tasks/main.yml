@@ -48,23 +48,15 @@
     dest: "/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}"
     force: yes
     version: "{{ gatemon_git_commit }}"
-  register: gatemon_checkout
   become: yes
   become_user: "{{ gatemon_user }}"
+  notify: install dependencies
 
 - name: Restrict read access for token/ directory
   file:
     path: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}/token/
     state: directory
     mode: 0700
-
-- name: Install dependencies
-  command: /home/{{ gatemon_user }}/.local/bin/composer install
-  args:
-    chdir: /var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}
-  when: gatemon_checkout.changed
-  become: yes
-  become_user: "{{ gatemon_user }}"
 
 - name: Get letsencrypt certificates
   lineinfile:
