@@ -3,3 +3,6 @@
   service:
     name: nsd
     state: restarted
+
+- name: copy zone files
+  command: /usr/local/sbin/update-dns-zones.sh
