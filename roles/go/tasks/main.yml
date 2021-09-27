@@ -1,7 +1,7 @@
 ---
 - name: Download and install go
   unarchive:
-    src: https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz
+    src: https://golang.org/dl/go1.17.1.linux-amd64.tar.gz
     dest: /usr/local
     copy: no
 
