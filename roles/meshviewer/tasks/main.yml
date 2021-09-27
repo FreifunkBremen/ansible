@@ -12,14 +12,16 @@
     force: yes
 
 - name: Install node dependencies
-  command: nodejs /usr/bin/yarn install
+  command: node /usr/bin/yarn install
   args:
     chdir: "{{ meshviewer_path_src }}"
+    creates: node_modules
 
 - name: Build meshviewer
   command: node_modules/.bin/gulp
   args:
     chdir: "{{ meshviewer_path_src }}"
+    creates: build
 
 - name: Create destination directory
   file:
