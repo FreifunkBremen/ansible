@@ -1,12 +1,25 @@
 ---
 - name: Install tools
   apt:
-    name: patch
+    name:
+      - patch
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+
+- name: Install caddy repo keyring
+  apt_key:
+    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+    state: present
+
+- name: Install caddy repo
+  apt_repository:
+    repo: deb https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main
+    state: present
 
 - name: Install caddy
-  command: /usr/local/go/bin/go get -u github.com/mholt/caddy/caddy
-  environment:
-    GOPATH: /opt/go
+  apt:
+    name: caddy
   notify:
     - restart caddy
 
@@ -17,22 +30,6 @@
     mode: 0750
     owner: www-data
     group: www-data
-
-- name: Apply patch for Service
-  patch:
-    src: caddy.service.patch
-    dest: /opt/go/src/github.com/mholt/caddy/dist/init/linux-systemd/caddy.service
-  notify: reload systemd
-
-- name: Install Service
-  copy:
-    remote_src: yes
-    src: /opt/go/src/github.com/mholt/caddy/dist/init/linux-systemd/caddy.service
-    dest: /etc/systemd/system/caddy.service
-    mode: 0644
-    owner: root
-    group: root
-  notify: reload systemd
 
 - name: Create configuration folder
   file:
