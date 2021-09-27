@@ -6,7 +6,7 @@
 
 - name: Install the Node.js APT repository
   apt_repository:
-    repo: 'deb https://deb.nodesource.com/node_10.x stretch main'
+    repo: "deb https://deb.nodesource.com/node_14.x {{ ansible_distribution_release }} main"
 
 - name: Install Node.js
   apt:
