@@ -13,14 +13,18 @@
 - name: Install Apache vHost config
   template:
     src: apache2.conf
-    dest: "/etc/apache2/sites-available/{{ meshviewer_domain }}.conf"
+    dest: "/etc/apache2/sites-available/{{ filename }}.conf"
     mode: 0644
     owner: root
     group: root
   notify: reload apache
+  vars:
+    filename: "{{ meshviewer_subdomain is defined | ternary(meshviewer_subdomain + '.' + main_domain, meshviewer_domain) }}"
 
 - name: Enable Apache vHost config
-  command: a2ensite {{ meshviewer_domain }}
+  command: a2ensite {{ filename }}
   args:
-    creates: /etc/apache2/sites-enabled/{{ meshviewer_domain }}.conf
+    creates: /etc/apache2/sites-enabled/{{ filename }}.conf
   notify: reload apache
+  vars:
+    filename: "{{ meshviewer_subdomain is defined | ternary(meshviewer_subdomain + '.' + main_domain, meshviewer_domain) }}"
