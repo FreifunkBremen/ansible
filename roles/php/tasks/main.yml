@@ -2,11 +2,12 @@
 - name: Install PHP and needed modules
   apt:
     name:
-      - php-cgi
-      - php-cli
-      - php-curl
-      - php-dev
-      - php-gd
-      - php-mysql
-      - php-sqlite3
-      - php-apcu
+      - composer
+      - php7.4-cgi
+      - php7.4-cli
+      - php7.4-curl
+      - php7.4-dev
+      - php7.4-gd
+      - php7.4-mysql
+      - php7.4-sqlite3
+      - php7.4-apcu
