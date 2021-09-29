@@ -1,7 +1,13 @@
 ---
-- name: Install apt-transport-https
-  apt:
-    name: apt-transport-https
+- name: Open firewall for InfluxDB
+  copy:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-influxdb"
+    mode: 0644
+    owner: root
+    group: root
+  when: firewall_enabled
+  notify: reload firewall
 
 - name: Add influxdb key
   apt_key:
@@ -16,78 +22,65 @@
   apt:
     name: influxdb
 
-- name: Upload influxdb without auth configuration
-  template:
-    src: influxdb.conf
-    dest: /etc/influxdb/
-    mode: 0644
-    owner: root
-    group: root
-  vars:
-    influxdb_auth_enabled: false
-
-- name: Open firewall for InfluxDB
-  copy:
-    src: firewall.sh
-    dest: "{{ firewall_path }}/30-influxdb"
-    mode: 0644
-    owner: root
-    group: root
-  when: firewall_enabled
-  notify: reload firewall
-
-- name: Start influxdb
-  service:
-    name: influxdb
-    state: started
-
-- name: Create admin user
+- name: Check if influx is already configures
   uri:
-    url: "http://localhost:8086/query"
-    method: POST
-    body: "q=CREATE+USER+%22{{ influxdb_admin_user }}%22+WITH+PASSWORD+%27{{ influxdb_admin_password }}%27+WITH+ALL+PRIVILEGES&db=_internal"
-
-- name: Create user
-  uri:
-    url: "http://localhost:8086/query"
+    url: "http://localhost:8086/ping?verbose=true"
     user: "{{ influxdb_admin_user }}"
     password: "{{ influxdb_admin_password }}"
-    method: POST
-    body: "q=CREATE+USER+%22{{ item.user }}%22+WITH+PASSWORD+%27{{ item.pass }}%27+&db=_internal"
+    method: GET
     force_basic_auth: yes
-  with_items: "{{ influxdb_users }}"
+  register: influx_ping
 
-- name: Create Database
-  uri:
-    url: "http://localhost:8086/query"
-    user: "{{ influxdb_admin_user }}"
-    password: "{{ influxdb_admin_password }}"
-    method: POST
-    body: "q=CREATE+DATABASE+%22{{ item }}%22&db=_internal"
-    force_basic_auth: yes
-  with_items: "{{ influxdb_databases }}"
+- block:
+  - name: Upload influxdb without auth configuration
+    template:
+      src: influxdb.conf
+      dest: /etc/influxdb/influxdb.conf
+      mode: 0644
+      owner: root
+      group: root
+    vars:
+      influxdb_auth_enabled: false
 
-- name: Grant access
-  uri:
-    url: "http://localhost:8086/query"
-    user: "{{ influxdb_admin_user }}"
-    password: "{{ influxdb_admin_password }}"
-    method: POST
-    body: "q=GRANT+{{ item.access }}+ON+%22{{ item.database }}%22+TO+%22{{ item.user }}%22&db=_internal"
-    force_basic_auth: yes
-  with_items: "{{ influxdb_access }}"
+  - name: Restart influxdb
+    service:
+      name: influxdb
+      state: restarted
 
-- name: Upload influxdb configuration with auth
-  template:
-    src: influxdb.conf
-    dest: /etc/influxdb/
-    mode: 0644
-    owner: root
-    group: root
-  vars:
-    influxdb_auth_enabled: true
+  - name: Create admin user
+    influxdb_user:
+      admin: yes
+      user_name: "{{ influxdb_admin_user }}"
+      user_password: "{{ influxdb_admin_password }}"
 
-- name: Restart influxdb
-  service:
-    name: influxdb
-    state: restarted
+  - name: Create Database
+    influxdb_database:
+      username: "{{ influxdb_admin_user }}"
+      password: "{{ influxdb_admin_password }}"
+      database_name: "{{ item }}"
+    with_items: "{{ influxdb_databases }}"
+
+  - name: Create user
+    influxdb_user:
+      user_name: "{{ item.user }}"
+      user_password: "{{ item.pass }}"
+      login_username: "{{ influxdb_admin_user }}"
+      login_password: "{{ influxdb_admin_password }}"
+      grants: "{{ item.databases }}"
+    with_items: "{{ influxdb_users }}"
+
+  - name: Upload influxdb configuration with auth
+    template:
+      src: influxdb.conf
+      dest: /etc/influxdb/influxdb.conf
+      mode: 0644
+      owner: root
+      group: root
+    vars:
+      influxdb_auth_enabled: true
+
+  - name: Restart influxdb
+    service:
+      name: influxdb
+      state: restarted
+  when: influx_ping.status != 200
