@@ -35,11 +35,10 @@
       - imagemagick
 
 - name: Clone content repository
-  git:
+  git:  # noqa git-latest
     repo: "{{ website_git_root }}"
     dest: "/home/{{ website_user }}/.var/jekyll-envs/{{ website_domain }}"
     force: yes
-    version: "{{ website_git_commit }}"
   become: yes
   become_user: "{{ website_user }}"
   notify:
