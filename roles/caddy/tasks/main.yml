@@ -5,7 +5,6 @@
       - patch
       - debian-keyring
       - debian-archive-keyring
-      - apt-transport-https
 
 - name: Install caddy repo keyring
   apt_key:
