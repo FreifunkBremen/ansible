@@ -47,10 +47,10 @@ backup_prepare() {
 if [ ! -f /etc/default/backup-restic ]; then
   echo '/etc/default/backup-restic does not exists!' >&2
   exit 1
-else
-  # Include config
-  . /etc/default/backup-restic
 fi
+
+# Include config
+. /etc/default/backup-restic
 
 # Check if valid targets defined
 if [ "${#TARGETS[*]}" -eq 0 ]; then
