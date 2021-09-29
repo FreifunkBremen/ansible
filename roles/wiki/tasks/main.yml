@@ -72,7 +72,7 @@
   git_config:
     repo: "/home/{{ wiki_user }}/.var/gollum-envs/ff-bremen"
     scope: "local"
-    name: "remote.origin.url"
+    name: "remote.origin.pushurl"
     value: "git@github.com:FreifunkBremen/wiki.git"
   become: yes
   become_user: "{{ wiki_user }}"
