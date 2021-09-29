@@ -83,4 +83,4 @@
     service:
       name: influxdb
       state: restarted
-  when: influx_ping.status != 200
+  when: influx_ping.status is not defined or influx_ping.status != 200
