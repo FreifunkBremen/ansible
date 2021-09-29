@@ -39,7 +39,7 @@
     repo: "{{ gatemon_git_root }}"
     dest: "/var/www/{{ gatemon_user }}/domains/{{ gatemon_domain }}"
     force: yes
-    version: "{{ gatemon_git_commit }}"
+    version: "{{ gatemon_git_version }}"
   become: yes
   become_user: "{{ gatemon_user }}"
   notify: install dependencies
