@@ -1,7 +1,7 @@
 ---
 - name: Install MySQL server
   apt:
-    name: mysql-server
+    name: mariadb-server
 
 - name: Increase max_allowed_packet setting
   lineinfile:
