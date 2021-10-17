@@ -43,13 +43,14 @@
 ### Install tessera, style and dependencies
 - name: Install tessera tile server and dependencies
   npm:
-    name: "{{ item }}"
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
     path: "/home/{{ tiles_user }}/"
   with_items:
-    - "@mapbox/tilelive-vector"
-    - tessera
-    - "@mapbox/mbtiles"
-    - tilelive-tmstyle
+    - { name: "@mapbox/tilelive-vector", version: 4.2.0 }
+    - { name: "tessera", version: 0.15.0 }
+    - { name: "@mapbox/mbtiles", version: 0.12.1 }
+    - { name: "tilelive-tmstyle", version: 0.8.0 }
   become: yes
   become_user: "{{ tiles_user }}"
 
