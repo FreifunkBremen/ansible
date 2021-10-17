@@ -4,11 +4,11 @@
 Description=Tessera map tile renderer
 
 [Service]
-Environment=MAPNIK_FONT_PATH=%h/.fonts
+Environment=MAPNIK_FONT_PATH=%h/.fonts PORT={{ tiles_tessera_port }}
 
 MemoryMax=2G
 SyslogIdentifier=%p
-ExecStart=%h/node_modules/tessera/bin/tessera.js -p {{ tiles_tessera_port }} -b 127.0.0.1 tmstyle://./mapbox-studio-osm-bright.tm2
+ExecStart=%h/node_modules/tessera/bin/tessera.js -b 127.0.0.1 tmstyle://./mapbox-studio-osm-bright.tm2
 Restart=always
 RestartSec=5
 
