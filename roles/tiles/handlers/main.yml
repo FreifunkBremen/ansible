@@ -4,3 +4,5 @@
     name: tessera.service
     scope: user
     state: restarted
+  become: yes
+  become_user: "{{ tiles_user }}"
