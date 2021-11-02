@@ -6,17 +6,6 @@
     shell: /bin/zsh
     groups: webusers
 
-- name: Download map data of Germany
-  get_url:
-    url: https://openmaptiles.os.zhdk.cloud.switch.ch/v3.3/extracts/germany.mbtiles
-    dest: "/home/{{ tiles_user }}/germany.mbtiles"
-    owner: "{{ tiles_user }}"
-    group: "{{ tiles_group }}"
-  async: 3600
-  poll: 0
-  register: download_sleeper
-  when: not ansible_check_mode
-
 - name: Create directory for Apache log files
   file:
     path: "/var/log/apache2/{{ tiles_user }}"
@@ -91,7 +80,8 @@
   systemd:
     name: tessera.service
     scope: user
-    state: started
+    # note: the service needs to be started manually after a mbtiles files has been downloaded as /home/tiles/germany.mbtiles
+    state: stopped
     enabled: yes
   become: yes
   become_user: "{{ tiles_user }}"
@@ -131,12 +121,3 @@
   args:
     creates: "/etc/apache2/sites-enabled/{{ tiles_user }}.{{ tiles_domain }}.conf"
   notify: reload apache
-
-### Wait for download to finish
-- name: Waiting for map data download to complete
-  async_status:
-    jid: "{{ download_sleeper.job_id }}"
-  register: download_result
-  until: download_result.finished
-  when: 'download_sleeper is not undefined and "job_id" in download_sleeper'
-  retries: 30
