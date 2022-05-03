@@ -1,0 +1,8 @@
+---
+nodemon_email: 'nodemon@bremen.freifunk.net'
+nodemon_user: 'nodemon'
+nodemon_group: 'nodemon'
+nodemon_subdomain: 'nodemon'
+nodemon_domain: '{{ nodemon_subdomain }}.{{ main_domain }}'
+nodemon_git_root: 'https://github.com/FreifunkBremen/nodemon.git'
+nodemon_git_version: 'v0.1'

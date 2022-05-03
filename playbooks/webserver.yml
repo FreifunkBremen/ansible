@@ -9,6 +9,7 @@
   - { role: letsencrypt, tags: [letsencrypt] }
   - { role: apache, tags: [apache] }
   - { role: gatemon, tags: [gatemon] }
+  - { role: nodemon, tags: [nodemon] }
   - { role: website, tags: [website] }
   - { role: downloadsite, tags: [downloadsite] }
   - { role: wiki, tags: [wiki] }

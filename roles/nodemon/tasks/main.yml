@@ -1,0 +1,77 @@
+---
+- name: Add user
+  user:
+    name: "{{ nodemon_user }}"
+    home: "/home/{{ nodemon_user }}"
+    shell: /bin/zsh
+
+- name: Create directory for Apache log files
+  file:
+    path: "/var/log/apache2/{{ nodemon_user }}"
+    state: directory
+    owner: root
+    group: "{{ nodemon_group }}"
+    mode: 0750
+
+- name: Create needed folder structure
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nodemon_user }}"
+    group: "{{ nodemon_group }}"
+    mode: 0755
+  with_items:
+  - /home/{{ nodemon_user }}/.local/bin
+  - /var/www/{{ nodemon_user }}/domains/{{ nodemon_domain }}
+  - /var/www/{{ nodemon_user }}/cgi-bin
+  - /var/www/{{ nodemon_user }}/fcgi-bin
+
+- name: Install CGI wrapper
+  template:
+    src: php-fcgi-starter
+    dest: "/var/www/{{ nodemon_user }}/fcgi-bin/"
+    mode: 0700
+    owner: "{{ nodemon_user }}"
+    group: "{{ nodemon_group }}"
+
+- name: Clone nodemon git repository
+  git:
+    repo: "{{ nodemon_git_root }}"
+    dest: "/var/www/{{ nodemon_user }}/domains/{{ nodemon_domain }}"
+    force: yes
+    version: "{{ nodemon_git_version }}"
+  become: yes
+  become_user: "{{ nodemon_user }}"
+  notify: install dependencies
+
+- name: Get letsencrypt certificates
+  lineinfile:
+    dest: /etc/letsencrypt/domains.txt
+    line: "{{ nodemon_subdomain }}.{{ main_domain }} {{ nodemon_subdomain }}.{{ alt_domain }}"
+    create: yes
+    mode: 0644
+    owner: root
+    group: root
+  notify: regenerate certificates
+
+- name: Install Apache vHost config
+  template:
+    src: apache2.conf
+    dest: "/etc/apache2/sites-available/{{ nodemon_user }}.{{ nodemon_domain }}.conf"
+    mode: 0644
+    owner: root
+    group: root
+  notify: reload apache
+
+- name: Enable Apache vHost config
+  command: a2ensite {{ nodemon_user }}.{{ nodemon_domain }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ nodemon_user }}.{{ nodemon_domain }}.conf
+  notify: reload apache
+
+- name: Install cronjob
+  cron:
+    name: "nodemon"
+    minute: "*/5"
+    job: "/var/www/{{ nodemon_user }}/domains/{{ nodemon_domain }}/cron.php"
+    user: "{{ nodemon_user }}"

@@ -1,0 +1,12 @@
+---
+dependencies:
+  - sudo
+  - apache
+  - letsencrypt
+  - php
+  - git
+galaxy_info:
+  platforms:
+    - name: Debian
+      versions:
+        - jessie

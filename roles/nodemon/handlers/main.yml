@@ -1,0 +1,7 @@
+---
+- name: install dependencies
+  command:
+    cmd: /usr/bin/composer install
+    chdir: /var/www/{{ nodemon_user }}/domains/{{ nodemon_domain }}
+  become: yes
+  become_user: "{{ nodemon_user }}"
