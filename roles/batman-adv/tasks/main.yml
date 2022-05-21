@@ -1,0 +1,10 @@
+---
+# tasks file for batman-adv
+- name: Enable batman during boot
+  lineinfile:
+    path: /etc/modules
+    line: batman-adv
+
+- name: Load batman-adv module
+  modprobe:
+    name: batman-adv

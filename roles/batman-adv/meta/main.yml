@@ -1,0 +1,15 @@
+---
+dependencies:
+  - batman-adv-interface
+galaxy_info:
+  author: kaleng
+  categories:
+    - networking
+  description: "install batman-adv"
+  license: GPLv3
+  min_ansible_version: 1.6
+  platforms:
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
