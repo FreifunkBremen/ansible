@@ -21,7 +21,7 @@
 
 - name: Disable qname minimisation
   copy:
-    content: "qname-minimisation: no\n"
+    content: "server:\n    qname-minimisation: no\n"
     dest: /etc/unbound/unbound.conf.d/qname-minimisation.conf
     owner: root
     group: root
