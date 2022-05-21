@@ -10,4 +10,10 @@
     register: ansible_etckeeper_committed
     changed_when: false
     failed_when: ansible_etckeeper_committed.stdout != ""
+
+  - name: Disable autocommit before APT run
+    replace:
+      dest: /etc/etckeeper/etckeeper.conf
+      regexp: '^([\#\s]*)?AVOID_COMMIT_BEFORE_INSTALL=[01]'
+      replace: 'AVOID_COMMIT_BEFORE_INSTALL=0'
   when: etckeeper_binary.stat.executable is defined and etckeeper_binary.stat.executable
