@@ -1,4 +1,8 @@
 ---
+- name: Install bridge-utils
+  apt:
+    name: bridge-utils
+
 - name: Install old networking tools
   apt:
     name: net-tools
