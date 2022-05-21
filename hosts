@@ -4,9 +4,17 @@ from sys import path
 path.append("lib")
 
 import hosts
+import json
 
 inv = hosts.Inventory('site/site.conf',
   ipv6_global_network = "2a06:8782:ffbb:1337::/64",
+  ipv6_uplink_network = "2a06:8782:ffbb::/64",
+  icvpn_ipv4_network = "10.207.0.196/16",
+  icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
+)
+
+inv_v15 = hosts.Inventory('site/site.conf',
+  ipv6_global_network = "2a06:8782:ffbb:42::/64",
   ipv6_uplink_network = "2a06:8782:ffbb::/64",
   icvpn_ipv4_network = "10.207.0.196/16",
   icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
@@ -25,7 +33,7 @@ grp.host(3, "vpn03.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interfac
 grp.host(5, "vpn05.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens3", exit_ipv6_remote=False, exit_ipv6_interface="ens3", max_mtu=1438)
 grp.host(6, "vpn06.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", max_mtu=1462)
 
-grp = inv.group("vpnservers",
+grp = inv_v15.group("vpnservers",
   dhcp=True,
   icvpn=True,
   batman_gateway=True,
@@ -42,7 +50,7 @@ grp.host(0, "webserver.bremen.freifunk.net")
 grp = inv.group("downlinks_legacy", batman_gateway=True, firewall_enabled=True, is_legacy=True)
 grp.host(12, "ipv6-downlink-legacy.bremen.freifunk.net", max_mtu=1462)
 
-grp = inv.group("downlinks", batman_gateway=True, firewall_enabled=True)
+grp = inv_v15.group("downlinks", batman_gateway=True, firewall_enabled=True)
 grp.host(13, "ipv6-downlink.bremen.freifunk.net", max_mtu=1462)
 
 grp = inv.group("dnsserver");
@@ -64,7 +72,7 @@ grp.child("vpnservers_legacy")
 grp.child("downlinks_legacy")
 
 # non legacy backbone
-grp = inv.group("backbone")
+grp = inv_v15.group("backbone")
 grp.child("vpnservers")
 grp.child("downlinks")
 
@@ -85,4 +93,7 @@ grp.child("webserver")
 grp.child("dnsserver")
 grp.child("ffmapserver")
 
-print(inv.json_dump(indent=4))
+inv_dict = inv.data()
+inv_dict.update(inv_v15.data())
+
+print(json.dumps(inv_dict,indent=4))
