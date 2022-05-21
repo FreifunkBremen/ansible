@@ -57,6 +57,15 @@
     group: root
   notify: reload sysctl
 
+- name: Create rc.local
+  copy:
+    content: "#!/bin/sh -e\nexit 0\n"
+    dest: /etc/rc.local
+    mode: 0755
+    owner: root
+    group: root
+    force: no
+
 - name: Add sysctl call to /etc/rc.local
   lineinfile:
     name: /etc/rc.local
