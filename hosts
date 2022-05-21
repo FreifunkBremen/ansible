@@ -12,17 +12,25 @@ inv = hosts.Inventory('site/site.conf',
   icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
 )
 
-grp = inv.group("vpnservers",
+grp = inv.group("vpnservers_legacy",
   dhcp=True,
   icvpn=True,
   batman_gateway=True,
   firewall_enabled=True,
+  is_legacy=True,
 )
 grp.host(1, "vpn01.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", exit_ipv6_remote=False, exit_ipv6_interface="eth0", max_mtu=1462)
 grp.host(2, "vpn02.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", exit_ipv6_remote=False, exit_ipv6_interface="eth0", max_mtu=1438)
 grp.host(3, "vpn03.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", exit_ipv6_remote=False, exit_ipv6_interface="eth0", max_mtu=1462)
 grp.host(5, "vpn05.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens3", exit_ipv6_remote=False, exit_ipv6_interface="ens3", max_mtu=1438)
 grp.host(6, "vpn06.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", max_mtu=1462)
+
+grp = inv.group("vpnservers",
+  dhcp=True,
+  icvpn=True,
+  batman_gateway=True,
+  firewall_enabled=True,
+)
 grp.host(7, "vpn07.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="enp1s0", exit_ipv6_remote=False, exit_ipv6_interface="enp1s0", max_mtu=1438)
 
 grp = inv.group("eventsserver")
@@ -31,8 +39,11 @@ grp.host(0, "mgmt.bremen.freifunk.net")
 grp = inv.group("webserver")
 grp.host(0, "webserver.bremen.freifunk.net")
 
+grp = inv.group("downlinks_legacy", batman_gateway=True, firewall_enabled=True, is_legacy=True)
+grp.host(12, "ipv6-downlink-legacy.bremen.freifunk.net", max_mtu=1462)
+
 grp = inv.group("downlinks", batman_gateway=True, firewall_enabled=True)
-grp.host(12, "ipv6-downlink.bremen.freifunk.net", max_mtu=1462)
+grp.host(13, "ipv6-downlink.bremen.freifunk.net", max_mtu=1462)
 
 grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net");
@@ -48,6 +59,11 @@ grp = inv.group("monitoring")
 grp.host(0, "monitoring.bremen.freifunk.net")
 
 # vpnservers und downlinks zu backbone zusammenfassen
+grp = inv.group("backbone_legacy", is_legacy=True)
+grp.child("vpnservers_legacy")
+grp.child("downlinks_legacy")
+
+# non legacy backbone
 grp = inv.group("backbone")
 grp.child("vpnservers")
 grp.child("downlinks")
@@ -64,6 +80,7 @@ grp.host(0, "babel-gw-lwlcom.bremen.freifunk.net")
 grp.host(0, "monitoring.bremen.freifunk.net")
 grp.child("vmhosts")
 grp.child("backbone")
+grp.child("backbone_legacy")
 grp.child("webserver")
 grp.child("dnsserver")
 grp.child("ffmapserver")
