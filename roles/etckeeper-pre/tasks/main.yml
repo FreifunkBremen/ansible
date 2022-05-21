@@ -16,4 +16,5 @@
       dest: /etc/etckeeper/etckeeper.conf
       regexp: '^([\#\s]*)?AVOID_COMMIT_BEFORE_INSTALL=[01]'
       replace: 'AVOID_COMMIT_BEFORE_INSTALL=0'
+    changed_when: false
   when: etckeeper_binary.stat.executable is defined and etckeeper_binary.stat.executable

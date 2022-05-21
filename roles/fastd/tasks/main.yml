@@ -7,26 +7,26 @@
   apt:
     name: haveged
 
-- name: Copy systemd unit file
-  copy:
-    remote_src: yes
-    src: /lib/systemd/system/fastd@.service
-    dest: /etc/systemd/system/fastd@.service
-    mode: 0644
-    owner: root
-    group: root
-
 - name: Stop fastd via System V init script
   service:
     name: fastd
     state: stopped
 
-- name: Fix systemd unit for fastd
-  lineinfile:
-    dest: /etc/systemd/system/fastd@.service
-    line: "ExecStopPost=/bin/rm -f /run/fastd-%I.sock"
-    regexp: "^ExecStopPost="
-    insertafter: "^ExecReload="
+- name: Create drop-in directory
+  file:
+    path: /etc/systemd/system/fastd@.service.d
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Fix systemd unit
+  copy:
+    dest: /etc/systemd/system/fastd@.service.d/override.conf
+    content: "[Unit]\nExecStopPost=/bin/rm -f /run/fastd-%I.sock\n"
+    mode: 0644
+    owner: root
+    group: root
   notify:
   - reload systemd
   - restart fastd

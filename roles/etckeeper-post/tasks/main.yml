@@ -13,6 +13,7 @@
       dest: /etc/etckeeper/etckeeper.conf
       regexp: '^([\#\s]*)?AVOID_COMMIT_BEFORE_INSTALL=[01]'
       replace: 'AVOID_COMMIT_BEFORE_INSTALL=1'
+    changed_when: false
 
   - name: Get Git commit id
     command: git rev-parse HEAD  # noqa 303
