@@ -3,82 +3,83 @@
 # derived from /etc/network/if-pre-up.d/bridge
 # depends on /lib/bridge-utils/bridge-utils.sh from bridge-utils
 
-if ! modprobe -q batman-adv
-then
-  exit 0
+if ! modprobe -q batman-adv; then
+    exit 0
 fi
 
 . /lib/bridge-utils/bridge-utils.sh
 
 case "$IF_BATADV_PORTS" in
     "")
-      exit 0
+        exit 0
     ;;
     none)
-      exit 0
+        exit 0
     ;;
     *)
-      INTERFACES="$IF_BATADV_PORTS"
+        INTERFACES="$IF_BATADV_PORTS"
     ;;
 esac
 
+if ! batctl meshif "$IFACE" interface >/dev/null 2>&1; then
+    batctl meshif "$IFACE" interface create
+fi
+
 all_interfaces= &&
 unset all_interfaces &&
-bridge_parse_ports $INTERFACES | while read i
-do
-  for port in $i
-  do
-    # We attach and configure each port of the bridge
-    if [ "$MODE" = "start" ] && [ "$(cat /sys/class/net/$port/batman_adv/mesh_iface)" = "none" ]; then
-      if [ -x /etc/network/if-pre-up.d/vlan ]; then
-        env IFACE=$port /etc/network/if-pre-up.d/vlan
-      fi
-      if [ "$IF_BATADV_HW" ]
-      then
-         ifconfig $port down; ifconfig $port hw ether $IF_BATADV_HW
-      fi
-      if [ -f /proc/sys/net/ipv6/conf/$port/disable_ipv6 ]
-      then
-        echo 1 > /proc/sys/net/ipv6/conf/$port/disable_ipv6
-      fi
-      echo $IFACE > /sys/class/net/$port/batman_adv/mesh_iface && ifconfig $port 0.0.0.0 up
-    # We detach each port of the bridge
-    elif [ "$MODE" = "stop" ] && [ "$(cat /sys/class/net/$port/batman_adv/mesh_iface)" = "$IFACE" ];  then
-      ifconfig $port down && echo none > /sys/class/net/$port/batman_adv/mesh_iface && \
-        if [ -x /etc/network/if-post-down.d/vlan ]; then
-          env IFACE=$port /etc/network/if-post-down.d/vlan
+bridge_parse_ports $INTERFACES | while read i; do
+    for port in $i; do
+        # We attach and configure each port of the bridge
+        if [ "$MODE" = "start" ] && ! batctl meshif "$IFACE" interface | grep --quiet "^${port}:"; then
+            if [ -x /etc/network/if-pre-up.d/vlan ]; then
+                env IFACE=$port /etc/network/if-pre-up.d/vlan
+            fi
+
+            if [ "$IF_BATADV_HW" ]; then
+                ip link set down dev "$port"
+                ip link set dev "$port" address "$IF_BATADV_HW"
+            fi
+
+            if [ -f /proc/sys/net/ipv6/conf/$port/disable_ipv6 ]; then
+                echo 1 > /proc/sys/net/ipv6/conf/$port/disable_ipv6
+            fi
+
+            batctl meshif "$IFACE" interface add -M "$port"
+            ip link set up dev "$port"
+        # We detach each port of the bridge
+        elif [ "$MODE" = "stop" ] && batctl meshif "$IFACE" interface | grep --quiet "^${port}:";  then
+            ip link set down dev "$port"
+            batctl meshif "$IFACE" interface del -M "$port"
+
+            if [ -x /etc/network/if-post-down.d/vlan ]; then
+                env IFACE=$port /etc/network/if-post-down.d/vlan
+            fi
+
+           if [ -f /proc/sys/net/ipv6/conf/$port/disable_ipv6 ]; then
+               echo 0 > /proc/sys/net/ipv6/conf/$port/disable_ipv6
+           fi
         fi
-      if [ -f /proc/sys/net/ipv6/conf/$port/disable_ipv6 ]
-      then
-        echo 0 > /proc/sys/net/ipv6/conf/$port/disable_ipv6
-      fi
-    fi
-  done
+    done
 done
 
-if [ "$IF_BATADV_HW" ]
-then
-    ifconfig $IFACE hw ether $IF_BATADV_HW
+if [ "$IF_BATADV_HW" ]; then
+    ip link set dev "$IFACE" address "$IF_BATADV_HW"
 fi
 
 # We finish setting up the bridge
 if [ "$MODE" = "start" ] ; then
-
-  if [ "$IF_BATADV_HOP_PENALTY" ]
-  then
-    echo $IF_BATADV_HOP_PENALTY > /sys/class/net/$IFACE/mesh/hop_penalty
-  fi
-
-  if [ "$IF_BATADV_GW_MODE" ]
-  then
-    echo $IF_BATADV_GW_MODE > /sys/class/net/$IFACE/mesh/gw_mode
-
-    if [ "$IF_BATADV_GW_BANDWIDTH" ]
-    then
-      echo $IF_BATADV_GW_BANDWIDTH > /sys/class/net/$IFACE/mesh/gw_bandwidth
+    if [ "$IF_BATADV_HOP_PENALTY" ]; then
+        batctl meshif "$IFACE" hop_penalty "$IF_BATADV_HOP_PENALTY"
     fi
-  fi
 
-  # We activate the bridge
-  ifconfig $IFACE 0.0.0.0 up
+    if [ "$IF_BATADV_GW_MODE" ]; then
+        batctl meshif "$IFACE" gw_mode "$IF_BATADV_GW_MODE"
+
+        if [ "$IF_BATADV_GW_BANDWIDTH" ]; then
+            batctl meshif "$IFACE" gw_mode "$IF_BATADV_GW_MODE" "$IF_BATADV_GW_BANDWIDTH"
+        fi
+    fi
+
+    # We activate the bridge
+    ip link set up dev "$IFACE"
 fi

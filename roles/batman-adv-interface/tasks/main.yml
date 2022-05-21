@@ -16,6 +16,14 @@
     src: if-pre-up
     dest: /etc/network/if-pre-up.d/batadv
     mode: 0755
+  when: (ansible_distribution == "Debian" and (ansible_distribution_version is version_compare("11", ">=")))
+
+- name: Install batman pre-up script
+  copy:
+    src: if-pre-up-legacy
+    dest: /etc/network/if-pre-up.d/batadv
+    mode: 0755
+  when: (ansible_distribution == "Debian" and (ansible_distribution_version is version_compare("11", "<")))
 
 - name: Install interfaces file
   template:

@@ -1,0 +1,84 @@
+#! /usr/bin/env sh
+
+# derived from /etc/network/if-pre-up.d/bridge
+# depends on /lib/bridge-utils/bridge-utils.sh from bridge-utils
+
+if ! modprobe -q batman-adv
+then
+  exit 0
+fi
+
+. /lib/bridge-utils/bridge-utils.sh
+
+case "$IF_BATADV_PORTS" in
+    "")
+      exit 0
+    ;;
+    none)
+      exit 0
+    ;;
+    *)
+      INTERFACES="$IF_BATADV_PORTS"
+    ;;
+esac
+
+all_interfaces= &&
+unset all_interfaces &&
+bridge_parse_ports $INTERFACES | while read i
+do
+  for port in $i
+  do
+    # We attach and configure each port of the bridge
+    if [ "$MODE" = "start" ] && [ "$(cat /sys/class/net/$port/batman_adv/mesh_iface)" = "none" ]; then
+      if [ -x /etc/network/if-pre-up.d/vlan ]; then
+        env IFACE=$port /etc/network/if-pre-up.d/vlan
+      fi
+      if [ "$IF_BATADV_HW" ]
+      then
+         ifconfig $port down; ifconfig $port hw ether $IF_BATADV_HW
+      fi
+      if [ -f /proc/sys/net/ipv6/conf/$port/disable_ipv6 ]
+      then
+        echo 1 > /proc/sys/net/ipv6/conf/$port/disable_ipv6
+      fi
+      echo $IFACE > /sys/class/net/$port/batman_adv/mesh_iface && ifconfig $port 0.0.0.0 up
+    # We detach each port of the bridge
+    elif [ "$MODE" = "stop" ] && [ "$(cat /sys/class/net/$port/batman_adv/mesh_iface)" = "$IFACE" ];  then
+      ifconfig $port down && echo none > /sys/class/net/$port/batman_adv/mesh_iface && \
+        if [ -x /etc/network/if-post-down.d/vlan ]; then
+          env IFACE=$port /etc/network/if-post-down.d/vlan
+        fi
+      if [ -f /proc/sys/net/ipv6/conf/$port/disable_ipv6 ]
+      then
+        echo 0 > /proc/sys/net/ipv6/conf/$port/disable_ipv6
+      fi
+    fi
+  done
+done
+
+if [ "$IF_BATADV_HW" ]
+then
+    ifconfig $IFACE hw ether $IF_BATADV_HW
+fi
+
+# We finish setting up the bridge
+if [ "$MODE" = "start" ] ; then
+
+  if [ "$IF_BATADV_HOP_PENALTY" ]
+  then
+    echo $IF_BATADV_HOP_PENALTY > /sys/class/net/$IFACE/mesh/hop_penalty
+  fi
+
+  if [ "$IF_BATADV_GW_MODE" ]
+  then
+    echo $IF_BATADV_GW_MODE > /sys/class/net/$IFACE/mesh/gw_mode
+
+    if [ "$IF_BATADV_GW_BANDWIDTH" ]
+    then
+      echo $IF_BATADV_GW_BANDWIDTH > /sys/class/net/$IFACE/mesh/gw_bandwidth
+    fi
+  fi
+
+  # We activate the bridge
+  ifconfig $IFACE 0.0.0.0 up
+fi
