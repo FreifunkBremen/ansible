@@ -5,6 +5,13 @@
       - tinc
       - python3-yaml
 
+- name: Add icvpn to gitignore
+  lineinfile:
+    dest: /etc/.gitignore
+    line: 'tinc/icvpn'
+    regexp: '^tinc/icvpn'
+    insertafter: '# end section managed by etckeeper'
+
 - name: Clone ICVPN repository
   git:
     repo: "{{ icvpn_git_root }}"
@@ -63,6 +70,7 @@
   shell: set -o pipefail && echo "" | tincd -n icvpn -K
   args:
     creates: /etc/tinc/icvpn/rsa_key.priv
+    executable: /bin/bash
   notify: restart tinc
 
 - name: Setup routing with bird
