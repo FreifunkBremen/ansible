@@ -6,11 +6,13 @@
       - python3-yaml
 
 - name: Add icvpn to gitignore
-  lineinfile:
-    dest: /etc/.gitignore
-    line: 'tinc/icvpn'
-    regexp: '^tinc/icvpn'
+  blockinfile:
+    path: /etc/.gitignore
     insertafter: '# end section managed by etckeeper'
+    block: |
+      tinc/icvpn
+      bird/*/icvpn.conf
+      unbound/unbound.conf.d/icvpn.conf
 
 - name: Clone ICVPN repository
   git:
