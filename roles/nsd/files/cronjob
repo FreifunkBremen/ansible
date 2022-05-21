@@ -7,6 +7,14 @@
     --nserver dns.bremen.freifunk.net ns2.afraid.org ns2.he.net \
     --file=/var/lib/nsd/nodes.bremen.freifunk.net.zone || exit
 
+# TODO: fix me! we could auto generate this based on ipv6_global_network
+/usr/local/bin/zonegen.py \
+    http://downloads.bremen.freifunk.net/data/v1/nodes.json \
+    --contact=noc.bremen.freifunk.net \
+    --prefix=2a06:8782:ffbb:42::/64 \
+    --nserver dns.bremen.freifunk.net ns2.afraid.org ns2.he.net \
+    --file=/var/lib/nsd/2.4.0.0.b.b.f.f.2.8.7.8.6.0.a.2.ip6.arpa.zone --reverse nodes.ffhb.de. || exit
+
 /usr/local/bin/zonegen.py \
     http://downloads.bremen.freifunk.net/data/v1/nodes.json \
     --contact=noc.bremen.freifunk.net \
