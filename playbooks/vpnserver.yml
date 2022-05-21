@@ -6,6 +6,7 @@
   - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
   - { role: batman-adv-14, tags: [batman-adv-14], when: ('backbone_legacy' in group_names) or ('downlinks_legacy' in group_names) or ('vpnservers_legacy' in group_names) }
   - { role: batman-adv, tags: [batman-adv], when: ('backbone_legacy' not in group_names) and ('downlinks_legacy' not in group_names) and ('vpnservers_legacy' not in group_names) }
+  - { role: batman-adv-interface, tags: [batman-adv-interface] }
   - { role: openssh, tags: [openssh] }
   - { role: main-bridge, tags: [main-bridge] }
   - { role: fastd, tags: [fastd] }
