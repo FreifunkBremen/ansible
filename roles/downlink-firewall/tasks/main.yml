@@ -1,0 +1,10 @@
+---
+- name: Install firewall for dowlink
+  copy:
+    dest: /etc/firewall.d/20-downlink-forwarding
+    content: "ipt6 -A FORWARD -i '{{ exit_ipv6_interface }}' -o '{{ main_bridge }}' -j ACCEPT\n"
+    mode: 0644
+    owner: root
+    group: root
+  when: firewall_enabled
+  notify: reload firewall

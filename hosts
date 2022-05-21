@@ -51,7 +51,7 @@ grp = inv.group("downlinks_legacy", batman_gateway=True, firewall_enabled=True, 
 grp.host(12, "ipv6-downlink-legacy.bremen.freifunk.net", max_mtu=1462)
 
 grp = inv_v15.group("downlinks", batman_gateway=True, firewall_enabled=True)
-grp.host(13, "ipv6-downlink.bremen.freifunk.net", max_mtu=1462)
+grp.host(13, "ipv6-downlink.bremen.freifunk.net", exit_ipv6_interface="enp1s0", max_mtu=1462)
 
 grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net");
