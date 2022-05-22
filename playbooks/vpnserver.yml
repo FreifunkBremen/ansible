@@ -1,5 +1,5 @@
 ---
-- hosts: vpnservers
+- hosts: vpnservers:vpnservers_legacy
   vars:
     batman_gateway: true
   roles:
