@@ -10,6 +10,7 @@ iface {{ batman_dummy_interface }} inet manual
 auto {{ batman_interface }}
 iface {{ batman_interface }} inet manual
 	batadv-ports {{ batman_dummy_interface }}
+	batadv-routing-algo {{ batman_routing_algo }}
 {% if ansible_default_ipv6.macaddress is defined %}
 	batadv-hw {{ ansible_default_ipv6.macaddress | derive_mac_addr(2) }}
 {% else %}
