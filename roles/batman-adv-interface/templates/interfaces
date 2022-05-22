@@ -4,6 +4,11 @@ auto {{ batman_dummy_interface }}
 iface {{ batman_dummy_interface }} inet manual
 	pre-up ip link add name $IFACE type dummy
 	up ip link set $IFACE up
+{% if batman_routing_algo == 'BATMAN_V' %}
+	# let batman handle the multicast
+	# https://gluon.readthedocs.io/en/latest/package/gluon-mesh-batman-adv.html
+	post-up bash -c 'echo 2 > /sys/class/net/{{ batman_dummy_interface }}/brport/multicast_router'
+{% endif %}
 	down ip link set $IFACE down
 	post-down ip link del $IFACE
 
