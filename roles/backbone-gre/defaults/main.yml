@@ -1,0 +1,2 @@
+---
+batman_interface: "bat-{{ site_code }}"

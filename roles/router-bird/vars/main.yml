@@ -1,0 +1,4 @@
+---
+group: "{{ ('vpnservers' in group_names) | ternary(groups['vpnservers'], groups['vpnservers_legacy']) }}"
+ipv6_global_address: "{{ batman_ipv6_global.address }}/{{ batman_ipv6_global.size }}"
+ipv6_local_address: "{{ batman_ipv6_local.address }}/{{ batman_ipv6_local.size }}"
