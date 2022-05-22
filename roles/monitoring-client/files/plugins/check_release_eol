@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+
+#
+# Nagios plugin to check if current operating system version is outdated.
+#
+
+import sys
+import os
+import argparse
+from datetime import datetime, date, timedelta
+import subprocess
+from urllib import request
+import csv
+from io import StringIO
+import traceback
+
+
+distroDataBaseUrl = "https://debian.pages.debian.net/distro-info-data"
+distroDataBaseDirectory = "/usr/share/distro-info"
+
+
+def checkDebianUbuntu(nagiosOutput, downloader, distroDataUrl, eolWarningDays, eolCriticalDays, eolIgnore,
+    releaseWarningDays, releaseCriticalDays, releaseIgnore, checkForLTS=False, checkForServer=False):
+    """
+    Check currently installed Debian (or Ubuntu) release against online data from from distro-info-data package.
+    """
+    currentCodename = subprocess.check_output(["lsb_release", "--codename", "--short"]).decode('utf-8').rstrip("\n")
+    currentReleaseData = None
+
+    csvFp = StringIO(downloader.get(distroDataUrl).decode('utf-8'))
+    csvReader = csv.DictReader(csvFp)
+
+    for row in csvReader:
+        if row["series"] == currentCodename:
+            currentReleaseData = row
+            break
+    else:
+        raise RuntimeError("current release '%s' not found in release list" % currentCodename)
+
+    def parseCsvDate(string):
+        return datetime.strptime(string, "%Y-%m-%d").date()
+    nowDate = date.today()
+
+    # check if there is a newer release available (by continuing to read from CSV buffer):
+    newestWarningUpgrade = None
+    newestCriticalUpgrade = None
+    newestAnyUpgrade = None
+    for row in csvReader:
+        if checkForLTS and not(row["version"].endswith(" LTS")):
+            continue
+        if row["release"] is not None:
+            releaseDate = parseCsvDate(row["release"])
+            if not releaseIgnore and nowDate >= releaseDate + timedelta(days=releaseWarningDays):
+                newestWarningUpgrade = row
+            if not releaseIgnore and nowDate >= releaseDate + timedelta(days=releaseCriticalDays):
+                newestCriticalUpgrade = row
+            if nowDate >= releaseDate:
+                newestAnyUpgrade = row
+    if newestCriticalUpgrade is not None:
+        nagiosOutput.addResult(NagiosOutput.LEVEL_CRITICAL, "newer release '%s' (%s) is available" % (newestCriticalUpgrade["series"], newestCriticalUpgrade["version"]))
+    elif newestWarningUpgrade is not None:
+        nagiosOutput.addResult(NagiosOutput.LEVEL_WARN,     "newer release '%s' (%s) is available" % (newestWarningUpgrade["series"], newestWarningUpgrade["version"]))
+    elif newestAnyUpgrade is not None:
+        nagiosOutput.addResult(NagiosOutput.LEVEL_OK,       "newer release '%s' (%s) is available" % (newestAnyUpgrade["series"], newestAnyUpgrade["version"]))
+    else:
+        nagiosOutput.addResult(NagiosOutput.LEVEL_OK,       "release '%s' (%s) is most current" % (currentReleaseData["series"], currentReleaseData["version"]))
+
+    # check if current release is EOL
+    if checkForServer and currentReleaseData.has_key("eol-server") and currentReleaseData["eol-server"] is not None:
+        eolDate = parseCsvDate(currentReleaseData["eol-server"])
+    elif currentReleaseData["eol"] is not None:
+        eolDate = parseCsvDate(currentReleaseData["eol"])
+    else:
+        eolDate = None
+    if eolDate:
+        if nowDate > eolDate:
+            msg = "release '%s' has been EOL for %d days" % (currentCodename, (nowDate - eolDate).days)
+        else:
+            msg = "release '%s' will be EOL in %d days" % (currentCodename, (eolDate - nowDate).days)
+        if not eolIgnore and nowDate > eolDate - timedelta(days=eolCriticalDays):
+            nagiosOutput.addResult(NagiosOutput.LEVEL_CRITICAL, msg)
+        elif not eolIgnore and nowDate > eolDate - timedelta(days=eolWarningDays):
+            nagiosOutput.addResult(NagiosOutput.LEVEL_WARN, msg)
+        else:
+            nagiosOutput.addResult(NagiosOutput.LEVEL_OK, msg)
+
+
+class Downloader:
+    """
+    Class for downloading files from a URL.
+    Contents will be cached (if cache directory and expiration time are specified).
+    """
+
+    def __init__ (self, cacheDir, cacheExpirationDays):
+        self.cacheDir = cacheDir
+        if self.cacheDir:
+            if not(os.path.isdir(self.cacheDir)):
+                raise ValueError("cache directory \"%s\" does not exist" % self.cacheDir)
+
+            if cacheExpirationDays < 0:
+                raise ValueError("invalid cache expiration value (%s days)" % cacheExpirationDays)
+            self.cacheExpiration = timedelta(days=cacheExpirationDays)
+
+    def _buildCachePath (self, url):
+        return self.cacheDir + "/cache_" + request.quote(url, safe="")
+
+    def _getCachedTimestamp (self, path):
+        return datetime.fromtimestamp(os.stat(path).st_mtime)
+
+    def _tryToGetFromCache (self, url):
+        cachePath = None
+        cachedPayload = None
+
+        if self.cacheDir:
+            cachePath = self._buildCachePath(url)
+            if os.path.isfile(cachePath):
+                expirationTimestamp = self._getCachedTimestamp(cachePath) + self.cacheExpiration
+                if expirationTimestamp < datetime.now():
+                    os.unlink(cachePath)
+                else:
+                    with open(cachePath, "rb") as fp:
+                        cachedPayload = fp.read()
+
+        return (cachePath, cachedPayload)
+
+    def get (self, url):
+        "Returns the content of the file at the specified url."
+
+        if url.startswith("/"): # use shortcut for local paths
+            with open(url, "rb") as fp:
+                return fp.read()
+
+        (cachePath, cachedPayload) = self._tryToGetFromCache(url)
+        if cachedPayload is not None:
+            return cachedPayload
+
+        try:
+            rq = request.Request(url)
+            rq.add_header("User-Agent", "check_os_release/1.0")
+            response = request.urlopen(rq)
+            payload = response.read()
+        except request.URLError as e:
+            extype, ex, tb = sys.exc_info()
+            msg = traceback.format_exception_only(extype, ex)[-1].rstrip()
+            raise RuntimeError("error downloading \"%s\": %s" % (url, msg)) from e
+
+        if cachePath:
+            with open(cachePath, "wb") as fp:
+                fp.write(payload)
+
+        return payload
+
+
+class NagiosOutput:
+    "Class for collecting results and aggregating them into a single status output."
+    LEVEL_OK = 0
+    LEVEL_WARN = 1
+    LEVEL_CRITICAL = 2
+
+    def __init__(self, name, verbose):
+        self.name = name
+        self.verbose = verbose
+        self.level = self.LEVEL_OK
+        self.messages = []
+        sys.excepthook = self.handleException
+
+    def handleException(self, exc_type, exc_value, exc_traceback):
+        """Handler for any uncaught exception."""
+        if self.verbose:
+            traceback.print_exception(exc_type, exc_value, exc_traceback)
+        print("%s UNKNOWN (%s: %s)" % (self.name, exc_type, exc_value))
+        sys.exit(3)
+
+    def addResult(self, level, msg):
+        if level not in (self.LEVEL_OK, self.LEVEL_WARN, self.LEVEL_CRITICAL):
+            raise ValueError("invalid error level '%s'" % level)
+        self.level = max(self.level, level)
+        self.messages.append(msg)
+
+    def reportAndExit(self):
+        result = ""
+        if self.level == self.LEVEL_OK:
+            result += "OK"
+        elif self.level == self.LEVEL_WARN:
+            result += "WARNING"
+        elif self.level == self.LEVEL_CRITICAL:
+            result += "CRITICAL"
+        else:
+            raise ValueError("invalid error level '%s'" % level)
+        result += " - " + ("; ".join(self.messages))
+        print(result)
+        sys.exit(self.level)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Check whether OS release is outdated.")
+    parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
+    parser.add_argument("--eolWarningDays", type=int, metavar="DAYS", default=30, help="set WARNING status if less than DAYS until end-of-life (default: 30)")
+    parser.add_argument("--eolCriticalDays", type=int, metavar="DAYS", default=7, help="set CRITICAL status if less than DAYS until end-of-life (default: 7)")
+    parser.add_argument("--eolIgnore", action="store_true", help="ignore end-of-life")
+    parser.add_argument("--releaseWarningDays", type=int, metavar="DAYS", default=0, help="set WARNING status if new release available for more than DAYS (default: 0)")
+    parser.add_argument("--releaseCriticalDays", type=int, metavar="DAYS", default=30, help="set CRITICAL status if new release available for more than DAYS (default: 30)")
+    parser.add_argument("--releaseIgnore", action="store_true", help="ignore any new release")
+    parser.add_argument("--lts", action="store_true", help="[Ubuntu] check only for LTS releases")
+    parser.add_argument("--server", action="store_true", help="[Ubuntu] check for server EOL dates")
+    parser.add_argument("--cacheDir", type=str, help="optional directory where data files should be cached (default: no caching)")
+    parser.add_argument("--cacheExpiration", type=int, metavar="DAYS", default=7, help="for how many days should data files be cached (default: 7)")
+    parser.add_argument("--localDID", action="store_true", help="use local distro-info-data, from %s" % distroDataBaseDirectory)
+    args = parser.parse_args()
+
+    if args.localDID:
+        distroDataBase = distroDataBaseDirectory
+    else:
+        distroDataBase = distroDataBaseUrl
+
+    nagiosOutput = NagiosOutput("OSRELEASE", args.verbose)
+    downloader = Downloader(args.cacheDir, args.cacheExpiration)
+    distro = subprocess.check_output(["lsb_release", "--id", "--short"]).decode('utf-8').rstrip("\n")
+    if distro == "Debian":
+        checkDebianUbuntu(nagiosOutput, downloader, "%s/debian.csv" % distroDataBase, args.eolWarningDays, args.eolCriticalDays, args.eolIgnore, args.releaseWarningDays, args.releaseCriticalDays, args.releaseIgnore)
+    elif distro == "Ubuntu":
+        checkDebianUbuntu(nagiosOutput, downloader, "%s/ubuntu.csv" % distroDataBase, args.eolWarningDays, args.eolCriticalDays, args.eolIgnore, args.releaseWarningDays, args.releaseCriticalDays, args.releaseIgnore, args.lts, args.server)
+    else:
+        raise NotImplementedError("unknown distribution '%s'" % distro)
+    nagiosOutput.reportAndExit()
