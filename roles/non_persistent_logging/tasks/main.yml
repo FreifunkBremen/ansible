@@ -1,0 +1,20 @@
+---
+- name: Remove syslog daemons
+  apt:
+    name:
+      - busybox-syslogd
+      - dsyslog
+      - inetutils-syslogd
+      - rsyslog
+      - syslog-ng
+    state: absent
+    purge: yes
+
+- name: Disable persistent storage
+  replace:
+    dest: /etc/systemd/journald.conf
+    regexp: '^\#?Storage=.*$'
+    replace: 'Storage=volatile'
+    mode: '0644'
+  notify:
+    - restart journald
