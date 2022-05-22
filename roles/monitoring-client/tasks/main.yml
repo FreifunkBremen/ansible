@@ -28,24 +28,15 @@
       - ca-certificates
       - libyaml-syck-perl
       - lsb-release
-      - nagios-plugins-contrib
       - needrestart
-
-- name: Install Nagios checks
-  apt:
-    name:
-      - nagios-plugins-basic
-      - nagios-plugins-standard
-  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version is version_compare("8", "<")) or
-        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version is version_compare("16", "<"))
-
-- name: Install Nagios checks for debian jessie
-  apt:
-    name:
       - monitoring-plugins-basic
       - monitoring-plugins-standard
-  when: (ansible_distribution == 'Debian' and ansible_distribution_major_version is version_compare("8", ">=")) or
-        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version is version_compare("16", ">="))
+      - "{{ package_prefix }}-contrib"
+  vars:
+    package_prefix: >-
+      {{ (
+          ansible_distribution == "Debian" and (ansible_distribution_version is version_compare("11", ">="))
+         ) | ternary("monitoring", "nagios") }}-plugins
 
 - name: Create directory for additional checks
   file:
