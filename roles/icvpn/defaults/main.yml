@@ -14,4 +14,4 @@ icvpn_meta_git_root: 'https://github.com/freifunk/icvpn-meta'
 icvpn_meta_git_commit: 'master'
 
 icvpn_scripts_git_root: 'https://github.com/freifunk/icvpn-scripts'
-icvpn_scripts_git_commit: '898eb449091db4029f1bf3ab6bb478a0f3cf4b4d'
+icvpn_scripts_git_commit: 'af691f0e992a91b82caf097704b3eabc6c3d4c04'
