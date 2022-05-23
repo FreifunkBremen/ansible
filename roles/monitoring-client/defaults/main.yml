@@ -1,0 +1,2 @@
+---
+main_bridge: "br-{{ site_code }}"

@@ -1,3 +1,0 @@
-rnagios ALL=(root) NOPASSWD: \
-    /usr/sbin/needrestart -p, \
-    /usr/local/lib/nagios/plugins/check_git_status /etc

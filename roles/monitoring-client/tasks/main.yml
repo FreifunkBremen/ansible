@@ -79,10 +79,9 @@
     group: root
 
 - name: Create sudo config
-  copy:
-    src: sudoers-rnagios
+  template:
+    src: sudoers-rnagios.j2
     dest: /etc/sudoers.d/rnagios
     mode: 0440
     owner: root
     group: root
-    force: no

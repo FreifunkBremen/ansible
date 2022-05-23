@@ -1,0 +1,7 @@
+rnagios ALL=(root) NOPASSWD: \
+    /usr/sbin/needrestart -p, \
+    /usr/local/lib/nagios/plugins/check_git_status /etc{% if (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names)) %}, \
+    /usr/lib/nagios/plugins/check_dhcp, \
+    /usr/sbin/birdc -r *, \
+    /usr/sbin/birdc6 -r *
+{% endif %}
