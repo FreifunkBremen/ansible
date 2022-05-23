@@ -10,7 +10,7 @@
   file:
     path: /var/lib/rnagios/.ssh
     state: directory
-    mode: 0700
+    mode: '0700'
     owner: rnagios
     group: rnagios
 
@@ -18,7 +18,7 @@
   copy:
     src: authorized_keys
     dest: /var/lib/rnagios/.ssh/authorized_keys
-    mode: 0600
+    mode: '0600'
     owner: rnagios
     group: rnagios
 
@@ -42,7 +42,7 @@
   file:
     path: /usr/local/lib/nagios/plugins
     state: directory
-    mode: 0755
+    mode: '0755'
     owner: root
     group: root
 
@@ -50,31 +50,44 @@
   copy:
     src: ssh-forcecommand
     dest: /usr/local/lib/nagios/ssh-forcecommand
-    mode: 0755
+    mode: '0755'
     owner: root
     group: root
 
 - name: Install additional monitoring checks
   copy:
-    src: plugins/
-    dest: /usr/local/lib/nagios/plugins/
-    mode: 0755
+    src: "plugins/{{ item }}"
+    dest: "/usr/local/lib/nagios/plugins/{{ item }}"
+    mode: '0755'
     owner: root
     group: root
+  loop:
+    - check_git_status
+    - check_release_eol
+    - check_rkhunter
+
+- name: Copy conntrack check
+  copy:
+    src: plugins/check_conntrack.sh
+    dest: /usr/local/lib/nagios/plugins/check_conntrack.sh
+    mode: '0755'
+    owner: root
+    group: root
+  when: (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names))
 
 - name: Creates nagios configuration directory
   file:
     path: /etc/nagios
     state: directory
-    mode: 0755
+    mode: '0755'
     owner: root
     group: root
 
 - name: Copy default nagios configuration file
   template:
-    src: ssh-forcecommand.cfg
+    src: ssh-forcecommand.cfg.j2
     dest: /etc/nagios/ssh-forcecommand.cfg
-    mode: 0644
+    mode: '0644'
     owner: root
     group: root
 
@@ -82,6 +95,6 @@
   template:
     src: sudoers-rnagios.j2
     dest: /etc/sudoers.d/rnagios
-    mode: 0440
+    mode: '0440'
     owner: root
     group: root
