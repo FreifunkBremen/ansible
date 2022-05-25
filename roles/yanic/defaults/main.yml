@@ -32,3 +32,5 @@ yanic_influxdb:
   database: ffhb
   username: ""
   password: ""
+
+yanic_nodes_paths: "{{yanic_meshviewer_path}}"

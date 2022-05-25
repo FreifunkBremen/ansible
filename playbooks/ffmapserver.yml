@@ -14,6 +14,7 @@
         database: "ffhb-nodes"
         username: "ffhb-respondd-collector"
         password: ""
+    yanic_nodes_paths: /opt/yanic/v1 /opt/yanic/v2 /opt/yanic/meshviewer.json /opt/yanic/respondd-crashed.json /opt/yanic/nodelist.json /opt/yanic/geojson.json
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: yanic, tags: [yanic] }
