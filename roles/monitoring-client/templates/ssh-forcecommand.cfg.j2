@@ -3,7 +3,7 @@ discover-distro    = /usr/bin/lsb_release -i -s
 {% if monitoring_client_contact_group is defined %}
 fetch-config       = /bin/echo '{ "contact_groups": "{{ monitoring_client_contact_group }}" }'
 {% endif %}
-check_load         = /usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+check_load         = /usr/lib/nagios/plugins/check_load -w {{ ansible_processor_nproc * 2 }},{{ (ansible_processor_nproc * 1.5) | round | int }},{{ ansible_processor_nproc }} -c {{ ansible_processor_nproc * 3 }},{{ (ansible_processor_nproc * 2.5) | round | int }},{{ ansible_processor_nproc * 2}}
 check_disks        = /usr/lib/nagios/plugins/check_disk -W 10% -K 5% -w 15% -c 10% -p / -p /var/tmp
 check_zombies      = /usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z
 check_updates      = /usr/lib/nagios/plugins/check_apt -d -t 30
