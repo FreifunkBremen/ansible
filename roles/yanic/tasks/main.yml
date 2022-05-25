@@ -25,7 +25,7 @@
 
 - name: Configure yanic
   template:
-    src: config.toml
+    src: "{{ yanic_config_file }}"
     dest: /etc/yanic.conf
     mode: 0644
     owner: root
