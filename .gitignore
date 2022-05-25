@@ -7,3 +7,4 @@ host_vars/*
 # build products...
 *.py[co]
 .vault_password
+/pythonenv/

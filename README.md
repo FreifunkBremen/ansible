@@ -5,6 +5,14 @@ In this repository are playbooks for deploying services on Freifunk Bremen machi
 
 ## Dependencies
 
+With PyPI:
+
+    virtualenv pythonenv
+    source pythonenv/bin/activate
+    pip install -r requirements.txt
+
+Or as Debian/Ubuntu packages:
+
     apt-get install python-dnspython ca-certificates
 
 ## Playbooks
