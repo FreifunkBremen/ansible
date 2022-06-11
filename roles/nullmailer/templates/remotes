@@ -1,0 +1,1 @@
+{{ nullmailer_remote_server }} smtp{% if nullmailer_remote_user is defined %} --user={{ nullmailer_remote_user }} --pass={{ nullmailer_remote_password }}{% endif %}

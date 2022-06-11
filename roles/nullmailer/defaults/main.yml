@@ -1,0 +1,3 @@
+---
+nullmailer_remote_server: 'mail.bremen.freifunk.net'
+mail_root_target: 'server@bremen.freifunk.net'

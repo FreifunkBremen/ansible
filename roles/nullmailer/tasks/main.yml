@@ -1,0 +1,24 @@
+---
+- name: Install local mailserver
+  apt:
+    name: nullmailer
+
+- name: Copy nullmailer remote
+  template:
+    src: remotes
+    dest: /etc/nullmailer/remotes
+    mode: '0640'
+    owner: root
+    group: "{{ group }}"
+  notify: restart nullmailer
+  vars:
+    group: "{{ (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') | ternary('mail', 'nullmail') }}"
+
+- name: Copy nullmailer adminaddr
+  copy:
+    dest: /etc/nullmailer/adminaddr
+    content: "{{ mail_root_target }}\n"
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart nullmailer
