@@ -1,1 +1,0 @@
-%webusers ALL=(root) NOPASSWD: /usr/local/bin/ffhb-setup-svscan
