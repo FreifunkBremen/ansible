@@ -3,6 +3,34 @@
   apt:
     name: dnsmasq
 
+- name: Create dropin folder for systemd
+  file:
+    path: /etc/systemd/system/dnsmasq.service.d
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Create dropin file
+  copy:
+    dest: /etc/systemd/system/dnsmasq.service.d/local.conf
+    mode: '0644'
+    owner: root
+    group: root
+    content: |
+      [Service]
+      ExecStartPre=/usr/bin/cp /var/lib/misc/dnsmasq.leases /tmp/dnsmasq.leases
+      ExecStopPost=/usr/bin/cp /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
+  notify: reload systemd
+
+- name: Copy cronjob
+  copy:
+    dest: /etc/cron.hourly/dnsmasq-tmpfs
+    src: dnsmasq-tmpfs
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: Configure dnsmasq
   template:
     src: dnsmasq.conf
