@@ -1,7 +1,12 @@
 ---
+- name: Copy tmp.mount
+  copy:
+    src: /usr/share/systemd/tmp.mount
+    dest: /etc/systemd/system/tmp.mount
+    remote_src: yes
+
 - name: Enable tmpfs for /tmp
-  replace:
-    dest: /etc/default/tmpfs
-    regexp: '(\#\s*)?RAMTMP\s*=\s*(.*)'
-    replace: 'RAMTMP=yes'
-  when: ansible_distribution == 'Debian' and ansible_distribution_version is version_compare("9", "<")
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: tmp.mount

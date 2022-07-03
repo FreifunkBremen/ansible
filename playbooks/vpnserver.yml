@@ -4,6 +4,7 @@
     batman_gateway: true
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre, always] }
+  - { role: tmpfs, tags: [tmpfs] }
   - { role: openssh, tags: [openssh] }
   - { role: non_persistent_logging, tags: [non_persistent_logging] }
   - { role: batman-adv-14, tags: [batman-adv-14], when: ('backbone_legacy' in group_names) or ('downlinks_legacy' in group_names) or ('vpnservers_legacy' in group_names) }
