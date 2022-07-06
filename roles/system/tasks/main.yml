@@ -19,6 +19,17 @@
     name: "{{ hostname }}"
   when: hostname != 'defaulthost'
 
+- name: Make boot non-quiet
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^#?GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT=""'
+  notify: update grub
+
+- name: Configure VM
+  include_tasks: vm.yml
+  when: ansible_virtualization_role == "guest"
+
 - name: Reboot host
   command: reboot
   when: reboot_flag

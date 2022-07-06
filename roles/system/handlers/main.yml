@@ -1,3 +1,6 @@
 ---
 - name: reload sysctl
   command: /sbin/sysctl --system
+
+- name: update grub
+  command: update-grub

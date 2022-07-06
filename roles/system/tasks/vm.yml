@@ -1,0 +1,33 @@
+- name: Enable serial console in GRUB
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^#?GRUB_TERMINAL='
+    line: 'GRUB_TERMINAL=serial'
+  notify: update grub
+
+- name: Set serial console parameters for GRUB
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^#?GRUB_SERIAL_COMMAND='
+    insertafter: 'GRUB_TERMINAL='
+    line: 'GRUB_SERIAL_COMMAND="serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1"'
+  notify: update grub
+
+- name: Optimize kernel parameters for VMs (including serial console)
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^#?GRUB_CMDLINE_LINUX='
+    line: 'GRUB_CMDLINE_LINUX="console=ttyS0,115200n8 elevator=noop nohz=on consoleblank=0"'
+  notify: update grub
+
+- name: Enable autologin on serial terminal
+  copy:
+    dest: /etc/systemd/system/serial-getty@.service.d/
+    src: autologin.conf
+
+- name: Enable serial terminal
+  systemd:
+    name: serial-getty@ttyS0.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
