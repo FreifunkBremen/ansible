@@ -19,8 +19,8 @@
     group: root
     content: |
       [Service]
-      ExecStartPre=/usr/bin/cp /var/lib/misc/dnsmasq.leases /tmp/dnsmasq.leases
-      ExecStopPost=/usr/bin/cp /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
+      ExecStartPre=/bin/cp /var/lib/misc/dnsmasq.leases /tmp/dnsmasq.leases
+      ExecStopPost=/bin/cp /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
   notify: reload systemd
 
 - name: Copy cronjob
