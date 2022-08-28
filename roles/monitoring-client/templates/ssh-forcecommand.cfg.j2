@@ -9,7 +9,11 @@ check_zombies      = /usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z
 check_updates      = /usr/lib/nagios/plugins/check_apt -d -t 30
 check_needrestart  = sudo /usr/sbin/needrestart -p
 check_etckeeper    = sudo /usr/local/lib/nagios/plugins/check_git_status /etc
+{% if (ansible_distribution == "Debian" and (ansible_distribution_version is version_compare("10", "<="))) %}
+check_release_eol  = /usr/local/lib/nagios/plugins/check_release_eol --releaseIgnore --lts --server
+{% else %}
 check_release_eol  = /usr/local/lib/nagios/plugins/check_release_eol --localDID --releaseIgnore --lts --server
+{% endif %}
 check_rkhunter     = /usr/local/lib/nagios/plugins/check_rkhunter
 check_mailq        = /usr/lib/nagios/plugins/check_mailq -w 3 -c 5
 {% if ansible_swaptotal_mb > 0 %}
