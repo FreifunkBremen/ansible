@@ -4,3 +4,8 @@
 
 - name: update grub
   command: update-grub
+
+- name: restart systemd-logind
+  systemd:
+    name: systemd-logind
+    state: restarted

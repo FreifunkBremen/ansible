@@ -31,3 +31,15 @@
     state: started
     enabled: yes
     daemon_reload: yes
+
+- name: Install dbus (for systemd-logind)
+  apt:
+    name: dbus
+  notify: restart systemd-logind
+
+- name: Let systemd-logind handle power button
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#?HandlePowerKey='
+    line: 'HandlePowerKey=poweroff'
+  notify: restart systemd-logind
