@@ -1,34 +1,12 @@
 ---
-yanic_publisher: false
-yanic_respondd: true
-yanic_respondd_collect_interval: "1m"
-yanic_respondd_interface: "eth0"
+# Config file to use for yanic.
+# There is no sensible default for the config file (it _must_ be specified for each host separately).
+yanic_config_file:
 
-yanic_webserver: false
-yanic_webserver_bind: "127.0.0.1:8080"
-yanic_webserver_webroot: "/var/www/html/meshviewer"
-
-yanic_nodes: true
-yanic_nodes_state_path: "/var/lib/yanic.json"
-yanic_nodes_save_interval: "5s"
-yanic_nodes_offline_after: "10m"
-yanic_nodes_prune_after: "7d"
-
-yanic_meshviewer_version: 2
+# Directory for yanic results (will be created by Ansible role):
 yanic_meshviewer_path: "/var/www/html/meshviewer/data"
-yanic_meshviewer_nodes: "{{yanic_meshviewer_path}}/nodes.json"
-yanic_meshviewer_graph: "{{yanic_meshviewer_path}}/graph.json"
 
-yanic_database_delete_after: "7d"
-yanic_database_delete_interval: "1h"
-
-yanic_socket:
-- enable: false
-  type: unix
-  address: "/var/lib/yanic/database.socket"
-yanic_influxdb:
-- enable: false
-  host: http://localhost:8086
-  database: ffhb
-  username: ""
-  password: ""
+# Whether the yanic results (from yanic_nodes_paths) should be periodically rsync'ed to the webserver.
+yanic_publisher: false
+# Path(es) to rsync to the webserver.
+yanic_nodes_paths: "{{yanic_meshviewer_path}}"

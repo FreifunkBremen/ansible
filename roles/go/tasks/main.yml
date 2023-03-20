@@ -9,6 +9,6 @@
   template:
     src: go.sh
     dest: /etc/profile.d/go.sh
-    mode: 0644
+    mode: 0755
     owner: root
     group: root

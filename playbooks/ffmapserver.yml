@@ -1,19 +1,10 @@
 ---
 - hosts: ffmapserver
   vars:
+    yanic_config_file: yanic.conf.ffmapserver
     yanic_publisher: true
-    yanic_respondd_interface: "bat0"
-    yanic_webserver: false
-    yanic_nodes_save_interval: "15s"
-    yanic_nodes_state_path: /opt/yanic/nodes_state.json
     yanic_meshviewer_path: /opt/yanic
-    yanic_meshviewer_nodes: /opt/yanic/nodes_v2.json
-    yanic_influxdb:
-      - enable: "true"
-        host: http://webserver.bremen.freifunk.net:8086
-        database: "ffhb-nodes"
-        username: "ffhb-respondd-collector"
-        password: ""
+    yanic_nodes_paths: /opt/yanic/v1 /opt/yanic/v2 /opt/yanic/meshviewer.json /opt/yanic/respondd-crashed.json /opt/yanic/nodelist.json /opt/yanic/geojson.json
   roles:
   - { role: etckeeper-pre, tags: [etckeeper-pre] }
   - { role: yanic, tags: [yanic] }

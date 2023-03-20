@@ -2,7 +2,7 @@
 Description=Publish data of yanic on downloads server
 
 [Service]
-ExecStart=/usr/bin/rsync --del -rt {{ yanic_nodes_path }}/ downloads@webserver.bremen.freifunk.net:data/yanic
+ExecStart=/usr/bin/rsync -l --del -rt {{ yanic_nodes_paths }} downloads@webserver.bremen.freifunk.net:data/
 User=yanic
 Type=oneshot
 

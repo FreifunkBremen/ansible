@@ -1,0 +1,134 @@
+[respondd]
+enable           = true
+collect_interval = "1m"
+
+[respondd.sites.ffhb]
+domains = ["ffhb", "ffhb_legacy", "ffhb_11s", "servers", ""]
+
+[[respondd.interfaces]]
+ifname          = "br-ffhb"
+port		= 10001
+
+[[respondd.interfaces]]
+ifname            = "br-ffhb"
+multicast_address = "ff02::2:1001"
+
+[[respondd.interfaces]]
+ifname          = "eth0"
+send_no_request = true
+ip_address	= "2a06:8782:ff00::f6"
+port		= 11001
+
+[webserver]
+enable   = true
+bind     = ":8080"
+webroot  = "/opt/yanic/webroot"
+
+[webserver.prometheus]
+enable   = true
+wait     = "10s"
+outdated = "60s"
+
+
+[nodes]
+state_path     = "/opt/yanic/state.json"
+save_interval  = "1m"
+offline_after  = "10m"
+prune_after    = "7d"
+# ping_count     = 3
+# ping_timeout   = "1s"
+
+
+[[nodes.output.meshviewer]]
+enable     = true
+version    = 1
+nodes_path = "/opt/yanic/v1/nodes.json"
+graph_path = "/opt/yanic/v1/graph.json"
+
+[nodes.output.meshviewer.filter]
+no_owner   = true
+
+
+[[nodes.output.meshviewer]]
+enable     = true
+version    = 2
+nodes_path = "/opt/yanic/v2/nodes.json"
+graph_path = "/opt/yanic/v2/graph.json"
+
+[nodes.output.meshviewer.filter]
+no_owner   = true
+
+
+[[nodes.output.meshviewer-ffrgb]]
+enable = true
+path   = "/opt/yanic/meshviewer.json"
+
+[nodes.output.meshviewer-ffrgb.filter]
+no_owner   = true
+
+
+[[nodes.output.nodelist]]
+enable = true
+path   = "/opt/yanic/nodelist.json"
+
+[nodes.output.nodelist.filter]
+no_owner   = true
+
+[[nodes.output.geojson]]
+enable = true
+path   = "/opt/yanic/geojson.json"
+
+[[nodes.output.raw]]
+enable = false
+
+[[nodes.output.raw-jsonl]]
+enable = false
+
+[[nodes.output.prometheus-sd]]
+enable         = true
+#path          = "/var/lib/freifunkmanager/metrics"
+path           = "/opt/yanic/webroot/index.html"
+target_address = "node_id"
+
+[nodes.output.prometheus-sd.labels]
+hosts    = "ffhb"
+service = "yanic"
+
+
+[database]
+delete_after    = "7d"
+delete_interval = "1h"
+
+[[database.connection.influxdb]]
+enable          = true
+address         = "http://webserver.bremen.freifunk.net:8086"
+database        = "{{respond_collector_influxdb_database}}"
+username        = "{{respond_collector_influxdb_username}}"
+password        = "{{respond_collector_influxdb_password}}"
+
+[[database.connection.influxdb2]]
+enable   = false
+address  = "http://webserver.bremen.freifunk.net:8086"
+token = ""
+organization_id = "ffhb"
+bucket_default = "yanic-temp"
+
+[database.connection.influxdb2.buckets]
+global = "ffhb-nodes/autogen"
+firmware = "ffhb-nodes/autogen"
+model = "ffhb-nodes/autogen"
+autoupdater = "ffhb-nodes/autogen"
+
+[database.connection.influxdb2.tags]
+system = "production"
+
+[[database.connection.graphite]]
+enable = false
+
+[[database.connection.logging]]
+enable = false
+
+[[database.connection.respondd]]
+enable  = false
+type    = "udp6"
+address = "[::1]:10001"
