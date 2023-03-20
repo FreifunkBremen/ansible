@@ -28,10 +28,6 @@ grp = inv.group("vpnservers_legacy",
   is_legacy=True,
 )
 grp.host(1, "vpn01.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", exit_ipv6_remote=False, exit_ipv6_interface="eth0", max_mtu=1462)
-grp.host(2, "vpn02.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", exit_ipv6_remote=False, exit_ipv6_interface="eth0", max_mtu=1438)
-grp.host(3, "vpn03.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", exit_ipv6_remote=False, exit_ipv6_interface="eth0", max_mtu=1462)
-grp.host(5, "vpn05.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens3", exit_ipv6_remote=False, exit_ipv6_interface="ens3", max_mtu=1438)
-grp.host(6, "vpn06.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="eth0", max_mtu=1462)
 
 grp = inv_v15.group("vpnservers",
   dhcp=True,
@@ -48,9 +44,6 @@ grp.host(0, "mgmt.bremen.freifunk.net")
 
 grp = inv.group("webserver")
 grp.host(0, "webserver.bremen.freifunk.net")
-
-grp = inv.group("downlinks_legacy", batman_gateway=True, firewall_enabled=True, is_legacy=True)
-grp.host(12, "ipv6-downlink-legacy.bremen.freifunk.net", max_mtu=1462)
 
 grp = inv_v15.group("downlinks", batman_gateway=True, firewall_enabled=True)
 grp.host(13, "ipv6-downlink.bremen.freifunk.net", exit_ipv6_interface="enp1s0", max_mtu=1462)
