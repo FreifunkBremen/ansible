@@ -43,3 +43,13 @@
     regexp: '^#?HandlePowerKey='
     line: 'HandlePowerKey=poweroff'
   notify: restart systemd-logind
+
+- name: Install cloud kernel
+  apt:
+    name: linux-image-cloud-amd64
+
+- name: Uninstall non-cloud kernel
+  apt:
+    name: linux-image-amd64
+    state: absent
+    purge: yes
