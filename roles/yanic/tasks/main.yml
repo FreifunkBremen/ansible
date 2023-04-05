@@ -68,12 +68,23 @@
   with_items:
     - yanic-publish.service
     - yanic-publish.timer
+    - yanic-publish-ssh-master.service
   notify:
     - reload systemd
     - restart yanic-publish
 
-- name: Enable yanic-publish
+- name: Configure system publish unit
+  copy:
+    dest: /etc/default/yanic-publish
+    content: |
+      REMOTE_HOST=downloads@webserver.bremen.freifunk.net
+      REMOTE_PATH=data/
+
+- name: Enable yanic-publish units
   service:
-    name: yanic-publish.timer
+    name: "{{ item }}"
     enabled: yes
   when: yanic_publisher
+  loop:
+    - yanic-publish.timer
+    - yanic-publish-ssh-master.service

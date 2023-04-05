@@ -2,7 +2,8 @@
 Description=Publish data of yanic on downloads server
 
 [Service]
-ExecStart=/usr/bin/rsync --del -rt {{ yanic_nodes_path }}/ downloads@webserver.bremen.freifunk.net:data/yanic
+ExecStart=/usr/bin/rsync --del -rt {{ yanic_nodes_path }}/ ${REMOTE_HOST}:${REMOTE_PATH}
+EnvironmentFile=/etc/default/yanic-publish
 User=yanic
 Type=oneshot
 
