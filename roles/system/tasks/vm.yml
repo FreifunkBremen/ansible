@@ -50,6 +50,7 @@
   when:
   - '"backbone" not in group_names'
   - '"ffmapserver" not in group_names'
+  - '"bgp-" not in inventory_hostname'
 
 - name: Uninstall non-cloud kernel
   apt:
@@ -59,3 +60,4 @@
   when:
   - '"backbone" not in group_names'
   - '"ffmapserver" not in group_names'
+  - '"bgp-" not in inventory_hostname'
