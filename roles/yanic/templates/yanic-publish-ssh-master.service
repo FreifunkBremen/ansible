@@ -1,11 +1,13 @@
 [Unit]
 Description=Persistent SSH connection to webserver
+After=network-online.target
 
 [Service]
 ExecStart=/usr/bin/ssh -M -N ${REMOTE_HOST}
 EnvironmentFile=/etc/default/yanic-publish
 User=respond-collector
 Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
