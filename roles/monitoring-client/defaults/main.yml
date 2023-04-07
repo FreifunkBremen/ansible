@@ -1,2 +1,31 @@
 ---
 main_bridge: "br-{{ site_code }}"
+cmk_version: 2.1.0p25
+cmk_url: 'https://monitoring.bremen.freifunk.net/ffhb'
+cmk_plugins:
+  - name: mk_filehandler
+  - name: mk_sshd_config
+  - name: admins
+    local: true
+  - name: systemtime
+    local: true
+  - name: lsbrelease
+    local: true
+  - name: unbound
+    local: true
+    include: "{{ (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names)) }}"
+  - name: mk_apt
+    interval: 3600
+  - name: mk_inventory.linux
+    interval: 3600
+cmk_mrpe_checks:
+  - name: conntrack
+    command: /usr/local/lib/nagios/plugins/check_conntrack.sh 80 90
+    include: "{{ (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names)) }}"
+  - name: dhcp
+    command: /usr/lib/nagios/plugins/check_dhcp -i {{ main_bridge }} -u -s {{ batman_ipv4.address }} -t 5
+    include: "{{ (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names)) }}"
+  - name: needrestart
+    command: /usr/sbin/needrestart -p
+  - name: etckeeper
+    command: /usr/local/lib/nagios/plugins/check_git_status /etc

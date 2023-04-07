@@ -1,100 +1,63 @@
 ---
-- name: Add user for nagios
-  user:
-    name: rnagios
-    home: /var/lib/rnagios
-    shell: /bin/bash
-    system: yes
+- name: Install Check_MK agent
+  ansible.builtin.apt:
+    deb: "{{ cmk_url }}/check_mk/agents/check-mk-agent_{{ cmk_version }}-1_all.deb"
 
-- name: Create .ssh directory
-  file:
-    path: /var/lib/rnagios/.ssh
-    state: directory
-    mode: '0700'
-    owner: rnagios
-    group: rnagios
-
-- name: Copy authorized keys
-  copy:
-    src: authorized_keys
-    dest: /var/lib/rnagios/.ssh/authorized_keys
-    mode: '0600'
-    owner: rnagios
-    group: rnagios
-
-- name: Install dependencies
-  apt:
+- name: Install custom dependencies
+  ansible.builtin.apt:
     name:
-      - ca-certificates
-      - libyaml-syck-perl
-      - lsb-release
       - needrestart
-      - monitoring-plugins-basic
-      - monitoring-plugins-standard
-      - "{{ package_prefix }}-contrib"
-  vars:
-    package_prefix: >-
-      {{ (
-          ansible_distribution == "Debian" and (ansible_distribution_version is version_compare("11", ">="))
-         ) | ternary("monitoring", "nagios") }}-plugins
 
-- name: Create directory for additional checks
-  file:
-    path: /usr/local/lib/nagios/plugins
+- name: Create Check_MK agent plugin directories
+  ansible.builtin.file:
+    path: "/usr/lib/check_mk_agent/plugins/{{ item }}"
     state: directory
-    mode: '0755'
-    owner: root
-    group: root
+    mode: "0755"
+  loop: "{{ cmk_plugins | map(attribute='interval', default='') | unique }}"
+  loop_control:
+    label: "/usr/lib/check_mk_agent/plugins/{{ item }}"
 
-- name: Install wrapper script
-  copy:
-    src: ssh-forcecommand
-    dest: /usr/local/lib/nagios/ssh-forcecommand
-    mode: '0755'
-    owner: root
-    group: root
+- name: Install Check_MK agent plugins
+  ansible.builtin.get_url:
+    url: "{{ cmk_url }}/check_mk/{% if item.local | default %}local/{% endif %}agents/plugins/{{ item.name }}"
+    dest: "/usr/lib/check_mk_agent/plugins/{% if item.interval | default %}{{ item.interval }}/{% endif %}"
+    mode: "0755"
+  loop: "{{ cmk_plugins | rejectattr('include', 'false') }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Prevent agent from listening on default port
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - check-mk-agent.socket
+    - cmk-agent-ctl-daemon.service
+
+- name: Allow monitoring SSH key to execute the agent
+  ansible.posix.authorized_key:
+    user: root
+    key_options: 'command="/usr/bin/check_mk_agent",restrict'
+    comment: "monitoring.bremen.freifunk.net"
+    key: "{{ lookup('file', 'authorized_keys') }}"
 
 - name: Install additional monitoring checks
   copy:
-    src: "plugins/{{ item }}"
-    dest: "/usr/local/lib/nagios/plugins/{{ item }}"
+    src: "plugins/{{ item | basename }}"
+    dest: "{{ item }}"
     mode: '0755'
     owner: root
     group: root
-  loop:
-    - check_git_status
-    - check_release_eol
-    - check_rkhunter
+  loop: "{{ cmk_mrpe_checks | selectattr('command', 'match', '/usr/local/lib/nagios/plugins') | rejectattr('include', 'false') | map(attribute='command') | map('regex_replace', ' .*', '') }}"
 
-- name: Copy conntrack check
-  copy:
-    src: plugins/check_conntrack.sh
-    dest: /usr/local/lib/nagios/plugins/check_conntrack.sh
-    mode: '0755'
-    owner: root
-    group: root
-  when: (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names))
-
-- name: Creates nagios configuration directory
-  file:
-    path: /etc/nagios
-    state: directory
-    mode: '0755'
-    owner: root
-    group: root
-
-- name: Copy default nagios configuration file
-  template:
-    src: ssh-forcecommand.cfg.j2
-    dest: /etc/nagios/ssh-forcecommand.cfg
-    mode: '0644'
-    owner: root
-    group: root
-
-- name: Create sudo config
-  template:
-    src: sudoers-rnagios.j2
-    dest: /etc/sudoers.d/rnagios
-    mode: '0440'
-    owner: root
-    group: root
+- name: Configure local MRPE checks
+  ansible.builtin.lineinfile:
+    path: /etc/check_mk/mrpe.cfg
+    line: "{{ item.name }} {% if item.interval | default %}(interval={{ item.interval }}) {% endif %}{{ item.command }}"
+    regex: "^{{ item.name | regex_escape }} "
+    create: true
+    mode: '0600'
+  loop: "{{ cmk_mrpe_checks | rejectattr('include', 'false') }}"
+  loop_control:
+    label: "{{ item.name }}"
