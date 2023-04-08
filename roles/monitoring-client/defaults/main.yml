@@ -5,19 +5,21 @@ cmk_url: 'https://monitoring.bremen.freifunk.net/ffhb'
 cmk_plugins:
   - name: mk_filehandler
   - name: mk_sshd_config
+  - name: mk_apt
+    interval: 3600
+  - name: mk_inventory.linux
+    interval: 3600
   - name: admins
     local: true
   - name: systemtime
     local: true
   - name: lsbrelease
     local: true
+  - name: smart
+    include: '{{ ansible_virtualization_role != "guest" }}'
   - name: unbound
     local: true
     include: "{{ (('vpnservers' in group_names) or ('vpnservers_legacy' in group_names)) }}"
-  - name: mk_apt
-    interval: 3600
-  - name: mk_inventory.linux
-    interval: 3600
 cmk_mrpe_checks:
   - name: conntrack
     command: /usr/local/lib/nagios/plugins/check_conntrack.sh 80 90
