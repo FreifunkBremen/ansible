@@ -1,0 +1,45 @@
+---
+- name: Install fail2ban and dependencies
+  ansible.builtin.apt:
+    name:
+      - fail2ban
+      - python3-systemd
+      - iptables
+      - ipset
+
+- name: Configure fail2ban to use systemd-journald for its own logging
+  community.general.ini_file:
+    path: /etc/fail2ban/fail2ban.local
+    section: Definition
+    option: logtarget
+    value: SYSLOG
+  notify: Reload fail2ban
+
+- name: Configure fail2ban to parse systemd-journald for login failures
+  community.general.ini_file:
+    path: /etc/fail2ban/jail.local
+    section: DEFAULT
+    option: backend
+    value: systemd
+  notify: Reload fail2ban
+
+- name: Configure fail2ban to use ipsets
+  community.general.ini_file:
+    path: /etc/fail2ban/jail.local
+    section: DEFAULT
+    option: banaction
+    value: iptables-ipset-proto6
+  notify: Reload fail2ban
+
+- name: Configure fail2ban to be more strict
+  community.general.ini_file:
+    path: /etc/fail2ban/jail.local
+    section: DEFAULT
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop:
+    - option: maxretry
+      value: 3
+    - option: bantime
+      value: 30m
+  notify: Reload fail2ban

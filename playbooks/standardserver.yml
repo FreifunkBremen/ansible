@@ -5,6 +5,7 @@
   - { role: apt, tags: [apt] }
   - { role: nullmailer, tags: [nullmailer] }
   - { role: openssh, tags: [openssh] }
+  - { role: fail2ban, tags: [fail2ban] }
   - { role: system, tags: [system] }
   - { role: tmpfs, tags: [tmpfs] }
   - { role: tools, tags: [tools] }
