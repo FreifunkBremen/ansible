@@ -1,8 +1,36 @@
 ---
+- name: Install ipv6-neigh-cache-negative.sh
+  copy:
+    src: ipv6-neigh-cache-negative.sh
+    dest: /usr/local/sbin/ipv6-neigh-cache-negative.sh
+    mode: '0755'
+  notify: Restart ipv6-neigh-cache-negative
+  when: firewall_enabled
+
+- name: Install ipv6-neigh-cache-negative.service
+  copy:
+    src: ipv6-neigh-cache-negative.service
+    dest: /etc/systemd/system/ipv6-neigh-cache-negative.service
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart ipv6-neigh-cache-negative
+  when: firewall_enabled
+
+- name: Enable ipv6-neigh-cache-negative.service
+  systemd:
+    daemon_reload: yes
+    name: ipv6-neigh-cache-negative.service
+    enabled: yes
+    state: started
+  when: firewall_enabled
+
 - name: Install firewall for dowlink
   copy:
     dest: /etc/firewall.d/20-downlink-forwarding
-    content: "ipt6 -A FORWARD -i '{{ exit_ipv6_interface }}' -o '{{ main_bridge }}' -j ACCEPT\n"
+    content: |
+      ipt6 -A FORWARD -m set --match-set ND_FAILED dst -j REJECT --reject-with addr-unreach
+      ipt6 -A FORWARD -i '{{ exit_ipv6_interface }}' -o '{{ main_bridge }}' -j ACCEPT
     mode: 0644
     owner: root
     group: root

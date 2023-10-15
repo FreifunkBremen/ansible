@@ -1,0 +1,9 @@
+---
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Restart ipv6-neigh-cache-negative
+  systemd:
+    name: ipv6-neigh-cache-negative.service
+    state: restarted

@@ -1,0 +1,11 @@
+[Unit]
+Description=Cache negative IPv6 ND results
+Before=firewall.service
+
+[Service]
+ExecStart=/usr/local/sbin/ipv6-neigh-cache-negative.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=network.target
