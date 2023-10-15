@@ -1,7 +1,9 @@
 ---
 - name: Install dnsmasq
   apt:
-    name: dnsmasq
+    name:
+      - dnsmasq
+      - conntrack  # for clearing connections on lease expiration
 
 - name: Create dropin folder for systemd
   file:
@@ -27,6 +29,14 @@
   copy:
     dest: /etc/cron.hourly/dnsmasq-tmpfs
     src: dnsmasq-tmpfs
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy dnsmasq lease script
+  copy:
+    dest: /usr/local/sbin/dnsmasq-hook.sh
+    src: dnsmasq-hook.sh
     owner: root
     group: root
     mode: '0755'
