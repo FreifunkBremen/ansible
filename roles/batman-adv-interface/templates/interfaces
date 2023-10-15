@@ -20,6 +20,7 @@ iface {{ batman_interface }} inet manual
 	batadv-gw-mode server
 	batadv-gw-bandwidth 100Mbit/100Mbit
 {% endif %}
+	batadv-orig-interval 5000
 	# set interface up
 	up ip link set $IFACE up
 	down ip link set $IFACE down

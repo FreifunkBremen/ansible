@@ -72,6 +72,10 @@ if [ "$MODE" = "start" ] ; then
         batctl meshif "$IFACE" hop_penalty "$IF_BATADV_HOP_PENALTY"
     fi
 
+    if [ "$IF_BATADV_ORIG_INTERVAL" ]; then
+        batctl meshif "$IFACE" orig_interval "$IF_BATADV_ORIG_INTERVAL"
+    fi
+
     if [ "$IF_BATADV_GW_MODE" ]; then
         batctl meshif "$IFACE" gw_mode "$IF_BATADV_GW_MODE"
 
