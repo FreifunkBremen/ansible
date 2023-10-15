@@ -14,7 +14,12 @@ IPSET_HASHSIZE=4096
 ipset -exist create "$IPSET_NAME" hash:net family inet6 hashsize "$IPSET_HASHSIZE" timeout "$IPSET_TIMEOUT"
 
 ip -6 monitor neigh | while read -r LINE; do
-    [ "${LINE##* }" = "FAILED" ] || continue
-    [ "${LINE#fe80::}" = "$LINE" ] || continue
-    printf "add -exist %s %s\nCOMMIT\n" "$IPSET_NAME" "${LINE%% *}"
+    case "$LINE" in
+        fe80::*|"Deleted "*)
+            continue
+            ;;
+        *" FAILED")
+            printf "add -exist %s %s\nCOMMIT\n" "$IPSET_NAME" "${LINE%% *}"
+            ;;
+    esac
 done | ipset restore
