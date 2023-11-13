@@ -1,0 +1,9 @@
+---
+babeld_repository: "https://dl.ffm.freifunk.net/debian-packages/ sid main"
+babeld_repository_key: 390BF305
+
+ffhb_routing_table: default-freifunk
+
+babel_bridge: babel-{{ site_code }}
+babel_interfaces_vpn: []
+babel_interfaces: "{{ [babel_bridge] + babel_interfaces_vpn }}"

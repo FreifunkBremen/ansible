@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+
+allow-hotplug mmfd0
+iface mmfd0 inet6 static
+	address  fe80::1
+	netmask 64
+	post-up ip -6 route add ff05::2:1001/128 dev mmfd0 table local

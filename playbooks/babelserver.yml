@@ -1,0 +1,31 @@
+---
+- hosts: babelservers
+  vars:
+    yanic_version: respondd
+    yanic_respondd: true
+    yanic_respondd_babel: true
+    yanic_respondd_batman: []
+    yanic_respondd_listen_clientdev:
+      - babel-ffhb
+      - mmfd0
+  roles:
+  - { role: etckeeper-pre, tags: [etckeeper-pre] }
+  - { role: apt, tags: [apt] }
+  - { role: openssh, tags: [openssh] }
+  - { role: rkhunter, tags: [rkhunter] }
+  - { role: etckeeper, tags: [etckeeper] }
+  - { role: monitoring-client, tags: [monitoring-client] }
+  - { role: respondd, tags: [respondd] }
+  - { role: babeld,  tags: [ babeld, babel ] }
+  - { role: l3roamd,  tags: [ l3roamd, babel ] }
+  - { role: mmfd,  tags: [ mmfd, babel ] }
+  - { role: wg-broker,  tags: [ wireguard, vpn ] }
+  - { role: jool, tags: [jool,plat,nat64] }
+  - { role: unbound, tags: [unbound,plat,dns64] }
+  - { role: system, tags: [system] }
+  - { role: tmpfs, tags: [tmpfs] }
+  - { role: tools, tags: [tools] }
+  - { role: motd, tags: [motd] }
+  - { role: nginx, tags: [nginx] }
+  - { role: speedtest, tags: [speedtest] }
+  - { role: etckeeper-post, tags: [etckeeper-post] }

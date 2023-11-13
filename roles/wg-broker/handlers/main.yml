@@ -1,0 +1,8 @@
+---
+- name: restart wireguard
+  service:
+    name: "wireguard"
+    state: restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload

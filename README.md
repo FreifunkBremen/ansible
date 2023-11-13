@@ -87,3 +87,53 @@ Add your new VPN to the [IC-VPN-Meta](https://github.com/freifunk/icvpn-meta) to
 Ask to other VPN-Owner to run ansible again.
 On this way the other vpns got the new internal routing in ```bird``` and ```bird6```.
 [See here](https://github.com/FreifunkBremen/ansible/tree/master/roles/router-bird/templates)
+
+
+## Babel
+
+**NAT64**
+
+if installed nat64 maybe extends port pool by reconfigure local range `sysctl net.ipv4.ip_local_port_range`
+
+Or use other address-pool (and firewall)  `/etc/systemd/system/jool.service`:
+```
+...
+ExecStart=/usr/local/bin/jool instance add --iptables --pool6=64:ff9b::/96
+ExecStartPost=/usr/local/bin/jool pool4 add --icmp 185.117.213.250 1601-3000
+ExecStartPost=/usr/local/bin/jool pool4 add --udp  185.117.213.250 3001-65535
+ExecStartPost=/usr/local/bin/jool pool4 add --tcp  185.117.213.250 1601-65535
+...
+```
+
+
+### Babel Gateway
+A babel gateway is a maschine which allow to exit ipv6 default route and recieve the client and nodes subnet
+
+Such a gateway need some special configuration.
+- (A bigger nat64 whould be nice)
+- ip routes for exit
+	- `post-up  ip -r r add default via 2a06:8782:ff00::1 dev $IFACE proto 159 table default-freifunk`
+	- firewall rules /etc/firewall.d/20-exit 
+		```
+		ipt6 -A FORWARD -o ens3 -i babel-+ -j ACCEPT
+		ipt6 -A FORWARD -i ens3 -o babel-+ -j ACCEPT
+		```
+
+- maybe run yanic to collect and forward stats data
+	- firewall for respondd
+	- firewall for yanic
+- tunnel to babel vpn
+	- add to /etc/babeld.conf
+	- to /etc/systemd/system/mmfd.service
+
+### Babel VPN
+A babel vpn is a maschine which recieve VPN connection and "forward" them to a gateway.
+It could run nat64 at his own and exit ipv4.
+
+TODO: respondd firewall:
+```
+# babel
+ipt6 -A INPUT -i babel-+ -p udp --dport 1001 -j ACCEPT
+ipt6 -A INPUT -i mmfd0 -p udp --dport 1001 -j ACCEPT
+```
+

@@ -1,0 +1,55 @@
+- name: Install needed tools
+  apt:
+    name:
+      - build-essential
+      - automake
+      - pkg-config
+      - linux-headers-amd64
+      - libnl-genl-3-dev
+      - libxtables-dev
+      - automake
+
+- name: Fetch current version
+  raw: modinfo jool | grep "version:"| egrep -o "([0-9]{1,}\.){1,2}[0-9]{1,}"
+  register: modinfo
+  ignore_errors: yes
+
+- name: remove old module
+  modprobe:
+    name: jool
+    state: absent
+  ignore_errors: yes
+  when: modinfo.stdout.find(jool_version) == -1
+
+- name: compile it
+  include: compile.yml
+  when: modinfo.stdout.find(jool_version) == -1
+
+- name: Enable during boot
+  lineinfile: dest=/etc/modules regexp='^jool' line="jool"
+
+- name: load modprobe
+  modprobe:
+    name: jool
+    state: present
+
+- name: Install system unit
+  template:
+    src: service
+    dest: /etc/systemd/system/jool.service
+  notify:
+    - reload systemd
+    - restart jool
+
+- name: Enable jool
+  service:
+    name: jool
+    enabled: yes
+
+- name: Open firewall for nat64
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-nat64"
+  when: firewall_enabled|bool
+  notify: reload firewall
+

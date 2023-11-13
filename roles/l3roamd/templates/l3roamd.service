@@ -1,0 +1,14 @@
+[Unit]
+Description=l3roamd
+Wants=basic.target
+After=basic.target network.target babeld.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/l3roamd -s {{ l3roamd_socket }} -p {{ ipv6_babelclient_network }} -m {{ babel_bridge }} -t 252 -a {{ babel_ipv6_mesh.address }} -4 0:0:0:0:0:ffff::/96
+KillMode=process
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

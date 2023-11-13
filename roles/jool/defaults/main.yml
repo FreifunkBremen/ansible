@@ -1,0 +1,8 @@
+jool_version: "4.0.1"
+jool_url: "https://github.com/NICMx/Jool.git"
+
+nat64: "64:ff9b::/96"
+jool_pool6: "{{ nat64 }}"
+jool_pool4: "{{ ansible_default_ipv4.address }}"
+jool_pool4_ports_min: "61001"
+jool_pool4_ports_max: "65535"

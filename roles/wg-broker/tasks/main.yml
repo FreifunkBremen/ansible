@@ -1,0 +1,33 @@
+---
+- name: Add repository key for wg-broker
+  apt_key: keyserver="{{ pgp_keyserver }}" id="{{wgbroker_repository_key}}"
+
+- name: Add repository for wg-broker
+  apt_repository: repo="deb {{wgbroker_repository}}"
+
+- name: Install wg-broker
+  apt: name="wg-broker"
+
+- name: Create wg-broker secret
+  shell: wg genkey > {{ wgbroker_wg_privkey }}
+  args:
+    creates: "{{ wgbroker_wg_privkey }}"
+ 
+- name: Configure wg-broker
+  template:
+    src: config
+    dest: "/etc/wg-broker/config"
+  notify: restart wireguard
+
+- name: Open firewall for wg-broker
+  template:
+    src: firewall.sh
+    dest: "{{ firewall_path }}/30-wireguard-{{ site_code }}"
+  when: firewall_enabled
+  notify: reload firewall
+
+- name: Enable wg-broker
+  service:
+    name: "wireguard"
+    enabled: yes
+    state: started

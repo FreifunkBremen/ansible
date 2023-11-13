@@ -45,6 +45,7 @@
     group: root
   with_items:
     - access-control.conf
+    - modules.conf
     - listen-on-all-interfaces.conf
     - remote-control.conf
   notify: restart unbound

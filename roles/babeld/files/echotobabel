@@ -1,0 +1,12 @@
+#!/bin/bash
+PORT=33123
+
+count=0
+line="$1"
+while ! (echo -e "$line" | nc ::1 "$PORT" >/dev/null 2>&1)
+do
+  sleep 1
+  echo retrying to connect to babeld on port $PORT in script in PID $$, waited ${count}s >&2
+  count=$((count+1))
+done
+exit 0

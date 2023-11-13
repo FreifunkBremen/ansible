@@ -7,6 +7,8 @@ import hosts
 import json
 
 inv = hosts.Inventory('site/site.conf',
+  ipv6_babelmesh_network = "2a06:8782:ffbb:bab0::/64",
+  ipv6_babelclient_network = "2a06:8782:ffbb:bab1::/64",
   ipv6_global_network = "2a06:8782:ffbb:1337::/64",
   ipv6_uplink_network = "2a06:8782:ffbb::/64",
   icvpn_ipv4_network = "10.207.0.196/16",
@@ -38,6 +40,13 @@ grp = inv_v15.group("vpnservers",
 grp.host(7, "vpn07.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="enp1s0", exit_ipv6_remote=False, exit_ipv6_interface="enp1s0", max_mtu=1438)
 grp.host(8, "vpn08.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="enp1s0", exit_ipv6_remote=False, exit_ipv6_interface="enp1s0", max_mtu=1438)
 grp.host(9, "vpn09.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="enp1s0", exit_ipv6_remote=False, exit_ipv6_interface="enp1s0", max_mtu=1438)
+
+grp = inv.group("babelservers",
+  babel=True,
+  firewall_enabled=True,
+)
+grp.host(9, "babel-gw-lwlcom.bremen.freifunk.net")
+grp.host(7, "ffhb.h.sum7.eu")
 
 grp = inv.group("eventsserver")
 grp.host(0, "mgmt.bremen.freifunk.net")
