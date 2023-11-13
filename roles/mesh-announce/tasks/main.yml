@@ -27,14 +27,19 @@
     name: respondd
     enabled: yes
 
-- name: Install cronjob to automatically update alfred announce
-  template:
-    src: cronjob
-    dest: /etc/cron.d/mesh-announce-alfred
-    mode: 0644
-    owner: root
-    group: root
+- name: Install timer
+  import_role:
+    name: timer
+  vars:
+    timer_name: mesh-announce
+    timer_exec: "/opt/{{ site_code }}/mesh-announce/announce.sh -i {{ alfred_mtu_interface if alfred_master else main_bridge }} -b {{ batman_interface }}"
+    timer_interval: 1min
   when: mesh_announce_alfred
+
+- name: Remove legacy cronjob
+  file:
+    path: /etc/cron.d/mesh-announce-alfred
+    state: absent
 
 - name: Open firewall for respondd
   template:

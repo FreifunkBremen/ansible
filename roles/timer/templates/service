@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description={{ timer_descr }}
+
+[Service]
+Type=oneshot
+User={{ timer_user }}
+
+ExecStart={{ timer_exec }}

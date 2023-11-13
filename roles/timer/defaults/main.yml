@@ -1,0 +1,8 @@
+timer_name:
+timer_descr: "{{ timer_name }} Timer"
+timer_exec: /bin/false
+timer_user: root
+timer_interval:
+timer_calendar: false
+timer_randomized_delay:
+timer_startup_delay: 60
