@@ -1,0 +1,18 @@
+---
+- name: Download and install go
+  unarchive:
+    src: https://dl.google.com/go/go1.12.4.linux-amd64.tar.gz
+    dest: /usr/local
+    copy: no
+
+- name: Install go dep
+  shell: /usr/local/go/bin/go get -u github.com/golang/dep/cmd/dep
+  args:
+    creates: /opt/go/bin/dep
+  environment:
+    GOPATH: /opt/go
+
+- name: Configure go
+  template:
+    src: go.sh
+    dest: /etc/profile.d/go.sh

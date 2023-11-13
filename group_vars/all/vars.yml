@@ -6,3 +6,5 @@ site_domain:          'bremen.freifunk.net'
 site_vpn_prefix:      'vpn'
 icvpn_as:             65196
 fastd_peers_limit:    200
+
+freifunk_site_code: "{{ site_code }}"

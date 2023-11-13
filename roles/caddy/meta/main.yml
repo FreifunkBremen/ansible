@@ -1,6 +1,6 @@
 ---
 dependencies:
-  - go
+  - golang
 galaxy_info:
   platforms:
     - name: Debian
