@@ -21,6 +21,12 @@ case "$IF_BATADV_PORTS" in
     ;;
 esac
 
+# taken from openWRT:
+# https://git.openwrt.org/?p=feed/routing.git;a=blob;f=batman-adv/files/lib/netifd/proto/batadv.sh;h=edc14f4cbd5485ede408e897fada8eae6f8f09d3;hb=ecb7132f014275a9fa0509e790257f0a66802a1d#l72
+# maybe following is possible after create:
+# batctl meshif "$IFACE" routing_algo "${IF_BATADV_ROUTING_ALGO:-BATMAN_IV}"
+batctl routing_algo "${IF_BATADV_ROUTING_ALGO:-BATMAN_IV}"
+
 if ! batctl meshif "$IFACE" interface >/dev/null 2>&1; then
     batctl meshif "$IFACE" interface create
 fi

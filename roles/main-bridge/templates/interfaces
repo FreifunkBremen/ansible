@@ -25,7 +25,12 @@ iface br-{{ site_code }} inet static
 	# tune ARP and IPv6 neighbor soolicitation
 	post-up sysctl -p /etc/sysctl.d/main-bridge-ip-neigh-tuning.conf
 	# increase multicast table
-	post-up bash -c 'echo 2048 > /sys/class/net/br-ffhb/bridge/hash_max'
+{% if batman_routing_algo is defined and batman_routing_algo == 'BATMAN_V' %}
+	# let batman handle the multicast
+	# https://gluon.readthedocs.io/en/latest/package/gluon-mesh-batman-adv.html
+	post-up bash -c 'echo 2 > /sys/class/net/br-{{ site_code }}/brport/multicast_router'
+{% endif %}
+	post-up bash -c 'echo 2048 > /sys/class/net/br-{{ site_code }}/bridge/hash_max'
 
 iface br-{{ site_code }} inet6 static
 	address {{ batman_ipv6_local.address }}

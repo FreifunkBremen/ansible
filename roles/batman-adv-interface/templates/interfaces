@@ -4,12 +4,18 @@ auto {{ batman_dummy_interface }}
 iface {{ batman_dummy_interface }} inet manual
 	pre-up ip link add name $IFACE type dummy
 	up ip link set $IFACE up
+{% if batman_routing_algo == 'BATMAN_V' %}
+	# let batman handle the multicast
+	# https://gluon.readthedocs.io/en/latest/package/gluon-mesh-batman-adv.html
+	post-up bash -c 'echo 2 > /sys/class/net/{{ batman_dummy_interface }}/brport/multicast_router'
+{% endif %}
 	down ip link set $IFACE down
 	post-down ip link del $IFACE
 
 auto {{ batman_interface }}
 iface {{ batman_interface }} inet manual
 	batadv-ports {{ batman_dummy_interface }}
+	batadv-routing-algo {{ batman_routing_algo }}
 {% if ansible_default_ipv6.macaddress is defined %}
 	batadv-hw {{ ansible_default_ipv6.macaddress | derive_mac_addr(2) }}
 {% else %}
