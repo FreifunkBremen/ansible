@@ -26,6 +26,29 @@
     line: 'GRUB_CMDLINE_LINUX_DEFAULT=""'
   notify: update grub
 
+- name: Detect serial devices
+  slurp:
+    src: /proc/tty/driver/serial
+  register: system_serial_devices
+
+- name: Parse serial devices
+  set_fact:
+    serial_devices: "{{ system_serial_devices.content | b64decode | split('\n') | reject('search', 'serinfo:|uart:unknown|^$') | map('split', ': ') | map(attribute=0) | list }}"
+
+- name: Enable serial console in GRUB and Linux console
+  template:
+    src: grub-serial.cfg
+    dest: /etc/default/grub.d/serial.cfg
+    mode: '0644'
+  notify: update grub
+  when: 'serial_devices | length > 0'
+
+- name: Enable serial getty
+  systemd:
+    name: 'serial-getty@ttyS{{ item }}.service'
+    state: started
+  loop: "{{ serial_devices }}"
+
 - name: Configure VM
   include_tasks: vm.yml
   when: ansible_virtualization_role == "guest"
