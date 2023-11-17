@@ -45,7 +45,7 @@
 - name: Install additional monitoring checks
   copy:
     src: "plugins/{{ item | basename }}"
-    dest: "{{ item }}"
+    dest: "/usr/local/lib/nagios/plugins/"
     mode: '0755'
     owner: root
     group: root
