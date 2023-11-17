@@ -23,7 +23,7 @@
   copy:
     dest: /etc/systemd/system/fastd@.service.d/override.conf
     content: |
-      [Unit]
+      [Service]
       ExecStopPost=/bin/rm -f /run/fastd-%I.sock
     mode: 0644
     owner: root
