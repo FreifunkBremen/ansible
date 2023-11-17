@@ -1,6 +1,6 @@
 ---
 main_bridge: "br-{{ site_code }}"
-cmk_version: 2.1.0p25
+cmk_version: 2.2.0p14
 cmk_url: 'https://monitoring.bremen.freifunk.net/ffhb'
 cmk_plugins:
   - name: mk_filehandler
