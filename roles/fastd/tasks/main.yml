@@ -1,11 +1,10 @@
 ---
-- name: Install fastd
+- name: Install packages
   apt:
-    name: fastd
-
-- name: Install haveged to create entropy
-  apt:
-    name: haveged
+    name:
+      - fastd
+      - haveged   # for entropy generation
+      - socat     # for connecting to the status socket
 
 - name: Stop fastd via System V init script
   service:
@@ -23,7 +22,9 @@
 - name: Fix systemd unit
   copy:
     dest: /etc/systemd/system/fastd@.service.d/override.conf
-    content: "[Unit]\nExecStopPost=/bin/rm -f /run/fastd-%I.sock\n"
+    content: |
+      [Unit]
+      ExecStopPost=/bin/rm -f /run/fastd-%I.sock
     mode: 0644
     owner: root
     group: root
