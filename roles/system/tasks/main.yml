@@ -47,6 +47,7 @@
   systemd:
     name: 'serial-getty@ttyS{{ item }}.service'
     state: started
+    enabled: yes
   loop: "{{ serial_devices }}"
 
 - name: Configure VM
