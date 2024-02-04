@@ -13,7 +13,6 @@
   - { role: main-bridge, tags: [main-bridge] }
   - { role: fastd, tags: [fastd] }
   - { role: mesh-announce, tags: [mesh-announce] }
-  - { role: backbone-gre, tags: [backbone-gre] }
   - { role: icvpn, tags: [icvpn] }
   - { role: exit-ipv4, tags: [exit-ipv4] }
   - { role: exit-ipv6, tags: [exit-ipv6] }
