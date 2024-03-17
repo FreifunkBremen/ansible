@@ -23,7 +23,7 @@ iface br-{{ site_code }} inet static
 	post-up  ip -4 rule add from {{ batman_ipv4.address }} table {{ ffhb_routing_table }} priority 16387
 	pre-down ip -4 rule del from {{ batman_ipv4.address }} table {{ ffhb_routing_table }} priority 16387
 	# tune ARP and IPv6 neighbor soolicitation
-	post-up sysctl -p /etc/sysctl.d/main-bridge-ip-neigh-tuning.conf
+	post-up sysctl --quiet --load=/etc/sysctl.d/main-bridge-ip-neigh-tuning.conf
 	# increase multicast table
 	post-up bash -c 'echo 2048 > /sys/class/net/br-ffhb/bridge/hash_max'
 

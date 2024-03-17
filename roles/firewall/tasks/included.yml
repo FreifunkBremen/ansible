@@ -70,8 +70,8 @@
   lineinfile:
     name: /etc/rc.local
     insertbefore: "^exit"
-    line: "sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf"
-    regexp: '^sysctl -p /etc/sysctl.d/ipv4-netfilter-ip-conntrack-max\.conf$'
+    line: "sysctl --quiet --load=/etc/sysctl.d/ipv4-netfilter-ip-conntrack-max.conf"
+    regexp: '^sysctl --quiet --load=/etc/sysctl.d/ipv4-netfilter-ip-conntrack-max\.conf$'
     create: yes
     mode: 0755
 
