@@ -10,7 +10,7 @@ iface {{ ifname }} inet manual
   up   ip link set up   $IFACE
   down ip link set down $IFACE
   up   ip link set $IFACE mtu {{ [ hostvars[host].max_mtu, max_mtu ] | min }}
-  up   batctl -m {{ batman_interface }} if add $IFACE
-  down batctl -m {{ batman_interface }} if del $IFACE
+  up   batctl meshif {{ batman_interface }} interface add $IFACE
+  down batctl meshif {{ batman_interface }} interface del $IFACE
 
 {% endfor %}

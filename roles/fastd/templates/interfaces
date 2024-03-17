@@ -3,6 +3,6 @@
 allow-hotplug {{ fastd_interface }}
 iface {{ fastd_interface }} inet manual
 	up ip link set up $IFACE
-	up batctl -m {{ batman_interface }} if add $IFACE
-	down batctl -m {{ batman_interface }} if del $IFACE
+	up batctl meshif {{ batman_interface }} if add $IFACE
+	down batctl meshif {{ batman_interface }} if del $IFACE
 	down ip link set down $IFACE
