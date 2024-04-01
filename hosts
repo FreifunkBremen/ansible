@@ -52,8 +52,8 @@ grp = inv.group("dnsserver");
 grp.host(0, "dns.bremen.freifunk.net");
 
 grp = inv.group("vmhosts")
-grp.host(0, "bre-1.bremen.freifunk.net")
 grp.host(0, "bre-2.bremen.freifunk.net")
+grp.host(0, "bre-3.bremen.freifunk.net")
 
 grp = inv.group("ffmapserver")
 grp.host(0, "ffmap.bremen.freifunk.net")
@@ -73,7 +73,6 @@ grp.child("downlinks")
 
 # alle Root-Server mit Standard-Config
 grp = inv.group("standardserver")
-grp.host(0, "bgp-plutex01.bremen.freifunk.net")
 grp.host(0, "mail.bremen.freifunk.net")
 grp.host(0, "jenkins.bremen.freifunk.net")
 grp.host(0, "code.bremen.freifunk.net")
