@@ -29,4 +29,4 @@
     --nserver dns.bremen.freifunk.net ns2.afraid.org ns2.he.net \
     --file=/var/lib/nsd/0.b.a.b.b.b.f.f.2.8.7.8.6.0.a.2.ip6.arpa.zone --reverse nodes.ffhb.de. || exit
 
-nsd-control reload > /dev/null
+nsd-control reload
