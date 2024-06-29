@@ -1,11 +1,9 @@
 ---
-- name: Install JSON processor
+- name: Install JSON processor and dnsutils
   apt:
-    name: jq
-
-- name: Install dnsutils
-  apt:
-    name: dnsutils
+    name:
+      - jq
+      - dnsutils
 
 - name: Clone blacklist repository
   git:
@@ -18,8 +16,23 @@
   args:
     creates: /etc/fastd/{{ site_code }}/blacklist.sh
 
-- name: Install cronjob to automatically update blacklist repository
+- name: Install timer unit to automatically update blacklist repository
   template:
-    src: update-fastd-blacklist
-    dest: "/etc/cron.hourly/update-fastd-blacklist-{{ site_code }}"
-    mode: 0755
+    src: '{{ item }}'
+    dest: "/etc/systemd/system/"
+    mode: 0644
+  loop:
+    - update-fastd-blacklist@.service
+    - update-fastd-blacklist@.timer
+
+- name: Enable timer unit to automatically update blacklist repository
+  systemd:
+    name: "update-fastd-blacklist@{{ site_code }}.timer"
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: Remove obsolete cronjob
+  file:
+    path: "/etc/cron.hourly/update-fastd-blacklist-{{ site_code }}"
+    state: absent

@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Regularly update fastd blacklist for site %i
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=1h
+FixedRandomDelay=yes
+
+[Install]
+WantedBy=timers.target

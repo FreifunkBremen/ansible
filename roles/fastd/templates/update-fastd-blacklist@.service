@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Update fastd blacklist for site %i
+
+[Service]
+ExecStart=/usr/bin/git -C /opt/%I/vpn-blacklist/ pull --rebase --quiet origin master
+Type=exec

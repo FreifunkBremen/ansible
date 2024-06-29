@@ -1,4 +1,0 @@
-#!/bin/sh -e
-# {{ ansible_managed }}
-
-exec git -C /opt/{{ site_code }}/vpn-blacklist/ pull --rebase --quiet origin master
