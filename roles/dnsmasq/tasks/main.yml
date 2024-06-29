@@ -21,17 +21,31 @@
     group: root
     content: |
       [Service]
-      ExecStartPre=/bin/cp /var/lib/misc/dnsmasq.leases /tmp/dnsmasq.leases
+      ExecStartPre=-/bin/cp /var/lib/misc/dnsmasq.leases /tmp/dnsmasq.leases
       ExecStopPost=/bin/cp /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
   notify: reload systemd
 
-- name: Copy cronjob
+- name: Install timer unit to persist leases file
   copy:
-    dest: /etc/cron.hourly/dnsmasq-tmpfs
-    src: dnsmasq-tmpfs
-    owner: root
-    group: root
-    mode: '0755'
+    src: '{{ item }}'
+    dest: /etc/systemd/system/
+    mode: 0644
+  loop:
+    - dnsmasq-tmpfs.service
+    - dnsmasq-tmpfs.timer
+
+
+- name: Enable timer unit to persist leases file
+  systemd:
+    name: dnsmasq-tmpfs.timer
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Remove obsolete cronjob
+  file:
+    path: /etc/cron.hourly/dnsmasq-tmpfs
+    state: absent
 
 - name: Copy dnsmasq lease script
   copy:

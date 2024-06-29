@@ -1,0 +1,6 @@
+[Unit]
+Description=Persist DHCP leases file to disk
+ConditionFileNotEmpty=/tmp/dnsmasq.leases
+
+[Service]
+ExecStart=/bin/cp /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases

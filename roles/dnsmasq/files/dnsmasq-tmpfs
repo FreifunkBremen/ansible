@@ -1,7 +1,0 @@
-#! /usr/bin/env bash
-
-PATH=/sbin:/usr/sbin:/bin:/usr/bin
-
-if [[ -s /tmp/dnsmasq.leases ]]; then
-    cp /tmp/dnsmasq.leases /var/lib/misc/dnsmasq.leases
-fi

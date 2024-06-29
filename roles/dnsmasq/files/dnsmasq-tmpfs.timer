@@ -1,0 +1,10 @@
+[Unit]
+Description=Regularly persist DHCP leases file to disk
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=1h
+FixedRandomDelay=yes
+
+[Install]
+WantedBy=timers.target
