@@ -7,6 +7,7 @@
   ansible.builtin.apt:
     name:
       - needrestart
+      - monitoring-plugins-basic
 
 - name: Create Check_MK agent plugin directories
   ansible.builtin.file:
