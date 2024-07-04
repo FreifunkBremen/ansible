@@ -12,9 +12,11 @@
     dest: /etc/systemd/system/serial-getty@.service.d/
     src: autologin.conf
 
-- name: Install dbus (for systemd-logind)
+- name: Install packages
   apt:
-    name: dbus
+    name:
+      - dbus  # for systemd-logind
+      - qemu-guest-agent
   notify: restart systemd-logind
 
 - name: Let systemd-logind handle power button
