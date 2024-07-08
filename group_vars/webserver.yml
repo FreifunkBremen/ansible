@@ -9,3 +9,53 @@ meshviewer_git_root: https://github.com/FreifunkBremen/meshviewer-ffrgb.git
 meshviewer_git_version: ffhb-config
 meshviewer_email: info@bremen.freifunk.net
 meshviewer_path_bin: /var/www/{{ website_user }}/domains/{{ meshviewer_domain }}
+
+website_webhook_secret: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          35656338326565336139663966633663373261386464373364356635393235376336373434353761
+          6332306563646230363637356435306236636538373937640a386639643839316266323731343762
+          65336633386131613237343465333139613537623163373635653836323631393463393530383464
+          6139636531633763620a326435336363643035373135383238343137396238386163626339303663
+          64386161346661393333313666353131623535366462653738383462623334313037346131353733
+          3733363434623961666132376532656264366163356462653066
+
+# respond-collector credentials
+respond_collector_influxdb_database: ffhb-nodes
+respond_collector_influxdb_username: ffhb-respondd-collector
+respond_collector_influxdb_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61383464393539363739626661356531303161386466663037633562663838636630303761306230
+          3937663261623333376134326239623462343365613234650a626565613563616638306162646462
+          61393938646234326664353562633630643139663437646431623434356664376666323861373661
+          3066366432333935620a353430323132653964646334323831356235396264653833393839323236
+          6164
+
+# Influxdb credentials (with them for the respond-collector)
+influxdb_admin_user: admin
+influxdb_admin_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          62303766373031333265366134353630643435633730656264656162666466353238326561663434
+          3830386430323237643662303163363766336330646236300a303962663238363564623734396437
+          36303730336566383036376135336263353739356639373566306539396265323239353766633831
+          3432663934306634660a333738646132393238343932663764393338633038366135306162333463
+          3035
+influxdb_users:
+  - user: "{{ respond_collector_influxdb_username }}"
+    pass: "{{ respond_collector_influxdb_password }}"
+    databases:
+    - database: "{{ respond_collector_influxdb_database }}"
+      privilege: "ALL"
+  - user: public
+    pass: public
+    databases:
+    - database: "{{ respond_collector_influxdb_database }}"
+      privilege: "READ"
+influxdb_databases:
+  - "{{ respond_collector_influxdb_database }}"
+influxdb_access:
+  - user: "{{ respond_collector_influxdb_username }}"
+    database: "{{ respond_collector_influxdb_database }}"
+    access: ALL
+  - user: public
+    database: "{{ respond_collector_influxdb_database }}"
+    access: READ
