@@ -1,9 +1,0 @@
-[Unit]
-Description=nagios
-After=network.target
-
-[Service]
-ExecStart=%h/.opt/nagios/bin/nagios %h/.config/etc/nagios/nagios.cfg
-
-[Install]
-WantedBy=default.target
