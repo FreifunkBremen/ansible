@@ -1,13 +1,4 @@
 ---
-# Can be set with -e exit_ipv6_remote=$ADDR
-- name: Exit if variable not set
-  fail:
-    msg: "exit_ipv6_remote must be False or set to the IPv6 uplink address"
-  when: exit_ipv6_remote is not defined
-
-- import_tasks: remote.yml
-  when: exit_ipv6_remote != False
-
 - name: Install radv protocol for bird
   template:
     src: bird-radv.conf
