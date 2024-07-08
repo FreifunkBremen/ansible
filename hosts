@@ -32,6 +32,7 @@ grp = inv_v15.group("vpnservers",
 grp.host(7, "vpn07.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens16", exit_ipv6_interface="ens16", max_mtu=1438)
 grp.host(8, "vpn08.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens16", exit_ipv6_interface="ens16", max_mtu=1438)
 grp.host(9, "vpn09.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens16", exit_ipv6_interface="ens16", max_mtu=1438)
+grp.host(10, "vpn10.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interface="ens16", exit_ipv6_interface="ens16", max_mtu=1438)
 
 grp = inv.group("eventsserver")
 grp.host(0, "mgmt.bremen.freifunk.net")
