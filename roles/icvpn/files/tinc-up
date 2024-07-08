@@ -1,3 +1,0 @@
-#! /usr/bin/env sh
-
-ifup --allow hotplug $INTERFACE

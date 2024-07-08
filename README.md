@@ -41,8 +41,6 @@ The hosts-file defines all machines where our services are deployed on as well a
 Variables:
 
     ipv6_local_network  = "fd75:3707:b8c2::/64",
-    icvpn_ipv4_network  = "10.207.0.196/16",
-    icvpn_ipv6_network  = "fec0::a:cf:0:c4/96",
 
 Hosts:
 
@@ -74,14 +72,6 @@ Then add it to your site.conf - From Bremen you found it [here](https://github.c
 
 **Do not forget to add NTP-Server either.**
 
-### Add vpn to icvpn
-Publish your tinc Public-key to [IC-VPN](https://github.com/freifunk/icvpn).
-Your found your one /etc/tinc/icvpn/hosts/{{site_city}}{{id}}.
-So other IC-VPN-Servers could create a vpn-Connection to your VPN.
-
-
-### Add vpn to icvpn-meta
-Add your new VPN to the [IC-VPN-Meta](https://github.com/freifunk/icvpn-meta) to get the bgp routing active on other Host from other communitys.
 
 ### Add bgp internal routing
 Ask to other VPN-Owner to run ansible again.

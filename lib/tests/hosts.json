@@ -43,20 +43,10 @@
                 "batman_gateway": true,
                 "vpn_id": 1,
                 "exit": "gre",
-                "icvpn_ipv4": {
-                    "netmask": "255.255.255.255",
-                    "size": 32,
-                    "address": "10.207.1.196"
-                },
                 "dhcp": {
                     "range_end": "10.196.19.255",
                     "netmask": "255.255.0.0",
                     "range_begin": "10.196.10.0"
-                },
-                "icvpn_ipv6": {
-                    "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:0000:0000",
-                    "size": 96,
-                    "address": "fec0::a:cf:1:c4"
                 }
             },
             "service.example.com": {

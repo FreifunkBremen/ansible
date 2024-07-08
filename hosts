@@ -9,20 +9,15 @@ import json
 inv = hosts.Inventory('site/site.conf',
   ipv6_global_network = "2a06:8782:ffbb:1337::/64",
   ipv6_uplink_network = "2a06:8782:ffbb::/64",
-  icvpn_ipv4_network = "10.207.0.196/16",
-  icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
 )
 
 inv_v15 = hosts.Inventory('site/site.conf',
   ipv6_global_network = "2a06:8782:ffbb:42::/64",
   ipv6_uplink_network = "2a06:8782:ffbb::/64",
-  icvpn_ipv4_network = "10.207.0.196/16",
-  icvpn_ipv6_network = "fec0::a:cf:0:c4/96",
 )
 
 grp = inv.group("vpnservers_legacy",
   dhcp=True,
-  icvpn=True,
   batman_gateway=True,
   firewall_enabled=True,
   is_legacy=True,
@@ -31,7 +26,6 @@ grp.host(1, "vpn01.bremen.freifunk.net", exit_ipv4="default", exit_ipv4_interfac
 
 grp = inv_v15.group("vpnservers",
   dhcp=True,
-  icvpn=True,
   batman_gateway=True,
   firewall_enabled=True,
 )
