@@ -4,5 +4,5 @@ BACKUP_NICE=0
 BACKUP_PASSWORDS=()
 
 backup_prepare() {
-  return
+    return
 }

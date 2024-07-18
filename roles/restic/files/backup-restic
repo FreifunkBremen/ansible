@@ -37,46 +37,56 @@ declare -a BACKUP_PASSWORDS=()
 declare BACKUP_NICE=0
 declare BACKUP_PARAMS=''
 declare LOCK_FILE='/run/backup-restic.lock'
+declare RESTIC_STATUS=0
 
 # Run before backup
 backup_prepare() {
-  return
+    return
 }
 
 # Check if config exists
-if [ ! -f /etc/default/backup-restic ]; then
-  echo '/etc/default/backup-restic does not exists!' >&2
-  exit 1
+if [[ ! -f /etc/default/backup-restic ]]; then
+    echo '/etc/default/backup-restic does not exists!' >&2
+    exit 1
 fi
 
 # Include config
 . /etc/default/backup-restic
 
 # Check if valid targets defined
-if [ "${#TARGETS[*]}" -eq 0 ]; then
-  echo 'No backup targets defined' >&2
-  exit 1
+if [[ "${#TARGETS[*]}" -eq 0 ]]; then
+    echo 'No backup targets defined' >&2
+    exit 1
 fi
 
 # Run with low priority
-if [ "$BACKUP_NICE" = "1" ]; then
-  ionice -n 7 -p $$
-  renice 3 -p $$ > /dev/null
+if [[ "$BACKUP_NICE" = "1" ]]; then
+    ionice -n 7 -p $$
+    renice 3 -p $$ > /dev/null
 fi
 
 # Check if lock file exists
-if [ -f "$LOCK_FILE" ]; then
-  echo 'Already running...' >&2
-  exit 1
+if [[ -f "$LOCK_FILE" ]]; then
+    echo 'Already running...' >&2
+    exit 1
 else
-  touch "$LOCK_FILE"
+    touch "$LOCK_FILE"
 fi
+
+# Create temporary directory
+TEMP_DIR="$(mktemp --directory)"
 
 # Delete lockfile after completion
 cleanup() {
-  if [ -n "$LOCK_FILE" -a -f "$LOCK_FILE" ]; then
-    rm "$LOCK_FILE"
-  fi
+    if [[ -n "$LOCK_FILE" ]] && \
+       [[ -f "$LOCK_FILE" ]]; then
+        rm "$LOCK_FILE"
+    fi
+
+    if [[ -n "$TEMP_DIR" ]] && \
+       [[ -d "$TEMP_DIR" ]]; then
+        rm --recursive --force "$TEMP_DIR"
+    fi
 }
 trap cleanup EXIT
 
@@ -85,27 +95,47 @@ backup_prepare
 
 # Build parameteres for backup
 for EXCLUDE in ${EXCLUDES[*]}; do
-  BACKUP_PARAMS="--exclude=${EXCLUDE} ${BACKUP_PARAMS}"
+    BACKUP_PARAMS="--exclude=${EXCLUDE} ${BACKUP_PARAMS}"
 done
 
 # Run the actual backup
 for TARGET_KEY in ${!TARGETS[*]}; do
-  # Export password for restic
-  export RESTIC_PASSWORD="${BACKUP_PASSWORDS[$TARGET_KEY]}"
+    RESTIC_STATUS_LOCAL=0
 
-  # Path to repository
-  export RESTIC_REPOSITORY="${TARGETS[$TARGET_KEY]}"
+    # Export password for restic
+    export RESTIC_PASSWORD="${BACKUP_PASSWORDS[$TARGET_KEY]}"
 
-  # If password is empty something is wrong
-  if [ -z "$RESTIC_PASSWORD" ]; then
-    echo 'No passphrase defined' >&2
-    continue
-  fi
+    # Path to repository
+    export RESTIC_REPOSITORY="${TARGETS[$TARGET_KEY]}"
 
-  # Run restic
-  restic \
-    --one-file-system \
-    --quiet \
-    ${BACKUP_PARAMS} \
-    backup /
+    # If password is empty something is wrong
+    if [[ -z "$RESTIC_PASSWORD" ]]; then
+        echo 'No passphrase defined' >&2
+        continue
+    fi
+
+    # Run restic
+    restic \
+      --one-file-system \
+      --quiet \
+      ${BACKUP_PARAMS} \
+      backup / >"${TEMP_DIR}/stdout" 2>"${TEMP_DIR}/stderr"
+
+    RESTIC_STATUS_LOCAL=$?
+
+    # Catch file-not-found-errors
+    if [[ $RESTIC_STATUS_LOCAL -eq 3 ]]; then
+        continue
+    elif [[ $RESTIC_STATUS_LOCAL -ne 0 ]]; then
+        if [[ -s "${TEMP_DIR}/stdout" ]]; then
+            cat "${TEMP_DIR}/stdout"
+        fi
+        if [[ -s "${TEMP_DIR}/stderr" ]]; then
+            cat "${TEMP_DIR}/stderr"
+        fi
+
+        RESTIC_STATUS=$RESTIC_STATUS_LOCAL
+    fi
 done
+
+exit $RESTIC_STATUS
